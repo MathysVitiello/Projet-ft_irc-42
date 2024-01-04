@@ -1,0 +1,1 @@
+// ./ircserv <port> <password>
