@@ -33,13 +33,15 @@ Il peut par ailleurs être utilisé pour faire du transfert de fichier.
 - L utilisateur utilise un logiciel IRC afin de se connectera un des serveurs du reseaux.
 - Le protocole ouvert est decrit par un RFC:
 	- ***Requests for comments*** ("demandes de commentaires").
-   	- documents decrivant les aspects et specification techniques d internet. 
+   	- documents decrivant les aspects et specification techniques d internet.
+- Un serveur IRC est gerer par un ou plusieurs IrcOps (***IRC OPERATOR***):
+  	- Ils sont nommes par le administrateurs.
 </details>
 
 <details>
 <summary> Protocole TCP</summary>
 	
-- ***Transmission Control Protocol*** (littéralement, « protocole de contrôle de transmissions »), abrégé TCP, est un protocole de transport fiable, en mode connecté.
+-  ***Transmission Control Protocol*** (littéralement, « protocole de contrôle de transmissions »), abrégé TCP, est un protocole de transport fiable, en mode connecté.
 </details>
 
 <details>
