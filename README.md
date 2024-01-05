@@ -1,6 +1,6 @@
 # PROJET IRC
-
-## Règles générales
+<details>
+<summary>Règles générales</summary>
 
 - Votre programme ne doit en aucun cas se bloquer (même s'il manque de mémoire).
 - Il ne doit pas s'arrêter de manière inattendue.
@@ -20,6 +20,7 @@ Par exemple, choisissez:
 - <cstring> plutôt que <string.h>
 ``` 
 - Les bibliothèques externes et les bibliothèques Boost sont interdites.
+</details>
 
 # Partie obligatoire
 
@@ -41,34 +42,36 @@ Par exemple, choisissez:
 	- password: the connection password.
 
 ## Fonctions utilisables:
+<details>
+<summary>- Toutes en C++98.</summary>
 	
-	- Toutes en C++98.
-	- socket
-	- close
-	- setsockopt
-	- getsockname
-	- getprotobyname
-	- gethostbyname
-	- getaddrinfo
-	- freeaddrinfo
-	- bind
-	- connect
-	- listen
-	- accept
-	- htons
-	- htonl
-	- ntohs
-	- ntohl
-	- inet_addr
-	- inet_ntoa
-	- send
-	- recv
-	- signal
-	- sigaction
-	- lseek
-	- fstat
-	- fcntl
-	- poll
+- socket
+- close
+- setsockopt
+- getsockname
+- getprotobyname
+- gethostbyname
+- getaddrinfo
+- freeaddrinfo
+- bind
+- connect
+- listen
+- accept
+- htons
+- htonl
+- ntohs
+- ntohl
+- inet_addr
+- inet_ntoa
+- send
+- recv
+- signal
+- sigaction
+- lseek
+- fstat
+- fcntl
+- poll
+</details>
 
 ## Description:
 
