@@ -23,10 +23,24 @@ Par exemple, choisissez:
 </details>
 
 <details>
-<summary> Serveur Irc</summary>
+<summary>Serveur Irc</summary>
 	
-***Internet Relay Chat*** (IRC ; en français : « discussion relayée par Internet ») est un protocole de communication textuel sur Internet. Il sert à la communication instantanée principalement sous la forme de discussions en groupe par l’intermédiaire de canaux de discussion.
+- ***Internet Relay Chat*** (IRC ; en français : « discussion relayée par Internet ») est un protocole de communication textuel sur Internet. Il sert à la communication instantanée principalement sous la forme de discussions en groupe par l’intermédiaire de canaux de discussion.
 Il peut par ailleurs être utilisé pour faire du transfert de fichier.
+</details>
+
+<details>
+<summary> Protocole TCP</summary>
+	
+- ***Transmission Control Protocol*** (littéralement, « protocole de contrôle de transmissions »), abrégé TCP, est un protocole de transport fiable, en mode connecté.
+</details>
+
+<details>
+<summary>protocole DCC</summary>
+	
+- ***Direct Client-to-Client***, protocole utilisé par de nombreux clients IRC qui permet une connections direct entre utilisateurs:
+	- permet d envoyer des fichiers.
+ 	- permet de chatter plus rapidement et de maniere plus securise avec un autre utilisateur.
 </details>
 
 # Partie obligatoire
