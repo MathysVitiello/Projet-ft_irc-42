@@ -23,10 +23,17 @@ Par exemple, choisissez:
 </details>
 
 <details>
-<summary>Serveur Irc</summary>
+<summary>Serveur IRC</summary>
 	
 - ***Internet Relay Chat*** (IRC ; en français : « discussion relayée par Internet ») est un protocole de communication textuel sur Internet. Il sert à la communication instantanée principalement sous la forme de discussions en groupe par l’intermédiaire de canaux de discussion.
 Il peut par ailleurs être utilisé pour faire du transfert de fichier.
+> RFC 28102 à RFC 2813
+- Un serveur IRC peut se connecter a d autres serveur IRC.
+- Un reseaux IRC est un ensemble de serveur connectes l un a l autre.
+- L utilisateur utilise un logiciel IRC afin de se connectera un des serveurs du reseaux.
+- Le protocole ouvert est decrit par un RFC:
+	- ***Requests for comments*** ("demandes de commentaires").
+   	- documents decrivant les aspects et specification techniques d internet. 
 </details>
 
 <details>
