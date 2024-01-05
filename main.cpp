@@ -24,19 +24,22 @@
  
 int main(void){
 
-    //create a socket
-    int listening = socket(AF_INET, SOCK_STREAM, 0); // AF_INET = famille d’adresses pour IPv4. | SOCK_STREAM is a connection-based protocol. The connection is established and the two parties have a conversation until the connection is terminated by one of the parties or by a network error.
+    //1. Create a socket
+    int listening = socket(AF_INET, SOCK_STREAM, 0); // AF_INET = famille d’adresses pour IPv4. | SOCK_STREAM is a connection-based protocol. La connection est etablie et les deux personnes ont une conv jusqua ce que la connection soit arrete par une des deux personnes ou un erreur de network.
     if (listening == -1)
     {
         std::cerr << "Can't create a socket !";
         return 1;
     }
 
-    //Bind socket to IP adress / port
-    sockaddr_in hint;
+
+
+
+    //2.Joindre socket a IP adress / port
+    sockaddr_in hint; // structure 
     hint.sin_family = AF_INET;
-    hint.sin_port = htons(54002); //== host to network short
-    inet_pton(AF_INET, "0.0.0.0", &hint.sin_addr); // internet command, coverts nb to an array of int | 0.0.0.0 veut dire que cest nimporte quelle adresse
+    hint.sin_port = htons(54000); //== host to network short, permet de convertir le int en network byte -> c'est le port
+    inet_pton(AF_INET, "0.0.0.0", &hint.sin_addr); // | 0.0.0.0 veut dire que cest nimporte quelle adresse | Cette fonction convertit la chaîne de caractères src en une structure d'adresse réseau de la famille af, puis copie cette structure dans dst. 
 
     if (bind(listening, (sockaddr *) &hint, sizeof(hint)) == -1)
     {
@@ -44,7 +47,11 @@ int main(void){
         return 2;
     }
 
-    //Mark the socket for listening in
+
+
+    //3. Mark the socket for listening in
+
+    //listen marque la socket comme une socket passive, c'est-à-dire comme une socket qui sera utilisée pour accepter les demandes de connexions entrantes en utilisant accept().
     if (listen(listening, SOMAXCONN) == -1)
     {
         std::cerr << "Can't listen !";
@@ -52,25 +59,22 @@ int main(void){
     }
 
     //Accept a call
-    sockaddr_in client;
-    socklen_t clientSize = sizeof(client);
+    sockaddr_in client; // structure 
+    socklen_t clientSize = sizeof(client); //! a voir si on a le droit de socklen_t
     char host[NI_MAXHOST]; //max 1025
     char service[NI_MAXSERV]; //max 32
 
     int clientSocket = accept(listening, (sockaddr *) &client, &clientSize);
-
     if (clientSocket == -1)
     {
         std::cerr << "Problem with client connecting";
         return 3;
     }
 
-    close(listening);
+    close(listening); // parce que listening est un fd.
 
     memset(host, 0, NI_MAXHOST);
     memset(service, 0, NI_MAXSERV);
-
-//!
 
     int result = getnameinfo((sockaddr *)&client, sizeof(client), host, NI_MAXHOST, service, NI_MAXSERV, 0);
     if (result)
@@ -84,8 +88,7 @@ int main(void){
 
     }
 
-//!
-    //while receiving display message
+    //While receiving display message
     char buf[4096];
     while(true){
         memset(buf, 0, 4096);
@@ -113,4 +116,5 @@ int main(void){
 
 /*
 socket = endpoint of communication ->  You make a call to the socket() system routine. It returns the socket descriptor,
-and you communicate through it using the specialized send() and recv() (man send, man recv) socket calls.*/
+and you communicate through it using the specialized send() and recv() (man send, man recv) socket calls.
+*/
