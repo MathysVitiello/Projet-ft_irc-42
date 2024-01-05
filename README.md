@@ -43,6 +43,10 @@ Il peut par ailleurs être utilisé pour faire du transfert de fichier.
 - ***Channel*** ("canal"):
 	- Element de base pour communiquer sur un reseaux:
   	- Un channel est definit par une liste d utilisateurs connectes a celui-ci.
+- Pour rentrer dans un channel ou le creer:
+```
+join
+```
  
 </details>
 
