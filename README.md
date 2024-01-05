@@ -30,30 +30,30 @@ Il peut par ailleurs être utilisé pour faire du transfert de fichier.
 > RFC 28102 à RFC 2813
 
 1. **Aspect techniques:**
-- Un serveur IRC peut se connecter a d autres serveur IRC.
-- Un reseaux IRC est un ensemble de serveur connectes l un a l autre.
-- L utilisateur utilise un logiciel IRC afin de se connectera un des serveurs du reseaux.
-- Le protocole ouvert est decrit par un RFC:
+- Un serveur IRC peut se connecter à d'autres serveur IRC.
+- Un réseaux IRC est un ensemble de serveur connectés l'un à l'autre.
+- L'utilisateur utilise un logiciel IRC afin de se connecter à un des serveurs du réseaux.
+- Le protocole ouvert est décrit par un RFC:
 	- ***Requests for comments*** ("demandes de commentaires").
-   	- documents decrivant les aspects et specification techniques d internet.
-- Un serveur IRC est gerer par un ou plusieurs IrcOps (***IRC OPERATOR***):
-  	- Ils sont nommes par les administrateurs.
+   	- documents décrivant les aspects et spécification techniques d'internet.
+- Un serveur IRC est gérer par un ou plusieurs IrcOps (***IRC OPERATOR***):
+  	- Ils sont nommés par les administrateurs.
 
 2. **Les canaux:**
 - ***Channel*** ("canal"):
 	- Element de base pour communiquer sur un reseaux:
-  	- Un channel est definit par une liste d utilisateurs connectes a celui-ci.
-- Pour rentrer dans un channel ou le creer:
+  	- Un channel est définit par une liste d'utilisateurs connectés à celui-ci.
+- Pour rentrer dans un channel ou le créer:
 ```
 join
 ```
-> Les canaux pouvant etre vus de tous sur le reseau sont prefixee par #.
+> Les canaux pouvant etre vus de tous sur le réseau sont préfixée par #.
 > 
-> Les canaux peuvent etres locaux: 1 seul serveur et prefixee par &.
+> Les canaux peuvent etres locaux: 1 seul serveur et préfixée par &.
 
 3. **Les modes:**
-- Options positionnee sur des canaux ou des utilisateurs.
-- affecte leur modes de fonctionnement, leur privilges et leurs interactions.
+- Options positionnée sur des canaux ou des utilisateurs.
+- affecte leurs modes de fonctionnement, leurs privilèges et leurs intéractions.
 </details>
 
 <details>
@@ -86,13 +86,15 @@ join
 
 ## Arguments:
 
-	- port: le port d ecoute.
+	- port: le port d'écoute.
 	- password: the connection password.
 
 ## Fonctions utilisables:
+- Toutes en C++98.
 <details>
-<summary>- Toutes en C++98.</summary>
 	
+<summary>Recommandées:</summary>
+
 - socket
 - close
 - setsockopt
