@@ -36,7 +36,9 @@ Il peut par ailleurs être utilisé pour faire du transfert de fichier.
 - Le protocole ouvert est décrit par un RFC:
 	- ***Requests for comments*** ("demandes de commentaires").
    	- documents décrivant les aspects et spécification techniques d'internet.
+
 > RFC 28102 à RFC 2813
+
 - Un serveur IRC est gérer par un ou plusieurs IrcOps (***IRC OPERATOR***):
   	- Ils sont nommés par les administrateurs.
 

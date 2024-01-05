@@ -1,0 +1,4 @@
+*.o
+*.swp
+ircserv
+a.out
