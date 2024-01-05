@@ -28,6 +28,8 @@ Par exemple, choisissez:
 - ***Internet Relay Chat*** (IRC ; en français : « discussion relayée par Internet ») est un protocole de communication textuel sur Internet. Il sert à la communication instantanée principalement sous la forme de discussions en groupe par l’intermédiaire de canaux de discussion.
 Il peut par ailleurs être utilisé pour faire du transfert de fichier.
 > RFC 28102 à RFC 2813
+
+1. **Aspect techniques:**
 - Un serveur IRC peut se connecter a d autres serveur IRC.
 - Un reseaux IRC est un ensemble de serveur connectes l un a l autre.
 - L utilisateur utilise un logiciel IRC afin de se connectera un des serveurs du reseaux.
@@ -35,7 +37,13 @@ Il peut par ailleurs être utilisé pour faire du transfert de fichier.
 	- ***Requests for comments*** ("demandes de commentaires").
    	- documents decrivant les aspects et specification techniques d internet.
 - Un serveur IRC est gerer par un ou plusieurs IrcOps (***IRC OPERATOR***):
-  	- Ils sont nommes par le administrateurs.
+  	- Ils sont nommes par les administrateurs.
+
+2. **Les canaux:**
+- ***Channel*** ("canal"):
+	- Element de base pour communiquer sur un reseaux:
+  	- Un channel est definit par une liste d utilisateurs connectes a celui-ci.
+ 
 </details>
 
 <details>
