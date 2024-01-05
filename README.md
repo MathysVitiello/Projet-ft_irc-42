@@ -27,7 +27,7 @@ Par exemple, choisissez:
 	
 - ***Internet Relay Chat*** (IRC ; en français : « discussion relayée par Internet ») est un protocole de communication textuel sur Internet. Il sert à la communication instantanée principalement sous la forme de discussions en groupe par l’intermédiaire de canaux de discussion.
 Il peut par ailleurs être utilisé pour faire du transfert de fichier.
-> RFC 28102 à RFC 2813
+- IRC est un protocole utilisant TCP et optionelle TLS.
 
 1. **Aspect techniques:**
 - Un serveur IRC peut se connecter à d'autres serveur IRC.
@@ -36,6 +36,7 @@ Il peut par ailleurs être utilisé pour faire du transfert de fichier.
 - Le protocole ouvert est décrit par un RFC:
 	- ***Requests for comments*** ("demandes de commentaires").
    	- documents décrivant les aspects et spécification techniques d'internet.
+> RFC 28102 à RFC 2813
 - Un serveur IRC est gérer par un ou plusieurs IrcOps (***IRC OPERATOR***):
   	- Ils sont nommés par les administrateurs.
 
@@ -54,6 +55,20 @@ join
 3. **Les modes:**
 - Options positionnée sur des canaux ou des utilisateurs.
 - affecte leurs modes de fonctionnement, leurs privilèges et leurs intéractions.
+
+4. **Principales commandes:**
+- Les commandes IRC sont toujours définiespar le caractère '/' placé en début de ligne.
+- Elle est envoyée comme message au canal actif.
+- Par exemple pur joindre un canal:
+```
+/join#canal
+```
+> Rejoint un canal public nommée canal.
+
+6. **Bot IRC:**
+
+8. **Les réseaux:**
+
 </details>
 
 <details>
@@ -171,8 +186,8 @@ join
 Cependant, vous n'avez qu'à implémenter les fonctionnalités suivantes :
 	- Vous devez être en mesure:
  		- de vous authentifier
-		- de définir un pseudonyme
-		- un nom d'utilisateur
+		- de définir un pseudonyme (changeable a tout moment)
+		- un nom d'utilisateur (inchangeable)
 		- de rejoindre un canal
 		- envoyer et recevoir des messages privés en utilisant votre client de référence.
 	- Tous les messages envoyés par un client à un canal doivent être transmis à tous les autres clients qui ont rejoint le canal.
