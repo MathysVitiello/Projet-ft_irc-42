@@ -11,7 +11,8 @@ class Server{
 		std::string				passwd;
 		unsigned int			port;	
 		std::vector<Channel *>	channel;
-		std::vector<Client *>	client;
+		std::vector<Client>	client;
+		
 };
 
 #endif
