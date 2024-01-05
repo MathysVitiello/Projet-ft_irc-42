@@ -8,7 +8,9 @@ class Server{
 		Server();
 		~Server();
 	 private:
-		std::vector<Chanel *>	chanel;
+		std::string				passwd;
+		unsigned int			port;	
+		std::vector<Channel *>	channel;
 		std::vector<Client *>	client;
 };
 
