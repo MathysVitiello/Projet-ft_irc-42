@@ -24,21 +24,18 @@
  
 int main(void){
 
-    //int socket(int domain, int type, int protocol);
-
     //create a socket
-    int listening = socket(AF_INET, SOCK_STREAM, 0);
+    int listening = socket(AF_INET, SOCK_STREAM, 0); // AF_INET = famille d’adresses pour IPv4. | SOCK_STREAM is a connection-based protocol. The connection is established and the two parties have a conversation until the connection is terminated by one of the parties or by a network error.
     if (listening == -1)
     {
         std::cerr << "Can't create a socket !";
         return 1;
     }
-    //std::cout << listening <<std::endl;
 
     //Bind socket to IP adress / port
     sockaddr_in hint;
     hint.sin_family = AF_INET;
-    hint.sin_port = htons(54000); //== host to network short
+    hint.sin_port = htons(54002); //== host to network short
     inet_pton(AF_INET, "0.0.0.0", &hint.sin_addr); // internet command, coverts nb to an array of int | 0.0.0.0 veut dire que cest nimporte quelle adresse
 
     if (bind(listening, (sockaddr *) &hint, sizeof(hint)) == -1)
@@ -57,8 +54,8 @@ int main(void){
     //Accept a call
     sockaddr_in client;
     socklen_t clientSize = sizeof(client);
-   // char host(NI_MAXHOST); //max 1025
-   // char service(NI_MAXSERV); //max 32
+    char host[NI_MAXHOST]; //max 1025
+    char service[NI_MAXSERV]; //max 32
 
     int clientSocket = accept(listening, (sockaddr *) &client, &clientSize);
 
@@ -70,11 +67,12 @@ int main(void){
 
     close(listening);
 
-    //memset(host, 0, NI_MAXHOST);
-    //memset(service, 0, NI_MAXSERV);
+    memset(host, 0, NI_MAXHOST);
+    memset(service, 0, NI_MAXSERV);
 
 //!
-    /*int result = getnameinfo((sockaddr *)&client, sizeof(client), host, NI_MAXHOST, service, NI_MAXSERV, 0);
+
+    int result = getnameinfo((sockaddr *)&client, sizeof(client), host, NI_MAXHOST, service, NI_MAXSERV, 0);
     if (result)
     {
         std::cout << host << " connected on " << service << std::endl;
@@ -82,9 +80,11 @@ int main(void){
     else 
     {
         inet_ntop(AF_INET, &client.sin_addr, host, NI_MAXHOST);
-        std::cout << host << " connected on " << nthos(client.sin_port) << std::endl;
+        std::cout << host << " connected on " << ntohs(client.sin_port) << std::endl;
 
-    }*/
+    }
+
+//!
     //while receiving display message
     char buf[4096];
     while(true){
@@ -108,3 +108,9 @@ int main(void){
     close(clientSocket);
     return 0;
 }
+
+
+
+/*
+socket = endpoint of communication ->  You make a call to the socket() system routine. It returns the socket descriptor,
+and you communicate through it using the specialized send() and recv() (man send, man recv) socket calls.*/
