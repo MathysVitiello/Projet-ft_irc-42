@@ -22,6 +22,13 @@ Par exemple, choisissez:
 - Les bibliothèques externes et les bibliothèques Boost sont interdites.
 </details>
 
+<details>
+<summary> Serveur Irc</summary>
+	
+***Internet Relay Chat*** (IRC ; en français : « discussion relayée par Internet ») est un protocole de communication textuel sur Internet. Il sert à la communication instantanée principalement sous la forme de discussions en groupe par l’intermédiaire de canaux de discussion.
+Il peut par ailleurs être utilisé pour faire du transfert de fichier.
+</details>
+
 # Partie obligatoire
 
 ## Nom du programme:
