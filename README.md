@@ -47,7 +47,13 @@ Il peut par ailleurs être utilisé pour faire du transfert de fichier.
 ```
 join
 ```
- 
+> Les canaux pouvant etre vus de tous sur le reseau sont prefixee par #.
+> 
+> Les canaux peuvent etres locaux: 1 seul serveur et prefixee par &.
+
+3. **Les modes:**
+- Options positionnee sur des canaux ou des utilisateurs.
+- affecte leur modes de fonctionnement, leur privilges et leurs interactions.
 </details>
 
 <details>
