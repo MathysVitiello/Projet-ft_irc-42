@@ -10,19 +10,21 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-#include <iostream>
-#include <netinet/in.h>
-#include <netdb.h>
-#include <sys/socket.h>
-#include <arpa/inet.h>
-#include <sys/types.h>
-#include <unistd.h>
-#include <string.h>
-#include <string>
+#include "library.hpp"
 
 //!https://www.youtube.com/watch?v=cNdlrbZSkyQ
  
-int main(void){
+
+int main(int argc, char **argv){
+
+
+    if (argc != 3)
+    {
+        std::cout << "Not the right number of arguments" << std::endl;
+        return 1;
+    }
+
+
 
     //1. Create a socket
     int listening = socket(AF_INET, SOCK_STREAM, 0); // AF_INET = famille d’adresses pour IPv4. | SOCK_STREAM is a connection-based protocol. La connection est etablie et les deux personnes ont une conv jusqua ce que la connection soit arrete par une des deux personnes ou un erreur de network.
@@ -34,11 +36,10 @@ int main(void){
 
 
 
-
     //2.Joindre socket a IP adress / port
     sockaddr_in hint; // structure 
     hint.sin_family = AF_INET;
-    hint.sin_port = htons(54000); //== host to network short, permet de convertir le int en network byte -> c'est le port
+    hint.sin_port = htons(atoi(argv[1])); //== host to network short, permet de convertir le int en network byte -> c'est le port
     inet_pton(AF_INET, "0.0.0.0", &hint.sin_addr); // | 0.0.0.0 veut dire que cest nimporte quelle adresse | Cette fonction convertit la chaîne de caractères src en une structure d'adresse réseau de la famille af, puis copie cette structure dans dst. 
 
     if (bind(listening, (sockaddr *) &hint, sizeof(hint)) == -1)
@@ -46,7 +47,6 @@ int main(void){
         std::cerr << "Can't bind to IP/port !";
         return 2;
     }
-
 
 
     //3. Mark the socket for listening in
@@ -71,6 +71,7 @@ int main(void){
         return 3;
     }
 
+
     close(listening); // parce que listening est un fd.
 
     memset(host, 0, NI_MAXHOST);
@@ -90,7 +91,13 @@ int main(void){
 
     //While receiving display message
     char buf[4096];
+    std::string input;
+
+    //! ici test de mdp, va faloir le fair epour chauqe client, un int qui indique si il sont connecte ou non 
+    password_test(clientSocket, argv[2]);
+
     while(true){
+
         memset(buf, 0, 4096);
         int bytesRecv = recv(clientSocket, buf, 4096, 0);
         if (bytesRecv == -1)
@@ -104,14 +111,14 @@ int main(void){
             break;
         }
 
-        std::cout << "Received: " << std::string(buf, 0, bytesRecv) << std::endl;
+        std::cout << std::string(buf, 0, bytesRecv);
         send(clientSocket, buf, bytesRecv + 1, 0);
+        
     }
 
     close(clientSocket);
     return 0;
 }
-
 
 
 /*
