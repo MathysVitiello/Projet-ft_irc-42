@@ -22,6 +22,48 @@ Par exemple, choisissez:
 - Les bibliothèques externes et les bibliothèques Boost sont interdites.
 </details>
 
+<details>
+<summary>Serveur IRC</summary>
+	
+- ***Internet Relay Chat*** (IRC ; en français : « discussion relayée par Internet ») est un protocole de communication textuel sur Internet. Il sert à la communication instantanée principalement sous la forme de discussions en groupe par l’intermédiaire de canaux de discussion.
+Il peut par ailleurs être utilisé pour faire du transfert de fichier.
+> RFC 28102 à RFC 2813
+
+1. **Aspect techniques:**
+- Un serveur IRC peut se connecter a d autres serveur IRC.
+- Un reseaux IRC est un ensemble de serveur connectes l un a l autre.
+- L utilisateur utilise un logiciel IRC afin de se connectera un des serveurs du reseaux.
+- Le protocole ouvert est decrit par un RFC:
+	- ***Requests for comments*** ("demandes de commentaires").
+   	- documents decrivant les aspects et specification techniques d internet.
+- Un serveur IRC est gerer par un ou plusieurs IrcOps (***IRC OPERATOR***):
+  	- Ils sont nommes par les administrateurs.
+
+2. **Les canaux:**
+- ***Channel*** ("canal"):
+	- Element de base pour communiquer sur un reseaux:
+  	- Un channel est definit par une liste d utilisateurs connectes a celui-ci.
+- Pour rentrer dans un channel ou le creer:
+```
+join
+```
+ 
+</details>
+
+<details>
+<summary> Protocole TCP</summary>
+	
+-  ***Transmission Control Protocol*** (littéralement, « protocole de contrôle de transmissions »), abrégé TCP, est un protocole de transport fiable, en mode connecté.
+</details>
+
+<details>
+<summary>protocole DCC</summary>
+	
+- ***Direct Client-to-Client***, protocole utilisé par de nombreux clients IRC qui permet une connections direct entre utilisateurs:
+	- permet d envoyer des fichiers.
+ 	- permet de chatter plus rapidement et de maniere plus securise avec un autre utilisateur.
+</details>
+
 # Partie obligatoire
 
 ## Nom du programme:
