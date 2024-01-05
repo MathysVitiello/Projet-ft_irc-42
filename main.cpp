@@ -10,23 +10,11 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-#include <iostream>
-#include <netinet/in.h>
-#include <netdb.h>
-#include <sys/socket.h>
-#include <arpa/inet.h>
-#include <sys/types.h>
-#include <unistd.h>
-#include <string.h>
-#include <string>
-#include <stdio.h>
-#include <stdlib.h>
-#include <functional>   // std::plus
-#include <algorithm>    // std::transform
-
+#include "library.hpp"
 
 //!https://www.youtube.com/watch?v=cNdlrbZSkyQ
  
+
 int main(int argc, char **argv){
 
 
@@ -38,10 +26,6 @@ int main(int argc, char **argv){
 
 
 
-
-
-
-
     //1. Create a socket
     int listening = socket(AF_INET, SOCK_STREAM, 0); // AF_INET = famille d’adresses pour IPv4. | SOCK_STREAM is a connection-based protocol. La connection est etablie et les deux personnes ont une conv jusqua ce que la connection soit arrete par une des deux personnes ou un erreur de network.
     if (listening == -1)
@@ -49,7 +33,6 @@ int main(int argc, char **argv){
         std::cerr << "Can't create a socket !";
         return 1;
     }
-
 
 
 
@@ -64,7 +47,6 @@ int main(int argc, char **argv){
         std::cerr << "Can't bind to IP/port !";
         return 2;
     }
-
 
 
     //3. Mark the socket for listening in
@@ -90,11 +72,6 @@ int main(int argc, char **argv){
     }
 
 
-
-
-
-    
-
     close(listening); // parce que listening est un fd.
 
     memset(host, 0, NI_MAXHOST);
@@ -115,7 +92,12 @@ int main(int argc, char **argv){
     //While receiving display message
     char buf[4096];
     std::string input;
+
+    //! ici test de mdp, va faloir le fair epour chauqe client, un int qui indique si il sont connecte ou non 
+    password_test(clientSocket, argv[2]);
+
     while(true){
+
         memset(buf, 0, 4096);
         int bytesRecv = recv(clientSocket, buf, 4096, 0);
         if (bytesRecv == -1)
@@ -128,40 +110,15 @@ int main(int argc, char **argv){
             std::cerr << "The client disconnected" << std::endl;
             break;
         }
-        //! ici test de mdp
-        if (std::string(buf, 0, bytesRecv) == "PASS\n")
-        {
-            std::cout << "Is trying to connect : " << std::endl;
-            int i = 0;
-            while(i == 0){
-
-                memset(buf, 0, 4096);
-                int bytesRecv = recv(clientSocket, buf, 4096, 0);
-
-                if (std::string(buf, 0, bytesRecv - 1) == argv[2])
-                {
-                    std::cout << "Good Password" << std::endl;
-                    i = 1;
-                }
-                else 
-                    std::cout << "Wrong Password" << std::endl;
-            }
-
-
-
-        }else{
 
         std::cout << std::string(buf, 0, bytesRecv);
-       // send(clientSocket, buf, bytesRecv + 1, 0);
-        }
-
+        send(clientSocket, buf, bytesRecv + 1, 0);
         
     }
 
     close(clientSocket);
     return 0;
 }
-
 
 
 /*

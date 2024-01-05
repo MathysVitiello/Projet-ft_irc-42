@@ -13,6 +13,7 @@
 NAME =	ircserv
 
 SRC =	main.cpp\
+		pswd_policy.cpp\
 
 CFLAGS = -Wall -Wextra -Werror -g -std=c++98
 
