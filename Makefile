@@ -14,6 +14,7 @@ NAME =	ircserv
 
 SRC =	main.cpp\
 		PassNickUser.cpp\
+		Client.cpp\
 
 CFLAGS = -Wall -Wextra -Werror -g -std=c++98
 

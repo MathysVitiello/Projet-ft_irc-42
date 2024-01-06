@@ -7,10 +7,14 @@ class Client{
 	 public:
 		Client();
 		~Client();
+		void setId( int id );
+		void setName( std::string name );
+		void setNick( std::string nick );
+		void showInfo();
 	 private:
-		int			idClient;
-		std::string name;
-		std::string nickname;
+		int			 idClient;
+		std::string  name;
+		std::string  nickname;
 };
 
 #endif
