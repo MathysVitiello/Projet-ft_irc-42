@@ -64,6 +64,11 @@ int main(int argc, char **argv){
     char host[NI_MAXHOST]; //max 1025
     char service[NI_MAXSERV]; //max 32
 
+
+
+
+    //! pour chaque new clinets, faire un nouveau socket et le donner au thread a partir  !!!!!!
+
     int clientSocket = accept(listening, (sockaddr *) &client, &clientSize);
     if (clientSocket == -1)
     {
@@ -94,7 +99,7 @@ int main(int argc, char **argv){
     std::string input;
 
     //! ici test de mdp, va faloir le fair epour chauqe client, un int qui indique si il sont connecte ou non 
-    password_test(clientSocket, argv[2]);
+    PASS(clientSocket, argv[2]);
 
     while(true){
 
@@ -124,4 +129,12 @@ int main(int argc, char **argv){
 /*
 socket = endpoint of communication ->  You make a call to the socket() system routine. It returns the socket descriptor,
 and you communicate through it using the specialized send() and recv() (man send, man recv) socket calls.
+*/
+
+
+/*
+In order to properly support multiple connections you should fire up
+a new thread for each incoming connection.
+Each new connection is identified by its
+own unique socket descriptor returned by accept(). A simple example:
 */

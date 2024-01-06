@@ -23,7 +23,7 @@
 #include "Channel.hpp"
 
 
-
-void password_test(int clientSocket, char *argv);
+//PassNickUser.cpp
+void PASS(int clientSocket, char *argv);
 
 #endif
