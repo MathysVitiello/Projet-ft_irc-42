@@ -60,14 +60,11 @@ int main(int argc, char **argv){
 
     //Accept a call
     sockaddr_in client; // structure 
-    socklen_t clientSize = sizeof(client); //! a voir si on a le droit de socklen_t
+    socklen_t clientSize = sizeof(client); 
     char host[NI_MAXHOST]; //max 1025
     char service[NI_MAXSERV]; //max 32
 
 
-
-
-    //! pour chaque new clinets, faire un nouveau socket et le donner au thread a partir  !!!!!!
 
     int clientSocket = accept(listening, (sockaddr *) &client, &clientSize);
     if (clientSocket == -1)
@@ -76,11 +73,10 @@ int main(int argc, char **argv){
         return 3;
     }
 
-
     close(listening); // parce que listening est un fd.
 
-    memset(host, 0, NI_MAXHOST);
-    memset(service, 0, NI_MAXSERV);
+    memset(host, 0, NI_MAXHOST); // le localhost 
+    memset(service, 0, NI_MAXSERV); // le port
 
     int result = getnameinfo((sockaddr *)&client, sizeof(client), host, NI_MAXHOST, service, NI_MAXSERV, 0);
     if (result)

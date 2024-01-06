@@ -8,8 +8,8 @@ class Client{
 		Client();
 		~Client();
 	 private:
-		int			idClient;
-		std::string name;
+		int			const & idClient;
+		std::string const & name;
 		std::string nickname;
 };
 

@@ -36,7 +36,14 @@ void NICK_USER(int clientSocket){
 
         if (std::string(buf, 0, bytesRecv).find("NICK ") == 0)
         {
+             std::cout << buf + 5 << " ici" << std::endl;
+
             std::cout << clientSocket << " le reste deviens le nickname, a faire" << std::endl;
+
+            //
+
+
+
             i = 1;
         }
         if (std::string(buf, 0, bytesRecv).find("USER ") == 0)
@@ -61,6 +68,9 @@ void PASS(int clientSocket, char *argv){
             std::string(buf, 0, bytesRecv).find(argv) == 5)
         {
             std::cout << clientSocket << " is now connected" << std::endl;
+
+            //!idclient = clienSocket
+
             i = 1;
         }
     }
