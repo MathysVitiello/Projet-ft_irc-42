@@ -6,11 +6,13 @@
 /*   By: mvitiell <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/01/04 11:44:21 by mvitiell          #+#    #+#             */
-/*   Updated: 2024/01/06 14:20:58 by alamizan         ###   ########.fr       */
+/*   Updated: 2024/01/08 16:39:23 by alamizan         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 #include "library.hpp"
+#include <netinet/in.h>
 #include <stdexcept>
+#include <sys/socket.h>
 
 //!https://www.youtube.com/watch?v=cNdlrbZSkyQ
 
@@ -19,116 +21,52 @@ int main(int argc, char **argv)
 	try
 	{
 		if (argc != 3)
-			throw( std::runtime_error("Not the right number of arguments") );
+			throw std::runtime_error( "Not the right number of arguments" ) ;
 
-		// ------------------------------------------------------------------------ //
-		// 1. Create a socket
-		// AF_INET = famille d’adresses pour IPv4.
-		// SOCK_STREAM is a connection-based protocol.
-		// La connection est etablie et les deux personnes ont une conv jusqua ce que
-		// la connection soit arrete par une des deux personnes ou un erreur de network.
-		int listening = socket(AF_INET, SOCK_STREAM, 0);
-		if (listening == -1)
-			throw( std::runtime_error("Can't create a socket !") );
+		std::string    nb = argv[1];
+		for (unsigned int i = 0; i < nb.length(); i++)
+			if (!isdigit (nb[i]))
+				throw std::runtime_error("the First argument is the port, pls write a number!");
+		// ------------------------------------------------------------- //
+		// [1] Creation d un socket, parametre:
+		Server server( atoi(argv[1]), argv[2] );
 
-		// ------------------------------------------------------------------------ //
-		// 2.Joindre socket a IP adress / port
-		sockaddr_in hint; // structure 
-		hint.sin_family = AF_INET;
-		hint.sin_port = htons(atoi(argv[1])); 
+		// ------------------------------------------------------------- //
+		// [2] Creer un serveur:
+		int ret = bind(server.getFd(), (sockaddr*)&server.getAddr(), sizeof(server.getAddr()));
+		if( ret != 0 )
+			throw std::runtime_error( "Can't bind to IP/port." );
 
-		// 0.0.0.0 veut dire que cest nimporte quelle adresse
-		// Cette fonction convertit la chaîne de caractères src en une structure
-		// d'adresse réseau de la famille af puis copie cette structure dans dst.
-		inet_pton(AF_INET, "0.0.0.0", &hint.sin_addr);
-		if (bind(listening, (sockaddr *) &hint, sizeof(hint)) == -1)
-			throw( std::runtime_error("Can't bind to IP/port !") );
+		ret = listen( server.getFd(), SOMAXCONN );
+		if( ret != 0 )
+			throw std::runtime_error("Can't listen." );
+		std::cout << "---------------------------" << std::endl;
+		std::cout << "Serveur en route ..." << std::endl;
+		std::cout << "---------------------------" << std::endl;
 
-
-		// ------------------------------------------------------------------------ //
-		// 3. Mark the socket for listening in
-		// listen marque la socket comme une socket passive
-		// une socket qui sera utilisée pour accepter les demandes de connexions
-		// entrantes en utilisant accept().
-		if (listen(listening, SOMAXCONN) == -1)
-			throw( std::runtime_error("Can't listen !") );
-
-		// Accept a call
-		sockaddr_in client; // structure 
-		socklen_t clientSize = sizeof(client); //! a voir si on a le droit de socklen_t
-		char host[NI_MAXHOST]; //max 1025
-		char service[NI_MAXSERV]; //max 32
-
-
-		int clientSocket = accept(listening, (sockaddr *) &client, &clientSize);
-		if (clientSocket == -1)
+		//char buf[4096];
+		for (;;)
 		{
-			std::cerr << "Problem with client connecting";
-			return 3;
-		}
-
-		close(listening); // parce que listening est un fd.
-
-		memset(host, 0, NI_MAXHOST);
-		memset(service, 0, NI_MAXSERV);
-
-		int result = getnameinfo((sockaddr *)&client, sizeof(client), host, NI_MAXHOST, service, NI_MAXSERV, 0);
-		if (result)
-		{
-			std::cout << host << " connected on " << service << std::endl;
-		}
-		else 
-		{
-			inet_ntop(AF_INET, &client.sin_addr, host, NI_MAXHOST);
-			std::cout << host << " connected on " << ntohs(client.sin_port) << std::endl;
-		}
-
-		//While receiving display message
-		char buf[4096];
-		std::string input;
-
-		//! ici test de mdp, va faloir le fair epour chauqe client, un int qui indique si il sont connecte ou non 
-		PASS(clientSocket, argv[2]);
-
-		while(true){
-
-			memset(buf, 0, 4096);
-			int bytesRecv = recv(clientSocket, buf, 4096, 0);
-			if (bytesRecv == -1)
+			sockaddr_in port;
+			socklen_t addrlen = sizeof(server.getAddr());
+			int newClient = accept(server.getFd(), (sockaddr*)(&port), &addrlen);
+			if (newClient != -1)
 			{
-				std::cerr << "There was a connetion issue" << std::endl;
-				break;
+				server.addClient(newClient, port);
+				std::cout << "Connexion de " << port.sin_port << std::endl;
+				std::cout << server << std::endl;
 			}
-			if (bytesRecv == 0)
-			{
-				std::cerr << "The client disconnected" << std::endl;
+			else
 				break;
-			}
-
-			std::cout << std::string(buf, 0, bytesRecv);
-			send(clientSocket, buf, bytesRecv + 1, 0);
 		}
 
-		close(clientSocket);
+		// Ferme le socket:
+		close( server.getFd() );
 	}
 	catch ( std::exception & e )
 	{
 		std::cerr << "ERROR: " << e.what() << std::endl;
 		return( 127 );
 	}
-    return 0;
+	return 0;
 }
-
-
-/*
-socket = endpoint of communication ->  You make a call to the socket() system routine. It returns the socket descriptor,
-and you communicate through it using the specialized send() and recv() (man send, man recv) socket calls.
-*/
-
-
-/*
-In order to properly support multiple connections you should fire up
-a new thread for each incoming connection.
-Each new connection is identified by its
-own unique socket descriptor returned by accept(). A simple example:
-*/

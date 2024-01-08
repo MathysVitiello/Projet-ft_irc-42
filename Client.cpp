@@ -1,8 +1,15 @@
 #include "library.hpp"
 
-Client::Client( void ) {
+/* ************************************************************************** */
+// CONSTRUCTOR / DESTRUCTOR:
+Client::Client( int const & id, sockaddr_in from ) : _id( id ), _address( from )
+{
+    std::cout << "Client constructor called" << std::endl;
+	std::cout << " id:  " << this->_id << std::endl;
+	std::cout << " reseau :  " << this->_address.sin_port << std::endl;
+	this->_name = "nobody";
+	this->_nickName = "bobo";
 
-    std::cout << "Client constructor called " << std::endl;
     return ;
 }
 
@@ -11,32 +18,41 @@ Client::~Client( void ) {
     std::cout << "Client Destructor called" << std::endl;
     return ;
 }
+/* ************************************************************************** */
+// OPERATOR OVERLOAD:
 
-void Client::setId( int id ) {
 
-    this->idClient = id;
-    return ;
+/* ************************************************************************** */
+// ACCESSORS:
+int	const & Client::getId( void ) const
+{
+	return( this->_id );
 }
+
+sockaddr_in const & Client::getAddr( void ) const
+{
+	return( this->_address );
+}
+
+std::string const & Client::getName( void ) const
+{
+	return( this->_name );
+}
+
+std::string const & Client::getNickName( void ) const
+{
+	return( this->_nickName );
+}
+
 
 void Client::setName( std::string name ) {
 
-    this->name = name;
+    this->_name = name;
     return ;
 }
 
 void Client::setNick( std::string nick ) {
 
-    this->nickname = nick;
-    return ;
-}
-
-void Client::showInfo( void ) {
-
-    std::cout << std::endl;
-    std::cout << "id : " << this->idClient << std::endl;
-    std::cout << "name : " << this->name << std::endl;
-    std::cout << "nick : " << this->nickname << std::endl;
-    std::cout << std::endl;
-
+    this->_nickName = nick;
     return ;
 }

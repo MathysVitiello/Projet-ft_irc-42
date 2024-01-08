@@ -38,29 +38,27 @@ void NICK_USER(int clientSocket, Client newClient){
     }
 
     // afficher tout 
-	newClient.showInfo();
+//	newClient.showInfo();
 }
 
 //PASS
-void PASS(int clientSocket, char *argv){
-
-    char buf[4096];
-    int i = 0;
-    
-    Client newClient; //! le declarer ailleurs, plus tot, a chque tentative de connexion / dans le main
-
-
-    while(i == 0) {
-        int bytesRecv = recv(clientSocket, buf, 4096, 0);
-
+// void PASS(int clientSocket, char *argv){
+// 
+    // char buf[4096];
+    // int i = 0;
+    // 
+    // Client newClient; //! le declarer ailleurs, plus tot, a chque tentative de connexion / dans le main
+// 
+    // while(i == 0) {
+        // int bytesRecv = recv(clientSocket, buf, 4096, 0);
         // condition pour le mdp = "PASS mdp" avant d'avoir acces au server
-        if (std::string(buf, 0, bytesRecv).find("PASS ") == 0 && 
-            std::string(buf, 0, bytesRecv).find(argv) == 5)
-        {
-            std::cout << clientSocket << " is now connected" << std::endl;
-            newClient.setId(clientSocket); //! set id
-            i = 1;
-        }
-    }
-    NICK_USER(clientSocket, newClient);
-}
+        // if (std::string(buf, 0, bytesRecv).find("PASS ") == 0 && 
+            // std::string(buf, 0, bytesRecv).find(argv) == 5)
+        // {
+            // std::cout << clientSocket << " is now connected" << std::endl;
+            // newClient.setId(clientSocket); //! set id
+            // i = 1;
+        // }
+    // }
+    // NICK_USER(clientSocket, newClient);
+// }
