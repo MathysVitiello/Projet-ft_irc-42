@@ -33,7 +33,7 @@ int main(int argc, char **argv)
 		// server.config();
 		if (bind(server.getFd(), (struct sockaddr *)&server.getAddr(),
 				sizeof(server.getAddr())) < 0)
-			throw std::runtime_error( "ERROR on binding" );
+			throw std::runtime_error( "Can't bind to IP/port !" );
 
 		if (listen(server.getFd(), SOMAXCONN) < 0)
 			throw std::runtime_error( "ERROR on listen, or too many clients to handle." );
