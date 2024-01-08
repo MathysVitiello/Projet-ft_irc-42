@@ -245,7 +245,15 @@ int bind(SOCKET sckt, const struct addr* name, int namelen);
 	- sckt est le socket auquel est assigné l'adresse.
 	- name est la structure à assigner au socket.
 	- namelen est la taille de cette structure.
-   
+
+### listen:
+```cpp
+int listen(SOCKET sckt, int backlog);
+```
+- Permet au socket d'ecouter les connexions entrantes
+	- sckt est le socket auquel les clients peuvent se connecter.
+	- backlog est le nombres de connexions pouvant etres gérer.
+ 
 # PARTIE BONUS
 
 - Voici les fonctions supplémentaires que vous pouvez ajouter à votre serveur IRC pour qu'il ressemble encore plus à un serveur IRC réel.
