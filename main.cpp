@@ -6,7 +6,7 @@
 /*   By: mvitiell <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/01/04 11:44:21 by mvitiell          #+#    #+#             */
-/*   Updated: 2024/01/08 21:17:43 by alex             ###   ########.fr       */
+/*   Updated: 2024/01/08 22:20:17 by alex             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 #include "library.hpp"
@@ -15,13 +15,12 @@ int main(int argc, char **argv)
 {
 	try
 	{
-		int connfd, sockfd;                   
-		int nready;
-		ssize_t n; //size of buffer.
-		fd_set copy, master;
-		char buf[4096];
-		socklen_t clilen;                 
-		struct sockaddr_in  clientaddr; 
+		int connfd, sockfd, nready;
+		ssize_t				n; //size of buffer.
+		char				buf[4096];
+		struct sockaddr_in	clientaddr; 
+		fd_set				copy;
+		socklen_t			clilen;                 
 
 		// ------------------------------------------------------------- //
 		// [1] Gestion arguments:
@@ -31,6 +30,7 @@ int main(int argc, char **argv)
 		// [2] Creer un serveur, le configurer et le mettre en attente:
 		Server server( atoi(argv[1]), argv[2] );
 
+		// server.config();
 		if (bind(server.getFd(), (struct sockaddr *)&server.getAddr(),
 				sizeof(server.getAddr())) < 0)
 			throw std::runtime_error( "ERROR on binding" );
@@ -39,10 +39,19 @@ int main(int argc, char **argv)
 			throw std::runtime_error( "ERROR on listen, or too many clients to handle." );
 	
 		// ------------------------------------------------------------- //
-		// [4] Ajout de clients:
-		FD_ZERO(&master);
-		FD_SET(server.getFd(), &master); //i.e server.getFd() is available for connections.
+		// [3] integre le serveur dans une liste de "fd":
+		// fd_set: c est une structure de données qui contient un ensemble 
+		// de descripteurs d'archives:
+		fd_set	master;
 
+		// FD_ZERO permet de supprimer tous les bits d une structure fd_set.
+		FD_ZERO(&master);
+		// Integre ce nouvel ensemble de donnees dans le descripteur d archive fd_set master/
+		//i.e server.getFd() is available for connections.
+		FD_SET(server.getFd(), &master);
+
+		// ------------------------------------------------------------- //
+		// [3] Ajout de clients:
 		for(;;)
 		{
 			copy = master;
@@ -62,7 +71,6 @@ int main(int argc, char **argv)
 				else
 				{
 					server.addClient(connfd, clientaddr);
-					//std::cout << "Connexion de " << server.sin_port << std::endl;
 					std::cout << server << std::endl;
 				}
 				FD_SET(connfd, &master); /* add the new file descriptor to set */
@@ -83,6 +91,7 @@ int main(int argc, char **argv)
 						/* connection closed by client side */
 						close(sockfd);
 						FD_CLR(sockfd, &master);
+						// il faut integrer le char buf[1024] pour chaque client
 						//client[i] = -1;
 					}
 					else
