@@ -235,6 +235,17 @@ com^Dman^Dd
 - Utilisez ctrl+D pour envoyer la commande en plusieurs parties : 'com', puis 'man', puis 'd\n'.
 - Pour traiter une commande, il faut d'abord agréger les paquets reçus afin de la reconstruire.
 
+# FONCTIONS UTILES
+
+### bind:
+```cpp
+int bind(SOCKET sckt, const struct addr* name, int namelen);
+```
+- Assigne une adresse locale à un socket
+	- sckt est le socket auquel est assigné l'adresse.
+	- name est la structure à assigner au socket.
+	- namelen est la taille de cette structure.
+   
 # PARTIE BONUS
 
 - Voici les fonctions supplémentaires que vous pouvez ajouter à votre serveur IRC pour qu'il ressemble encore plus à un serveur IRC réel.
