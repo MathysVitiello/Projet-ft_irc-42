@@ -70,6 +70,7 @@ sockaddr_in	const & Server::getAddr() const
 
 /* ************************************************************************** */
 // FUNCTIONS:
+// Rajoute un client dans le tableau de clients du serveur:
 void	Server::addClient( int const & id, sockaddr_in addr)
 {
 	// max client 1024-> Fd_SETSIZE:
@@ -77,22 +78,39 @@ void	Server::addClient( int const & id, sockaddr_in addr)
 	this->_clients.push_back( *client );
 }
 
+/* ************************************************************************** */
+// NO-MENBER'S FUNCTIONS:
+// Verifie la validitee des arguments:
+void	checkArgs(int argc, char **argv)
+{
+	if (argc != 3)
+			throw std::runtime_error( "Not the right number of arguments" ) ;
+
+	std::string    nb = argv[1];
+	for (unsigned int i = 0; i < nb.length(); i++)
+		if (!isdigit (nb[i]))
+			throw std::runtime_error( "the First argument is the port, pls write a number!" );
+}
+
+// Permet l affichage de toutes les donnees inclut dans le serveur:
+// - std::cout << server << std::endl;
 std::ostream & operator<<( std::ostream & o, Server const & src )
 {
 	std::vector<Client>::const_iterator it;
+
 	std::cout << "-------------------------------------------" << std::endl;
 	o << "Server port: " << src.getPort() << std::endl;
 	o << "Server reseau: " << src.getAddr().sin_port<< std::endl;
-	o << "Server password: " << src.getPassword() << std::endl << std::endl;
+	o << "Server password: " << src.getPassword() << std::endl;
+	o << "--------" << std::endl;
 
 	for(it = src.getClients().begin(); it != src.getClients().end(); it++)
 	{
-
 		o << "- id client: " << it->getId() << std::endl;
 		o << "- addresse client: " << it->getAddr().sin_port << std::endl;
 		o << "- name client: " << it->getName() << std::endl;
 		o << "- nickname client: " << it->getNickName() << std::endl;
-
+	o << "--------" << std::endl;
 	}
 	std::cout << "-------------------------------------------" << std::endl;
 	return( o );

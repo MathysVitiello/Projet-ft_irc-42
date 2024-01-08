@@ -29,13 +29,18 @@ class Server
 	 private:
 		Server( void );
 
-		unsigned int const & 	_port;	
-		std::string	const &		_password;
+		unsigned int 	const & _port;	
+		std::string		const &	_password;
 		int						_fd;
 		sockaddr_in				_address;
 		std::vector<Client>		_clients;
 		// std::vector<Channel>	_channels;
 };
 
+// --------------------------------------------------------- //
+// Fonctions non-membres:
+void checkArgs( int argc, char **argv );
+
 std::ostream & operator<<( std::ostream & o, Server const & src );
+
 #endif
