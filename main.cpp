@@ -33,10 +33,10 @@ int main(int argc, char **argv)
 		// server.config();
 		if (bind(server.getFd(), (struct sockaddr *)&server.getAddr(),
 				sizeof(server.getAddr())) < 0)
-			throw std::runtime_error( "Can't bind to IP/port !" );
+			throw std::runtime_error( "Can't bind to IP/port." );
 
 		if (listen(server.getFd(), SOMAXCONN) < 0)
-			throw std::runtime_error( "ERROR on listen, or too many clients to handle." );
+			throw std::runtime_error( "Can't listen, or too many clients to handle." );
 	
 		// ------------------------------------------------------------- //
 		// [3] integre le serveur dans une liste de "fd":
@@ -67,7 +67,7 @@ int main(int argc, char **argv)
 				clilen = sizeof(clientaddr);
 				if((connfd = accept(server.getFd(), (struct sockaddr *)&clientaddr, 
 								&clilen)) == -1)
-					throw std::runtime_error( "accept error" );
+					throw std::runtime_error( "Problem with client connecting" );
 				else
 				{
 					server.addClient(connfd, clientaddr);
