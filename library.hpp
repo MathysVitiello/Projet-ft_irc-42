@@ -1,5 +1,11 @@
 #ifndef LIBRARY_HPP
-# define LIBRARY_HPP
+// -------------------- DEFINE ---------------------- //
+# define          LIBRARY_HPP
+
+# define CRED		  "\033[6;91m"
+# define BRED		  "\033[1;91m"
+# define BPURPLE  "\001\e[1;95m\002"
+# define NC			  "\001\e[0m\002"
 
 // --------------------  LIBRARY --------------------- //
 # include <unistd.h>
@@ -18,13 +24,7 @@
 # include <functional>   
 # include <errno.h>
 
-// -------------------- DEFINE ---------------------- //
-# define CRED		"\033[6;91m"
-# define BRED		"\033[1;91m"
-# define BPURPLE	"\001\e[1;95m\002"
-# define NC			"\001\e[0m\002"
-
-// ----------------- OUR LIBRARY  ------------------- //
+// --------------------- CLASS ---------------------- //
 # include "Client.hpp"
 # include "Server.hpp"
 //#include "Channel.hpp"
