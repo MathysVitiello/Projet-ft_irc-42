@@ -18,8 +18,7 @@ int main(int argc, char **argv)
 		int connfd, sockfd, nready;
 		ssize_t				n; //size of buffer.
 		char				buf[4096];
-		struct sockaddr_in	clientaddr; 
-		fd_set				copy;
+		struct sockaddr_in		clientaddr; 
 		socklen_t			clilen;                 
 
 		// ------------------------------------------------------------- //
@@ -54,7 +53,7 @@ int main(int argc, char **argv)
 		// [3] Ajout de clients:
 		for(;;)
 		{
-			copy = master;
+			fd_set	copy = master;
 			if((nready = select(SOMAXCONN, &copy, NULL, NULL, NULL)) < 0){
 				throw std::runtime_error( "Error in select" );
 			}
