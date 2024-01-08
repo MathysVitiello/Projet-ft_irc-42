@@ -2,6 +2,7 @@
 # define CLIENT_HPP
 
 # include "library.hpp"
+#include <netinet/in.h>
 
 class Client
 {
@@ -21,6 +22,7 @@ class Client
 
 		void				setName( std::string name );
 		void 				setNick( std::string nick );
+		void 				setAddr( sockaddr_in addr );
 
 		// -------------------- Functions ---------------------- //
 

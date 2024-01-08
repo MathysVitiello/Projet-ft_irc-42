@@ -72,6 +72,7 @@ sockaddr_in	const & Server::getAddr() const
 // FUNCTIONS:
 void	Server::addClient( int const & id, sockaddr_in addr)
 {
+	// max client 1024-> Fd_SETSIZE:
 	Client *client = new Client(id, addr);
 	this->_clients.push_back( *client );
 }

@@ -1,4 +1,6 @@
 #include "library.hpp"
+#include <netinet/in.h>
+#include <sys/socket.h>
 
 /* ************************************************************************** */
 // CONSTRUCTOR / DESTRUCTOR:
@@ -56,3 +58,11 @@ void Client::setNick( std::string nick ) {
     this->_nickName = nick;
     return ;
 }
+
+
+void Client::setAddr( sockaddr_in addr ) {
+
+    this->_address = addr;
+    return ;
+}
+
