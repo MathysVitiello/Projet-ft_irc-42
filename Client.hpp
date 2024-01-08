@@ -19,8 +19,8 @@ class Client
 		std::string const & getName( void ) const;
 		std::string const & getNickName( void ) const;
 
-		void setName( std::string name );
-		void setNick( std::string nick );
+		void				setName( std::string name );
+		void 				setNick( std::string nick );
 
 		// -------------------- Functions ---------------------- //
 

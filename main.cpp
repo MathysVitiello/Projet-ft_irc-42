@@ -6,7 +6,7 @@
 /*   By: mvitiell <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/01/04 11:44:21 by mvitiell          #+#    #+#             */
-/*   Updated: 2024/01/08 16:39:23 by alamizan         ###   ########.fr       */
+/*   Updated: 2024/01/08 17:23:56 by alamizan         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 #include "library.hpp"
@@ -20,6 +20,8 @@ int main(int argc, char **argv)
 {
 	try
 	{
+		// ------------------------------------------------------------- //
+		// [1] Gestion arguments:
 		if (argc != 3)
 			throw std::runtime_error( "Not the right number of arguments" ) ;
 
@@ -27,12 +29,13 @@ int main(int argc, char **argv)
 		for (unsigned int i = 0; i < nb.length(); i++)
 			if (!isdigit (nb[i]))
 				throw std::runtime_error("the First argument is the port, pls write a number!");
+
 		// ------------------------------------------------------------- //
-		// [1] Creation d un socket, parametre:
+		// [2] Creation d un socket, parametre:
 		Server server( atoi(argv[1]), argv[2] );
 
 		// ------------------------------------------------------------- //
-		// [2] Creer un serveur:
+		// [3] Creer un serveur:
 		int ret = bind(server.getFd(), (sockaddr*)&server.getAddr(), sizeof(server.getAddr()));
 		if( ret != 0 )
 			throw std::runtime_error( "Can't bind to IP/port." );
@@ -44,7 +47,8 @@ int main(int argc, char **argv)
 		std::cout << "Serveur en route ..." << std::endl;
 		std::cout << "---------------------------" << std::endl;
 
-		//char buf[4096];
+		// ------------------------------------------------------------- //
+		// [4] Ajout de clients:
 		for (;;)
 		{
 			sockaddr_in port;

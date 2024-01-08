@@ -12,11 +12,9 @@ Server::Server( unsigned int const & port, std::string const & password  ): _por
 	if( this->_fd == -1 )
 		throw std::runtime_error( "Invalid socket." );
 
-
 	this->_address.sin_addr.s_addr = INADDR_ANY;// toutes les sources acceptees.
 	this->_address.sin_port = htons( port );// traduit le port en reseau.
 	this->_address.sin_family = AF_INET;// socket TCP IPv4.
-
 
 	std::cout << "-------------------------------------------" << std::endl;
 	std::cout << "Default constructor called" << std::endl;
@@ -27,28 +25,19 @@ Server::Server( unsigned int const & port, std::string const & password  ): _por
 	return;
 }
 
-Server::Server( Server const & src ): _port(src._port), _password(src._password)
-{
-	std::cout << "Copy constructor called" << std::endl;
-	*this = src;
-}
-
 Server::~Server( void )
 {
 	std::cout << "Destructor called" << std::endl;
+	this->_clients.clear();
 	return;
 }
 
 /* ************************************************************************** */
 // OPERATOR OVERLOAD:
-Server const & Server::operator=(Server const & src)
-{
-	( void )src;
-	return( *this );
-}
-
 Client const & Server::operator[](unsigned int index) const
 {
+	if ( index >= this->_clients.size() )
+		 throw std::runtime_error( "Index is invalid" );
 	return( this->_clients[index] );
 }
 
