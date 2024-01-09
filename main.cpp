@@ -16,6 +16,7 @@ int main(int argc, char **argv)
 {
 	try
 	{
+		// connfd: clientFd
 		int connfd, sockfd;
 		ssize_t				n; //size of buffer.
 		char				buf[4096];
@@ -27,9 +28,10 @@ int main(int argc, char **argv)
 		checkArgs( argc, argv );
 
 		// ------------------------------------------------------------- //
-		// [2] Creer un serveur, le configurer et le mettre en attente:
+		// [2] Creer un serveur:
 		Server server( atoi(argv[1]), argv[2] );
 
+		// le configurer et le mettre en attente:
 		// server.config();
 		if (bind(server.getFd(), (struct sockaddr *)&server.getAddr(),
 				sizeof(server.getAddr())) < 0)
@@ -37,7 +39,7 @@ int main(int argc, char **argv)
 
 		if (listen(server.getFd(), SOMAXCONN) < 0)
 			throw std::runtime_error( "Can't listen, or too many clients to handle." );
-	
+
 		// ------------------------------------------------------------- //
 		// [3] integre le serveur dans une liste de "fd":
 		// fd_set: c est une structure de données qui contient un ensemble 
@@ -55,9 +57,8 @@ int main(int argc, char **argv)
 		for(;;)
 		{
 			fd_set	copy = master;
-			if(select(1024, &copy, NULL, NULL, NULL) < 0){
+			if(select(1024, &copy, NULL, NULL, NULL) < 0)
 				throw std::runtime_error( "Error in select" );
-			}
 
 			// ------------------------------------------------------------- //
 			/* this is done for new connections */
