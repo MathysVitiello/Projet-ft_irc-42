@@ -102,7 +102,6 @@ join
 ### Arguments:
 	- port: le port d'écoute.
 	- password: the connection password.
-
 ## Fonctions utilisables:
 - Toutes en C++98.
 <details>
@@ -146,7 +145,6 @@ int bind(int sckt, const struct addr* name, int namelen);
 ```cpp
 int listen(int sckt, int backlog);
 ```
-	- Permet au socket d'ecouter les connexions entrantes
 	- sckt est le socket auquel les clients peuvent se connecter.
 	- backlog est le nombres de connexions pouvant etres gérer.
  </details>
@@ -160,7 +158,7 @@ int listen(int sckt, int backlog);
 - inet_ntoa
 - send
 <details>
-<summary>recv():receptionne des données sur le socket placé en paramètre.</summary>
+<summary>recv(): réceptionne des données sur le socket placé en paramètre.</summary>
 	
 ```cpp
 int recv(int socket, void* buffer, size_t len, int flags);
@@ -190,32 +188,29 @@ if (recv(socket, buffer, 1024, 0) <= 0)
 </details>
 
 > [!NOTE]
-> Ne pas hésiter à les regarder !
+> Ne pas hésiter à regarder les fonctions ci-dessus !
 
 ## Description:
 
 • Un serveur IRC en C++98:
 
-	- Vous ne devez pas développer un client.
-	- Vous ne devez pas gérer la communication de serveur à serveur.
+	- Pas besoin de développer un client.
+	- Ne pas gérer la communication de serveur à serveur.
 
-• Votre exécutable sera exécuté comme suit :
-
+• L'exécutable sera exécuté comme suit :
 ```cpp
 ./ircserv <port> <password>
 ```
-
 • port:
 
-	- Le numéro de port sur lequel votre serveur IRC écoutera les connexions IRC entrantes.
-
+	- Le numéro de port sur lequel le serveur IRC écoutera les connexions IRC entrantes.
 • password:
 
 	- Le mot de passe de connexion.
- 	- Il sera nécessaire à tout client IRC qui essaiera de se connecter à votre serveur.
+ 	- Il sera nécessaire à tout client IRC qui essaiera de se connecter au serveur.
 > [!NOTE]
-> Même si poll() est mentionné dans le sujet et l'échelle d'évaluation, vous pouvez
-> utiliser un équivalent tel que select(), kqueue() ou epoll().
+> Même si poll() est mentionné dans le projet, utiliser un équivalent tel que select(),
+>  kqueue() ou epoll() est permit.
 
 ## Exigences:
 
@@ -224,22 +219,22 @@ if (recv(socket, buffer, 1024, 0) <= 0)
 - Un seul poll() (ou équivalent) peut être utilisé pour gérer toutes ces opérations (lecture, écriture, mais aussi écoute, etc...).
 
 >  [!CAUTION]
-> Comme vous devez utiliser des descripteurs de fichiers non bloquants, il est possible d'utiliser 
-> des fonctions de lecture/récupération ou d'écriture/envoi sans poll() (ou équivalent), et votre serveur ne serait pas bloquant.
+> Utiliser des descripteurs de fichiers non bloquants, il est possible d'utiliser des fonctions de lecture/récupération ou
+>  d'écriture/envoi sans poll() (ou équivalent), et le serveur ne doit pas etre bloquant.
 >
-> Mais il consommerait plus de ressources système.
-> Ainsi, si vous essayez de lire/recourir ou d'écrire/envoyer dans n'importe quel descripteur de fichier
-> sans utiliser poll() (ou équivalent), votre note sera de 0.
+> Mais il consommera plus de ressources système.
+> 
+> Lire/recourir ou d'écrire/envoyer dans n'importe quel descripteur de fichier
+> sans utiliser poll() (ou équivalent) ne valide pas le projet !
 
-- Il existe plusieurs clients IRC. Vous devez choisir l'un d'entre eux comme référence:
-	- Votre client de référence sera utilisé pendant le processus d'évaluation.
-- Votre client de référence doit pouvoir se connecter à votre serveur sans rencontrer d'erreur.
+- Il existe plusieurs clients IRC. Choisir l'un d'entre eux comme référence:
+	- Le client de référence sera utilisé pendant la présentation.
+- Le client de référence doit pouvoir se connecter à au serveur sans rencontrer d'erreur.
 - La communication entre le client et le serveur doit se faire via TCP/IP (v4 ou v6).
-
-- L'utilisation de votre client de référence avec votre serveur doit être similaire à son utilisation avec n'importe quel serveur IRC officiel.
-Cependant, vous n'avez qu'à implémenter les fonctionnalités suivantes :
-	- Vous devez être en mesure:
- 		- de vous authentifier
+- L'utilisation du client de référence avec le serveur doit être similaire à son utilisation avec n'importe quel serveur IRC officiel.
+Cependant, implémenter les fonctionnalités suivantes :
+	- être en mesure:
+ 		- de s'authentifier
 		- de définir un pseudonyme (changeable a tout moment)
 		- un nom d'utilisateur (inchangeable)
 		- de rejoindre un canal
