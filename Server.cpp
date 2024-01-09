@@ -17,7 +17,6 @@ Server::Server( unsigned int const & port, std::string const & password  ): _por
 	this->_address.sin_family = AF_INET;// socket TCP IPv4.
 
 	std::cout << "-------------------------------------------" << std::endl;
-	std::cout << "Default constructor called" << std::endl;
 	std::cout << "Server port: " << this->_port << std::endl;
 	std::cout << "Server reseau: " << this->_address.sin_port<< std::endl;
 	std::cout << "Server password: " << this->_password << std::endl;
@@ -90,6 +89,8 @@ void	checkArgs(int argc, char **argv)
 	for (unsigned int i = 0; i < nb.length(); i++)
 		if (!isdigit (nb[i]))
 			throw std::runtime_error( "the First argument is the port, pls write a number!" );
+	if (std::string(argv[2]).length() == 0)
+        throw std::runtime_error("write password, pls.");
 }
 
 // Permet l affichage de toutes les donnees inclut dans le serveur:

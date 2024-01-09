@@ -4,7 +4,9 @@
 
 /* ************************************************************************** */
 // CONSTRUCTOR / DESTRUCTOR:
-Client::Client( int const & id, sockaddr_in from ) : _id( id ), _address( from )
+Client::Client( int const & id, sockaddr_in from ) :	_id( id ),
+														_address( from ),
+														_connected(false)
 {
     std::cout << "Client constructor called" << std::endl;
 	std::cout << " id:  " << this->_id << std::endl;
@@ -46,6 +48,9 @@ std::string const & Client::getNickName( void ) const
 	return( this->_nickName );
 }
 
+bool	const & Client::getConnect( void ) const{
+	return( this->_connected );
+}
 
 void Client::setName( std::string name ) {
 
@@ -66,3 +71,6 @@ void Client::setAddr( sockaddr_in addr ) {
     return ;
 }
 
+void	Client::setConnect( bool password ) {
+	this->_connected = password;
+}

@@ -6,7 +6,7 @@
 /*   By: mvitiell <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/01/04 11:44:21 by mvitiell          #+#    #+#             */
-/*   Updated: 2024/01/08 22:20:17 by alex             ###   ########.fr       */
+/*   Updated: 2024/01/09 10:17:32 by alamizan         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 #include "library.hpp"
@@ -15,11 +15,11 @@ int main(int argc, char **argv)
 {
 	try
 	{
-		int connfd, sockfd, nready;
+		int connfd, sockfd, nbFds;
 		ssize_t				n; //size of buffer.
 		char				buf[4096];
 		struct sockaddr_in		clientaddr; 
-		socklen_t			clilen;                 
+		socklen_t			clientLen;                 
 
 		// ------------------------------------------------------------- //
 		// [1] Gestion arguments:
@@ -50,11 +50,11 @@ int main(int argc, char **argv)
 		FD_SET(server.getFd(), &master);
 
 		// ------------------------------------------------------------- //
-		// [3] Ajout de clients:
+		// [4] Boucle du serveur:
 		for(;;)
 		{
 			fd_set	copy = master;
-			if((nready = select(SOMAXCONN, &copy, NULL, NULL, NULL)) < 0){
+			if((nbFds = select(SOMAXCONN, &copy, NULL, NULL, NULL)) < 0){
 				throw std::runtime_error( "Error in select" );
 			}
 
@@ -62,10 +62,10 @@ int main(int argc, char **argv)
 			/* this is done for new connections */
 			if(FD_ISSET(server.getFd(), &copy))   /* new client has requested connection */
 			{
-				// socklen_t addrlen = sizeof(server.getAddr());
-				clilen = sizeof(clientaddr);
+				// [5] Ajout de clients:
+				clientLen = sizeof(clientaddr);
 				if((connfd = accept(server.getFd(), (struct sockaddr *)&clientaddr, 
-								&clilen)) == -1)
+								&clientLen)) == -1)
 					throw std::runtime_error( "Problem with client connecting" );
 				else
 				{
@@ -94,8 +94,8 @@ int main(int argc, char **argv)
 						//client[i] = -1;
 					}
 					else
-						std::cout << buf << std::endl;                
-					if(--nready < 0)
+						std::cout << "client " << it->getId() << buf << std::endl;                
+					if(--nbFds < 0)
 						break;
 				}
 			}   
@@ -109,4 +109,4 @@ int main(int argc, char **argv)
 		return( 127 );
 	}
     return 0;
-}
+		}
