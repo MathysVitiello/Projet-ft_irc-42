@@ -14,14 +14,15 @@ class Server
 		// ------------------- Accessors ----------------------- //
 		std::string				const & getPassword( void ) const;
 		unsigned int			const & getPort( void ) const;
-		int						const & getFd( void ) const;
+		int						const & getSocket( void ) const;
 		sockaddr_in				const & getAddr( void ) const;
 		std::vector<Client>		const & getClients( void  ) const;
-		// void setClients( std::vector<Client> _clients, int index );
+		// void setClients(  int index );
 		// std::vector<Channel>	const & getChannels( void  ) const;
 
 		// -------------------- Functions ---------------------- //
-		void	addClient( int const & fd, sockaddr_in address );
+		void	addClient( int const & socket, sockaddr_in address );
+		// void eraseClient( int index );
 
 	// --------------------------------------------------------- //
 	 private:
@@ -29,7 +30,7 @@ class Server
 
 		unsigned int 	const & _port;	
 		std::string		const &	_password;
-		int						_fd;
+		int						_socket;
 		sockaddr_in				_address;
 		// fd_set _master;
 		std::vector<Client>		_clients;
