@@ -135,12 +135,11 @@ int socket(int family, int type, int protocol);
 - getaddrinfo
 - freeaddrinfo
 <details>
-<summary>- bind</summary>
+<summary>bind(): assigne une adresse locale à un socket</summary>
 	
 ```cpp
 int bind(SOCKET sckt, const struct addr* name, int namelen);
 ```
-	- Assigne une adresse locale à un socket
 	- sckt est le socket auquel est assigné l'adresse.
 	- name est la structure à assigner au socket.
 	- namelen est la taille de cette structure.
