@@ -91,21 +91,15 @@ join
 </details>
 
 # Partie obligatoire
-
-## Nom du programme:
-	
+### Nom du programme:
 	- ircserv
-
-## Fichiers:
-
+### Fichiers:
 	- Makefile -> NAME, all, clean, fclean, re
 	- *.{h, hpp}
 	- *.cpp
 	- *.tpp
 	- fichiers de configuration optionnels
-
-## Arguments:
-
+### Arguments:
 	- port: le port d'écoute.
 	- password: the connection password.
 
@@ -116,7 +110,7 @@ join
 <summary>Recommandées:</summary>
 
 <details>
-<summary>- socket</summary>
+<summary>socket()</summary>
 
 ```cpp
 int socket(int family, int type, int protocol);
@@ -171,12 +165,10 @@ int listen(int sckt, int backlog);
 ```cpp
 int recv(int socket, void* buffer, size_t len, int flags);
 ```
-	- Receptionne des données sur le socket placé en paramètre:
  	- socket: socket duquel receptionner le données.
   	- buffer: tampon où stocker les données.
 	- len: nombres maximal d'octet a réceptionner.
  	- flag: masque d'option. Généralement 0.
-
 ```cpp
 int socket;
 // initialisation et connexion
@@ -196,6 +188,9 @@ if (recv(socket, buffer, 1024, 0) <= 0)
 - fcntl
 - poll
 </details>
+
+> [!NOTE]
+> Ne pas hésiter à les regarder !
 
 ## Description:
 
