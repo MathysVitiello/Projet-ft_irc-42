@@ -8,8 +8,8 @@ Server::Server( unsigned int const & port, std::string const & password  ): _por
 	// -famille: AF_INET pour socket IPv4.
 	// -type: SOCK_STREAM pour TCP.
 	// -protocol: IPPROTO_TCP pour socket TCP.
-	this->_fd= socket( AF_INET, SOCK_STREAM, IPPROTO_TCP );
-	if( this->_fd == -1 )
+	this->_socket= socket( AF_INET, SOCK_STREAM, IPPROTO_TCP );
+	if( this->_socket == -1 )
 		throw std::runtime_error( "Invalid socket." );
 
 	this->_address.sin_addr.s_addr = INADDR_ANY;// toutes les sources acceptees.
@@ -38,9 +38,9 @@ unsigned int const & Server::getPort() const
 	return( this->_port );
 }
 
-int	const & Server::getFd() const
+int	const & Server::getSocket() const
 {
-	return( this->_fd );
+	return( this->_socket );
 }
 
 std::string const & Server::getPassword() const
@@ -61,10 +61,10 @@ sockaddr_in	const & Server::getAddr() const
 /* ************************************************************************** */
 // FUNCTIONS:
 // Rajoute un client dans le tableau de clients du serveur:
-void	Server::addClient( int const & id, sockaddr_in addr)
+void	Server::addClient( int const & socket, sockaddr_in addr)
 {
 	// max client 1024-> Fd_SETSIZE:
-	Client *client = new Client(id, addr);
+	Client *client = new Client(socket, addr);
 	this->_clients.push_back( *client );
 }
 
