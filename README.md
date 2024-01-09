@@ -1,4 +1,7 @@
 # PROJET IRC
+> [!IMPORTANT]
+> Creation d'un serveur IRC en C++ capable de faire communiquer plusieurs clients localement.
+
 <details>
 <summary>Règles générales</summary>
 
