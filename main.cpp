@@ -32,11 +32,11 @@ int main(int argc, char **argv)
 
 		// le configurer et le mettre en attente:
 		// server.config();
-		if (bind(server.getFd(), (struct sockaddr *)&server.getAddr(),
+		if (bind(server.getSocket(), (struct sockaddr *)&server.getAddr(),
 				sizeof(server.getAddr())) < 0)
 			throw std::runtime_error( "Can't bind to IP/port." );
 
-		if (listen(server.getFd(), SOMAXCONN) < 0)
+		if (listen(server.getSocket(), SOMAXCONN) < 0)
 			throw std::runtime_error( "Can't listen, or too many clients to handle." );
 
 		// ------------------------------------------------------------- //
@@ -49,7 +49,7 @@ int main(int argc, char **argv)
 		FD_ZERO(&master);
 		// Integre ce nouvel ensemble de donnees dans le descripteur d archive fd_set master/
 		//i.e server.getFd() is available for connections.
-		FD_SET(server.getFd(), &master);
+		FD_SET(server.getSocket(), &master);
 
 		// ------------------------------------------------------------- //
 		// [4] Boucle du serveur:
@@ -61,11 +61,11 @@ int main(int argc, char **argv)
 
 			// ------------------------------------------------------------- //
 			/* this is done for new connections */
-			if(FD_ISSET(server.getFd(), &copy))   /* new client has requested connection */
+			if(FD_ISSET(server.getSocket(), &copy))   /* new client has requested connection */
 			{
 				// [5] Ajout de clients:
 				clientLen = sizeof(clientaddr);
-				if((connfd = accept(server.getFd(), (struct sockaddr *)&clientaddr, 
+				if((connfd = accept(server.getSocket(), (struct sockaddr *)&clientaddr, 
 								&clientLen)) == -1)
 					throw std::runtime_error( "Problem with client connecting" );
 				else
@@ -105,7 +105,7 @@ int main(int argc, char **argv)
 			}   
 		}
 
-	close(server.getFd());
+	close(server.getSocket());
     }
 	catch ( std::exception & e )
 	{
