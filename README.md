@@ -124,7 +124,7 @@ int socket(int family, int type, int protocol);
 	- family: famille du socket: AF_INET pour un socket IPv4.
 	- type: specifie le type de socket, SOCK_STREAM pour TCP 
 	- protocol: definit le protcole, IPPROTO_TCP pour un socket TCP.
- 	- retourne le socket ou -1 en cas d'erreur.
+>retourne le socket ou -1 en cas d'erreur.
 </details>
 
 - close
@@ -138,7 +138,7 @@ int socket(int family, int type, int protocol);
 <summary>bind(): assigne une adresse locale à un socket</summary>
 	
 ```cpp
-int bind(SOCKET sckt, const struct addr* name, int namelen);
+int bind(int sckt, const struct addr* name, int namelen);
 ```
 	- sckt est le socket auquel est assigné l'adresse.
 	- name est la structure à assigner au socket.
@@ -147,10 +147,10 @@ int bind(SOCKET sckt, const struct addr* name, int namelen);
 
 - connect
 <details>
-<summary>- listen</summary>
+<summary>listen(): permet au socket d'ecouter les connexions entrantes</summary>
 	
 ```cpp
-int listen(SOCKET sckt, int backlog);
+int listen(int sckt, int backlog);
 ```
 	- Permet au socket d'ecouter les connexions entrantes
 	- sckt est le socket auquel les clients peuvent se connecter.
@@ -166,7 +166,7 @@ int listen(SOCKET sckt, int backlog);
 - inet_ntoa
 - send
 <details>
-<summary>- recv</summary>
+<summary>recv():receptionne des données sur le socket placé en paramètre.</summary>
 	
 ```cpp
 int recv(int socket, void* buffer, size_t len, int flags);
@@ -177,15 +177,16 @@ int recv(int socket, void* buffer, size_t len, int flags);
 	- len: nombres maximal d'octet a réceptionner.
  	- flag: masque d'option. Généralement 0.
 
-> Retourne le nombre d'octets reçus et stockés dans buffer. 
-> Peut retourner 0 si la connexion a été terminée. Retourne -1 en cas d'erreur.
 ```cpp
-SOCKET socket;
+int socket;
 // initialisation et connexion
 char buffer[1024];
 if (recv(socket, buffer, 1024, 0) <= 0)
         	// erreur ou connexion fermée
-``` 
+```
+> Retourne le nombre d'octets reçus et stockés dans buffer.
+> 
+> Peut retourner 0 si la connexion a été terminée. Retourne -1 en cas d'erreur.
 </details>
 
 - signal
