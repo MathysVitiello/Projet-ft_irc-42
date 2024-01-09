@@ -11,9 +11,6 @@ class Server
 		Server( unsigned int const & port, std::string const & password );
 		~Server( void );
 
-		// ----------------- Operator overload ----------------- //
-		Client const & operator[]( unsigned int index ) const;
-
 		// ------------------- Accessors ----------------------- //
 		std::string				const & getPassword( void ) const;
 		unsigned int			const & getPort( void ) const;

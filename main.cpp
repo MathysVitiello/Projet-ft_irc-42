@@ -6,16 +6,17 @@
 /*   By: mvitiell <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/01/04 11:44:21 by mvitiell          #+#    #+#             */
-/*   Updated: 2024/01/09 10:17:32 by alamizan         ###   ########.fr       */
+/*   Updated: 2024/01/09 16:51:29 by alamizan         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 #include "library.hpp"
+#include <sys/socket.h>
 
 int main(int argc, char **argv)
 {
 	try
 	{
-		int connfd, sockfd, nbFds;
+		int connfd, sockfd;
 		ssize_t				n; //size of buffer.
 		char				buf[4096];
 		struct sockaddr_in		clientaddr; 
@@ -54,7 +55,7 @@ int main(int argc, char **argv)
 		for(;;)
 		{
 			fd_set	copy = master;
-			if((nbFds = select(SOMAXCONN, &copy, NULL, NULL, NULL)) < 0){
+			if(select(1024, &copy, NULL, NULL, NULL) < 0){
 				throw std::runtime_error( "Error in select" );
 			}
 
@@ -82,7 +83,6 @@ int main(int argc, char **argv)
 			{
 				if((sockfd = it->getId()) < 0)
 					continue;
-				
 				if(FD_ISSET(sockfd, &copy))
 				{
 					if( (n = recv(sockfd, buf, 4096, 0))==0 )
@@ -94,9 +94,13 @@ int main(int argc, char **argv)
 						//client[i] = -1;
 					}
 					else
-						std::cout << "client " << it->getId() << buf << std::endl;                
-					if(--nbFds < 0)
-						break;
+					{
+						buf[n] = '\0';
+						if (std::string(buf, 0, n).find("quit") == 0)
+							exit(1);
+						std::cout << " buffer: "<< buf << std::endl;                
+						std::cout << "client " << it->getId();
+					}
 				}
 			}   
 		}

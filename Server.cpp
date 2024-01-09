@@ -32,15 +32,6 @@ Server::~Server( void )
 }
 
 /* ************************************************************************** */
-// OPERATOR OVERLOAD:
-Client const & Server::operator[](unsigned int index) const
-{
-	if ( index >= this->_clients.size() )
-		 throw std::runtime_error( "Index is invalid" );
-	return( this->_clients[index] );
-}
-
-/* ************************************************************************** */
 // ACCESSORS:
 unsigned int const & Server::getPort() const
 {
