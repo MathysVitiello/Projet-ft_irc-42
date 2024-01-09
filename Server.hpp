@@ -17,6 +17,7 @@ class Server
 		int						const & getFd( void ) const;
 		sockaddr_in				const & getAddr( void ) const;
 		std::vector<Client>		const & getClients( void  ) const;
+		// void setClients( std::vector<Client> _clients, int index );
 		// std::vector<Channel>	const & getChannels( void  ) const;
 
 		// -------------------- Functions ---------------------- //
@@ -30,6 +31,7 @@ class Server
 		std::string		const &	_password;
 		int						_fd;
 		sockaddr_in				_address;
+		// fd_set _master;
 		std::vector<Client>		_clients;
 		// std::vector<Channel>	_channels;
 };
