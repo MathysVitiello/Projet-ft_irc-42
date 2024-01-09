@@ -120,9 +120,30 @@ join
 - gethostbyname
 - getaddrinfo
 - freeaddrinfo
-- bind
+<details>
+<summary>- bind</summary>
+	
+```cpp
+int bind(SOCKET sckt, const struct addr* name, int namelen);
+```
+	- Assigne une adresse locale à un socket
+	- sckt est le socket auquel est assigné l'adresse.
+	- name est la structure à assigner au socket.
+	- namelen est la taille de cette structure.
+</details>
+
 - connect
-- listen
+<details>
+<summary>- listen</summary>
+	
+```cpp
+int listen(SOCKET sckt, int backlog);
+```
+	- Permet au socket d'ecouter les connexions entrantes
+	- sckt est le socket auquel les clients peuvent se connecter.
+	- backlog est le nombres de connexions pouvant etres gérer.
+ </details>
+ 
 - accept
 - htons
 - htonl
@@ -234,17 +255,6 @@ com^Dman^Dd
 
 - Utilisez ctrl+D pour envoyer la commande en plusieurs parties : 'com', puis 'man', puis 'd\n'.
 - Pour traiter une commande, il faut d'abord agréger les paquets reçus afin de la reconstruire.
-
-# FONCTIONS UTILES
-
-### bind:
-```cpp
-int bind(SOCKET sckt, const struct addr* name, int namelen);
-```
-- Assigne une adresse locale à un socket
-	- sckt est le socket auquel est assigné l'adresse.
-	- name est la structure à assigner au socket.
-	- namelen est la taille de cette structure.
 
 ### listen:
 ```cpp
