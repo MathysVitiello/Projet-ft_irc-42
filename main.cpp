@@ -10,7 +10,6 @@
 /*                                                                            */
 /* ************************************************************************** */
 #include "library.hpp"
-#include <sys/socket.h>
 
 int main(int argc, char **argv)
 {
@@ -78,6 +77,7 @@ int main(int argc, char **argv)
 			}
 
 			/* handle all the clients requesting */
+			// remplacer it par client
 			std::vector<Client>::const_iterator it;
 
 			for(it = server.getClients().begin(); it != server.getClients().end(); it++)
@@ -91,7 +91,6 @@ int main(int argc, char **argv)
 						/* connection closed by client side */
 						close(sockfd);
 						FD_CLR(sockfd, &master);
-						// il faut integrer le char buf[1024] pour chaque client
 						//client[i] = -1;
 					}
 					else
@@ -99,8 +98,8 @@ int main(int argc, char **argv)
 						buf[n] = '\0';
 						if (std::string(buf, 0, n).find("quit") == 0)
 							exit(1);
-						std::cout << " buffer: "<< buf << std::endl;                
 						std::cout << "client " << it->getId();
+						std::cout << ": message a transmettre: " << buf << std::endl;                
 					}
 				}
 			}   
