@@ -112,7 +112,18 @@ join
 	
 <summary>Recommandées:</summary>
 
-- socket
+<details>
+<summary>- socket</summary>
+
+```cpp
+int socket(int family, int type, int protocol);
+```
+	- family: famille du socket: AF_INET pour un socket IPv4.
+	- type: specifie le type de socket, SOCK_STREAM pour TCP 
+	- protocol: definit le protcole, IPPROTO_TCP pour un socket TCP.
+ 	- retourne le socket ou -1 en cas d'erreur.
+</details>
+
 - close
 - setsockopt
 - getsockname
