@@ -20,7 +20,7 @@ class Server
 		// std::vector<Channel>	const & getChannels( void  ) const;
 
 		// -------------------- Functions ---------------------- //
-		void	addClient( int const & id, sockaddr_in from );
+		void	addClient( int const & fd, sockaddr_in address );
 
 	// --------------------------------------------------------- //
 	 private:
