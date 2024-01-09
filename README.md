@@ -152,7 +152,29 @@ int listen(SOCKET sckt, int backlog);
 - inet_addr
 - inet_ntoa
 - send
-- recv
+<details>
+<summary>- recv</summary>
+	
+```cpp
+int recv(int socket, void* buffer, size_t len, int flags);
+```
+	- Receptionne des données sur le socket placé en paramètre:
+ 	- socket: socket duquel receptionner le données.
+  	- buffer: tampon où stocker les données.
+	- len: nombres maximal d'octet a réceptionner.
+ 	- flag: masque d'option. Généralement 0.
+
+> Retourne le nombre d'octets reçus et stockés dans buffer. 
+> Peut retourner 0 si la connexion a été terminée. Retourne -1 en cas d'erreur.
+```cpp
+SOCKET socket;
+// initialisation et connexion
+char buffer[1024];
+if (recv(socket, buffer, 1024, 0) <= 0)
+        	// erreur ou connexion fermée
+``` 
+</details>
+
 - signal
 - sigaction
 - lseek
