@@ -36,6 +36,7 @@ class Server
 		void	command(std::string cmdSend, int fdClient);
 		// à faire
 		// void	removeClient( int const & id, sockaddr_in from  );
+		void	removeClient( int const & index );
 
 	// --------------------------------------------------------- //
 	 private:

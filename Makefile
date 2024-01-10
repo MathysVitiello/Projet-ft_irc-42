@@ -14,7 +14,7 @@ NAME =	ircserv
 
 SRC =	main.cpp \
 		Client/Client.cpp \
-		Server/Server.cpp
+		Server/Server.cpp \
 
 CFLAGS = -Wall -Wextra -Werror -g -std=c++98
 

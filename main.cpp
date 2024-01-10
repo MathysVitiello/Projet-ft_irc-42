@@ -6,10 +6,18 @@
 /*   By: mvitiell <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/01/04 11:44:21 by mvitiell          #+#    #+#             */
-/*   Updated: 2024/01/10 10:28:30 by nminotte         ###   ########.fr       */
+/*   Updated: 2024/01/10 15:42:21 by alamizan         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 #include "library.hpp"
+# include<signal.h>
+
+int exitFlag = 0;
+
+void	sigHandler( int signum )
+{
+	exitFlag = signum;
+}
 
 int main(int argc, char **argv)
 {
@@ -53,6 +61,7 @@ int main(int argc, char **argv)
 		// [4] Boucle du serveur:
 		for(;;)
 		{
+			signal( SIGQUIT, SIG_IGN);
 			fd_set	copy = master;
 			if((nbFds = select(1024, &copy, NULL, NULL, NULL)) < 0){
 				throw std::runtime_error( "Error in select" );
@@ -89,6 +98,7 @@ int main(int argc, char **argv)
 						/* connection closed by client side */
 						close(sockfd);
 						FD_CLR(sockfd, &master);
+						server.removeClient( i );
 						// il faut integrer le char buf[1024] pour chaque client
 						//client[i] = -1;
 					}
