@@ -8,6 +8,7 @@ class Channel{
 		Channel();
 		~Channel();
 	 private:
+		std::string					channelName;
 		int							idChannel;
 		unsigned int				owner;  //Admin
 		std::vector<Client *>		ircOps; //Operator
