@@ -61,12 +61,12 @@ void Client::setName( std::string name ) {
 void Client::setNick( std::string nick, std::vector<Client> *clients ) {
 	if (this->_connected || !this->_nickname.empty() || this->_nickname.size() < 9){
 		// if (nick non valid char)
-			// ERR_ERRONEUSNICKNAME
+			// return ERR_ERRONEUSNICKNAME
 		std::vector<Client>::iterator it = clients->begin(); 
 		for ( ;it < clients->end(); it++ )
 			if ( nick == it->getNickname() ){
-				
-				// return ERR_NICKNAMEINUSE;
+				send(this->getSocket(),ERR_NICKNAMEINUSE(nick).c_str() , ERR_NICKNAMEINUSE(nick).size(), 0);
+				return;
 			}
 		this->_nickname = nick;
 	}
