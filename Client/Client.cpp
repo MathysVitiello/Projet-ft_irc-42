@@ -3,15 +3,15 @@
 
 /* ************************************************************************** */
 // CONSTRUCTOR / DESTRUCTOR:
-Client::Client( int const & id, sockaddr_in from ) :	_id( id ),
+Client::Client( int const & id, sockaddr_in from ) :	_socket( id ),
 	_address( from ),
 	_connected(false)
 {
 	std::cout << "Client constructor called" << std::endl;
-	std::cout << " id:  " << this->_id << std::endl;
+	std::cout << " id:  " << this->_socket << std::endl;
 	std::cout << " reseau :  " << this->_address.sin_port << std::endl;
 	this->_name = "";
-	this->_nickName = "";
+	this->_nickname = "";
 
 	return ;
 }
@@ -27,9 +27,9 @@ Client::~Client( void ) {
 
 /* ************************************************************************** */
 // ACCESSORS:
-int	const & Client::getId( void ) const
+int	const & Client::getSocket( void ) const
 {
-	return( this->_id );
+	return( this->_socket );
 }
 
 sockaddr_in const & Client::getAddr( void ) const
@@ -42,9 +42,9 @@ std::string const & Client::getName( void ) const
 	return( this->_name );
 }
 
-std::string const & Client::getNickName( void ) const
+std::string const & Client::getNickname( void ) const
 {
-	return( this->_nickName );
+	return( this->_nickname );
 }
 
 bool	const & Client::getConnect( void ) const{
@@ -59,16 +59,16 @@ void Client::setName( std::string name ) {
 }
 
 void Client::setNick( std::string nick, std::vector<Client> *clients ) {
-	if (this->_connected || !this->_nickName.empty() || this->_nickName.size() < 9){
+	if (this->_connected || !this->_nickname.empty() || this->_nickname.size() < 9){
 		// if (nick non valid char)
 			// ERR_ERRONEUSNICKNAME
 		std::vector<Client>::iterator it = clients->begin(); 
 		for ( ;it < clients->end(); it++ )
-			if ( nick == it->getNickName() ){
+			if ( nick == it->getNickname() ){
 				
 				// return ERR_NICKNAMEINUSE;
 			}
-		this->_nickName = nick;
+		this->_nickname = nick;
 	}
 	return ;
 }

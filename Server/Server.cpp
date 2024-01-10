@@ -1,5 +1,4 @@
 #include "Server.hpp"
-#include <ostream>
 
 /* ************************************************************************** */
 // CONSTRUCTOR / DESTRUCTOR:
@@ -9,8 +8,8 @@ Server::Server( unsigned int const & port, std::string const & password  ): _por
 	// -famille: AF_INET pour socket IPv4.
 	// -type: SOCK_STREAM pour TCP.
 	// -protocol: IPPROTO_TCP pour socket TCP.
-	this->_fd= socket( AF_INET, SOCK_STREAM, IPPROTO_TCP );
-	if( this->_fd == -1 )
+	this->_socket= socket( AF_INET, SOCK_STREAM, IPPROTO_TCP );
+	if( this->_socket == -1 )
 		throw std::runtime_error( "Invalid socket." );
 
 	this->_address.sin_addr.s_addr = INADDR_ANY;// toutes les sources acceptees.
@@ -47,9 +46,9 @@ unsigned int const & Server::getPort() const
 	return( this->_port );
 }
 
-int	const & Server::getFd() const
+int	const & Server::getSocket() const
 {
-	return( this->_fd );
+	return( this->_socket );
 }
 
 std::string const & Server::getPassword() const
@@ -107,10 +106,10 @@ std::ostream & operator<<( std::ostream & o, Server const & src )
 
 	for(it = src.getClients().begin(); it != src.getClients().end(); it++)
 	{
-		o << "- id client: " << it->getId() << std::endl;
+		o << "- id client: " << it->getSocket() << std::endl;
 		o << "- addresse client: " << it->getAddr().sin_port << std::endl;
 		o << "- name client: " << it->getName() << std::endl;
-		o << "- nickname client: " << it->getNickName() << std::endl;
+		o << "- nickname client: " << it->getNickname() << std::endl;
 		o << "- password: " << it->getConnect() << std::endl;
 	o << "--------" << std::endl;
 	}
@@ -143,7 +142,7 @@ void	Server::command(std::string cmdSend, int fdClient){
 		this->_clients[fdClient].setName(cmdSend.substr(5));
 		break;
 	default:
-		std::cout << "wrong" << std::endl;
+		std::cout << this->_clients[fdClient].getSocket() << ": wrong command" << std::endl;
 		break;
 	}
 }

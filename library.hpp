@@ -2,8 +2,6 @@
 # define LIBRARY_HPP
 
 // -------------------- DEFINE COLOR ---------------------- //
-
-
 # define CRED		"\033[6;91m"
 # define BRED		"\033[1;91m"
 # define BPURPLE 	"\001\e[1;95m\002"
