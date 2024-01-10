@@ -25,7 +25,7 @@
 # define ERR_INVITEONLYCHAN		(nick, channel)			("473 : "+nick+" "+channel+" :Cannot join channel (+i)\r\n")
 # define ERR_BADCHANMASK		(channel)				("476 : "+channel+" :Bad Channel Mask" )
 
-# define RPL_TOPIC				(nick, channel, topic)	("332 : "+nick+" "+channel+" :"+topic)
+# define RPL_TOPIC				(nick, channel, topic)	("332 : "+nick+" "+channel+" :"+topic+"\r\n")
 # define RPL_NAMREPLY			(nick, channel)			("353 : "+nick+" <symbol> "+channel+" :[prefix]<nick>{ [prefix]<nick>}\r\n")
 # define RPL_ENDOFNAMES			(nick, channel)			("366 : "+nick+" "+channel+" :End of /NAMES list\r\n")
                                       
@@ -36,7 +36,7 @@
                                      
 /* INVITE message	*/               
                                      
-# define RPL_INVITING			(nick, channel)			("341 : "+nick+" invited "+guest+" to the channel "+channel)
+# define RPL_INVITING			(nick, channel)			("341 : "+nick+" invited "+guest+" to the channel "+channel+"\r\n")
 
 # define ERR_CHANOPRIVSNEEDED	(nick, channel)			("482 : "+nick+" "+channel+" :You're not channel operator\r\n")
 # define ERR_USERONCHANNEL		(nick, channel)			("443 : "+nick+" :is already on channel :"+channel+"\r\n")
