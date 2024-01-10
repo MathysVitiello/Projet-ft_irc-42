@@ -123,7 +123,7 @@ std::ostream & operator<<( std::ostream & o, Server const & src )
 }
 
 void	Server::command(std::string cmdSend, int fdClient){
-	std::string	cmd[] = {"PASS", "NICK", "USER"};
+	std::string	cmd[] = {"PASS", "NICK", "USER", "PRIVMSG"};
 	int i;
 
 	for (i = 0; i < 3; i++){
@@ -145,6 +145,10 @@ void	Server::command(std::string cmdSend, int fdClient){
 	case USER:
 		std::cout << "USER " << std::endl;
 		this->_clients[fdClient].setName(cmdSend.substr(5));
+		break;
+	case PRIVMSG:
+		if (this->_clients[fdClient].checkRight() == true)
+			this->_clients[fdClient].privateMessage(&this->_clients, cmdSend.substr(8));
 		break;
 	default:
 		std::cout << this->_clients[fdClient].getSocket() << ": wrong command" << std::endl;
