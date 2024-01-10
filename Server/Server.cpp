@@ -76,6 +76,11 @@ void	Server::addClient( int const & id, sockaddr_in addr)
 	this->_clients.push_back( *client );
 }
 
+void	Server::removeClient( int const & index )
+{
+	this->_clients.erase( this->_clients.begin() + index );
+
+}
 /* ************************************************************************** */
 // NO-MENBER'S FUNCTIONS:
 // Verifie la validitee des arguments:
