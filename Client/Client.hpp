@@ -28,7 +28,7 @@ class Client
 		// -------------------- Functions ---------------------- //
 		void				quit(); //appelle 1 fonction Server qui detruit le Client dans vector
 		void				join(); //creer 1 canal ou en join 1
-		bool				enterPwd(Server *server, std::string password); //verif "PASS" + bon password; si bon change _connected
+		void				enterPwd(Server *server, std::string password); //verif "PASS" + bon password; si bon change _connected
 		void				checkRight( void );
 
 		// --------------------------------------------------------- //

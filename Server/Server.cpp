@@ -127,19 +127,20 @@ void	Server::command(std::string cmdSend, int fdClient){
 	}
 	switch (i) {
 	case PASS:
-		std::cout << "PASS :" ;
-		std::cout << fdClient;
-		if(this->_clients[fdClient].enterPwd(this, cmdSend.substr(5)) == true)
-			std::cout << "Password correct" << std::endl;
+		// std::cout << "PASS :" ;
+		// std::cout << fdClient;
+		this->_clients[fdClient].enterPwd(this, cmdSend.substr(4));
+		// if (this->_clients[fdClient].getConnect())
+			// std::cout << "Password correct" << std::endl;
 		// this->_clients[fdClient].set
 		break;
 	case NICK:
 		std::cout << "NICK " << std::endl;
-		this->_clients[fdClient].setNick(cmdSend.substr(5), &this->_clients);
+		this->_clients[fdClient].setNick(cmdSend.substr(4), &this->_clients);
 		break;
 	case USER:
 		std::cout << "USER " << std::endl;
-		this->_clients[fdClient].setName(cmdSend.substr(5));
+		this->_clients[fdClient].setName(cmdSend.substr(4));
 		break;
 	default:
 		std::cout << this->_clients[fdClient].getSocket() << ": wrong command" << std::endl;
