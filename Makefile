@@ -6,15 +6,17 @@
 #    By: mvitiell <marvin@42.fr>                    +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2024/01/04 11:45:22 by mvitiell          #+#    #+#              #
-#    Updated: 2024/01/04 11:45:23 by mvitiell         ###   ########.fr        #
+#    Updated: 2024/01/08 11:58:57 by alamizan         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
 NAME =	ircserv
 
-SRC =	main.cpp\
-		PassNickUser.cpp\
-		Client.cpp\
+SRC =	main.cpp \
+		Client/Client.cpp \
+		Server/Server.cpp
+		
+		#./Client/PassNickUser.cpp\
 
 CFLAGS = -Wall -Wextra -Werror -g -std=c++98
 

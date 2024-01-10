@@ -1,0 +1,149 @@
+#include "Server.hpp"
+#include <ostream>
+
+/* ************************************************************************** */
+// CONSTRUCTOR / DESTRUCTOR:
+Server::Server( unsigned int const & port, std::string const & password  ): _port(port),
+																		 	_password(password)
+{
+	// -famille: AF_INET pour socket IPv4.
+	// -type: SOCK_STREAM pour TCP.
+	// -protocol: IPPROTO_TCP pour socket TCP.
+	this->_fd= socket( AF_INET, SOCK_STREAM, IPPROTO_TCP );
+	if( this->_fd == -1 )
+		throw std::runtime_error( "Invalid socket." );
+
+	this->_address.sin_addr.s_addr = INADDR_ANY;// toutes les sources acceptees.
+	this->_address.sin_port = htons( port );// traduit le port en reseau.
+	this->_address.sin_family = AF_INET;// socket TCP IPv4.
+
+	std::cout << "-------------------------------------------" << std::endl;
+	std::cout << "Server port: " << this->_port << std::endl;
+	std::cout << "Server reseau: " << this->_address.sin_port<< std::endl;
+	std::cout << "Server password: " << this->_password << std::endl;
+	std::cout << "-------------------------------------------" << std::endl;
+	return;
+}
+
+Server::~Server( void )
+{
+	std::cout << "Destructor called" << std::endl;
+	this->_clients.clear();
+	return;
+}
+
+/* ************************************************************************** */
+// OPERATOR OVERLOAD:
+Client *Server::operator[](unsigned int index) {
+	if ( index >= this->_clients.size() )
+		 throw std::runtime_error( "Index is invalid" );
+	return &this->_clients[index];
+}
+
+/* ************************************************************************** */
+// ACCESSORS:
+unsigned int const & Server::getPort() const
+{
+	return( this->_port );
+}
+
+int	const & Server::getFd() const
+{
+	return( this->_fd );
+}
+
+std::string const & Server::getPassword() const
+{
+	return( this->_password );
+}
+
+std::vector<Client> const & Server::getClients( void ) const
+{
+	return( this->_clients );
+}
+
+sockaddr_in	const & Server::getAddr() const
+{
+	return( this->_address );
+}
+
+/* ************************************************************************** */
+// FUNCTIONS:
+// Rajoute un client dans le tableau de clients du serveur:
+void	Server::addClient( int const & id, sockaddr_in addr)
+{
+	// max client 1024-> Fd_SETSIZE:
+	Client *client = new Client(id, addr);
+	this->_clients.push_back( *client );
+}
+
+/* ************************************************************************** */
+// NO-MENBER'S FUNCTIONS:
+// Verifie la validitee des arguments:
+void	checkArgs(int argc, char **argv)
+{
+	if (argc != 3)
+			throw std::runtime_error( "Not the right number of arguments" ) ;
+
+	std::string    nb = argv[1];
+	for (unsigned int i = 0; i < nb.length(); i++)
+		if (!isdigit (nb[i]))
+			throw std::runtime_error( "the First argument is the port, pls write a number!" );
+	if (std::string(argv[2]).length() == 0)
+        throw std::runtime_error("write password, pls.");
+}
+
+// Permet l affichage de toutes les donnees inclut dans le serveur:
+// - std::cout << server << std::endl;
+std::ostream & operator<<( std::ostream & o, Server const & src )
+{
+	std::vector<Client>::const_iterator it;
+
+	std::cout << "-------------------------------------------" << std::endl;
+	o << "Server port: " << src.getPort() << std::endl;
+	o << "Server reseau: " << src.getAddr().sin_port<< std::endl;
+	o << "Server password: " << src.getPassword() << std::endl;
+	o << "--------" << std::endl;
+
+	for(it = src.getClients().begin(); it != src.getClients().end(); it++)
+	{
+		o << "- id client: " << it->getId() << std::endl;
+		o << "- addresse client: " << it->getAddr().sin_port << std::endl;
+		o << "- name client: " << it->getName() << std::endl;
+		o << "- nickname client: " << it->getNickName() << std::endl;
+		o << "- password: " << it->getConnect() << std::endl;
+	o << "--------" << std::endl;
+	}
+	std::cout << "-------------------------------------------" << std::endl;
+	return( o );
+}
+
+void	Server::command(std::string cmdSend, int fdClient){
+	std::string	cmd[] = {"PASS", "NICK", "USER"};
+	int i;
+
+	for (i = 0; i < 3; i++){
+		if(!cmdSend.find(cmd[i]))
+			break;
+	}
+	switch (i) {
+	case PASS:
+		std::cout << "PASS :" ;
+		std::cout << fdClient;
+		if(this->_clients[fdClient].enterPwd(this, cmdSend.substr(5)) == true)
+			std::cout << "Password correct" << std::endl;
+		// this->_clients[fdClient].set
+		break;
+	case NICK:
+		std::cout << "NICK " << std::endl;
+		this->_clients[fdClient].setNick(cmdSend.substr(5), &this->_clients);
+		break;
+	case USER:
+		std::cout << "USER " << std::endl;
+		this->_clients[fdClient].setName(cmdSend.substr(5));
+		break;
+	default:
+		std::cout << "wrong" << std::endl;
+		break;
+	}
+}

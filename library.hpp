@@ -1,29 +1,36 @@
 #ifndef LIBRARY_HPP
-#define LIBRARY_HPP
+# define LIBRARY_HPP
 
-#include <iostream>
-#include <string>
-#include <vector>
-#include <iostream>
-#include <netinet/in.h>
-#include <netdb.h>
-#include <sys/socket.h>
-#include <arpa/inet.h>
-#include <sys/types.h>
-#include <unistd.h>
-#include <string.h>
-#include <string>
-#include <stdio.h>
-#include <stdlib.h>
-#include <functional>   
-#include <algorithm>    
-
-/* our library  */
-#include "Client.hpp"
-#include "Channel.hpp"
+// -------------------- DEFINE COLOR ---------------------- //
 
 
-//PassNickUser.cpp
-void PASS(int clientSocket, char *argv);
+# define CRED		"\033[6;91m"
+# define BRED		"\033[1;91m"
+# define BPURPLE 	"\001\e[1;95m\002"
+# define NC			"\001\e[0m\002"
+
+// --------------------  LIBRARY --------------------- //
+# include <unistd.h>
+# include <iostream>
+# include <stdlib.h>
+# include <stdio.h>
+# include <string.h>
+# include <vector>
+# include <algorithm>    
+# include <netinet/in.h>
+# include <netdb.h>
+# include <arpa/inet.h>
+# include <sys/types.h>
+# include <sys/select.h>
+# include <sys/socket.h>
+# include <functional>   
+# include <errno.h>
+
+// --------------------- CLASS ---------------------- //
+# include "./Client/Client.hpp"
+# include "./Server/Server.hpp"
+//#include "./Channel/Channel.hpp"
+# include "define.hpp"
+
 
 #endif

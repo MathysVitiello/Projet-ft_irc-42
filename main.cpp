@@ -6,129 +6,109 @@
 /*   By: mvitiell <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/01/04 11:44:21 by mvitiell          #+#    #+#             */
-/*   Updated: 2024/01/06 14:20:58 by alamizan         ###   ########.fr       */
+/*   Updated: 2024/01/10 10:28:30 by nminotte         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 #include "library.hpp"
-#include <stdexcept>
-
-//!https://www.youtube.com/watch?v=cNdlrbZSkyQ
+#include <cstring>
 
 int main(int argc, char **argv)
 {
 	try
 	{
-		if (argc != 3)
-			throw( std::runtime_error("Not the right number of arguments") );
+		int connfd, sockfd, nbFds;
+		ssize_t				n; //size of buffer.
+		char				buf[4096];
+		struct sockaddr_in		clientaddr; 
+		socklen_t			clientLen;                 
 
-		// ------------------------------------------------------------------------ //
-		// 1. Create a socket
-		// AF_INET = famille d’adresses pour IPv4.
-		// SOCK_STREAM is a connection-based protocol.
-		// La connection est etablie et les deux personnes ont une conv jusqua ce que
-		// la connection soit arrete par une des deux personnes ou un erreur de network.
-		int listening = socket(AF_INET, SOCK_STREAM, 0);
-		if (listening == -1)
-			throw( std::runtime_error("Can't create a socket !") );
+		// ------------------------------------------------------------- //
+		// [1] Gestion arguments:
+		checkArgs( argc, argv );
 
-		// ------------------------------------------------------------------------ //
-		// 2.Joindre socket a IP adress / port
-		sockaddr_in hint; // structure 
-		hint.sin_family = AF_INET;
-		hint.sin_port = htons(atoi(argv[1])); 
+		// ------------------------------------------------------------- //
+		// [2] Creer un serveur, le configurer et le mettre en attente:
+		Server server( atoi(argv[1]), argv[2] );
 
-		// 0.0.0.0 veut dire que cest nimporte quelle adresse
-		// Cette fonction convertit la chaîne de caractères src en une structure
-		// d'adresse réseau de la famille af puis copie cette structure dans dst.
-		inet_pton(AF_INET, "0.0.0.0", &hint.sin_addr);
-		if (bind(listening, (sockaddr *) &hint, sizeof(hint)) == -1)
-			throw( std::runtime_error("Can't bind to IP/port !") );
+		// server.config();
+		if (bind(server.getFd(), (struct sockaddr *)&server.getAddr(),
+				sizeof(server.getAddr())) < 0)
+			throw std::runtime_error( "Can't bind to IP/port." );
 
+		if (listen(server.getFd(), SOMAXCONN) < 0)
+			throw std::runtime_error( "Can't listen, or too many clients to handle." );
+	
+		// ------------------------------------------------------------- //
+		// [3] integre le serveur dans une liste de "fd":
+		// fd_set: c est une structure de données qui contient un ensemble 
+		// de descripteurs d'archives:
+		fd_set	master;
 
-		// ------------------------------------------------------------------------ //
-		// 3. Mark the socket for listening in
-		// listen marque la socket comme une socket passive
-		// une socket qui sera utilisée pour accepter les demandes de connexions
-		// entrantes en utilisant accept().
-		if (listen(listening, SOMAXCONN) == -1)
-			throw( std::runtime_error("Can't listen !") );
-
-		// Accept a call
-		sockaddr_in client; // structure 
-		socklen_t clientSize = sizeof(client); //! a voir si on a le droit de socklen_t
-		char host[NI_MAXHOST]; //max 1025
-		char service[NI_MAXSERV]; //max 32
-
-
-		int clientSocket = accept(listening, (sockaddr *) &client, &clientSize);
-		if (clientSocket == -1)
+		// FD_ZERO permet de supprimer tous les bits d une structure fd_set.
+		FD_ZERO(&master);
+		// Integre ce nouvel ensemble de donnees dans le descripteur d archive fd_set master/
+		//i.e server.getFd() is available for connections.
+		FD_SET(server.getFd(), &master);
+		// ------------------------------------------------------------- //
+		// [4] Boucle du serveur:
+		for(;;)
 		{
-			std::cerr << "Problem with client connecting";
-			return 3;
-		}
-
-		close(listening); // parce que listening est un fd.
-
-		memset(host, 0, NI_MAXHOST);
-		memset(service, 0, NI_MAXSERV);
-
-		int result = getnameinfo((sockaddr *)&client, sizeof(client), host, NI_MAXHOST, service, NI_MAXSERV, 0);
-		if (result)
-		{
-			std::cout << host << " connected on " << service << std::endl;
-		}
-		else 
-		{
-			inet_ntop(AF_INET, &client.sin_addr, host, NI_MAXHOST);
-			std::cout << host << " connected on " << ntohs(client.sin_port) << std::endl;
-		}
-
-		//While receiving display message
-		char buf[4096];
-		std::string input;
-
-		//! ici test de mdp, va faloir le fair epour chauqe client, un int qui indique si il sont connecte ou non 
-		PASS(clientSocket, argv[2]);
-
-		while(true){
-
-			memset(buf, 0, 4096);
-			int bytesRecv = recv(clientSocket, buf, 4096, 0);
-			if (bytesRecv == -1)
-			{
-				std::cerr << "There was a connetion issue" << std::endl;
-				break;
-			}
-			if (bytesRecv == 0)
-			{
-				std::cerr << "The client disconnected" << std::endl;
-				break;
+			fd_set	copy = master;
+			if((nbFds = select(1024, &copy, NULL, NULL, NULL)) < 0){
+				throw std::runtime_error( "Error in select" );
 			}
 
-			std::cout << std::string(buf, 0, bytesRecv);
-			send(clientSocket, buf, bytesRecv + 1, 0);
+			// ------------------------------------------------------------- //
+			/* this is done for new connections */
+			if(FD_ISSET(server.getFd(), &copy))   /* new client has requested connection */
+			{
+				// [5] Ajout de clients:
+				clientLen = sizeof(clientaddr);
+				if((connfd = accept(server.getFd(), (struct sockaddr *)&clientaddr, 
+								&clientLen)) == -1)
+					throw std::runtime_error( "Problem with client connecting" );
+				else
+				{
+					server.addClient(connfd, clientaddr);
+					std::cout << server << std::endl;
+				}
+				FD_SET(connfd, &master); /* add the new file descriptor to set */
+			}
+
+			/* handle all the clients requesting */
+
+			for(size_t i = 0; i < server.getClients().size(); i++)
+			{
+				if((sockfd = server.getClients()[i].getId()) < 0)
+					continue;
+				
+				if(FD_ISSET(sockfd, &copy))
+				{
+					if( (n = recv(sockfd, buf, 4096, 0))==0 )
+					{
+						/* connection closed by client side */
+						close(sockfd);
+						FD_CLR(sockfd, &master);
+						// il faut integrer le char buf[1024] pour chaque client
+						//client[i] = -1;
+					}
+					else{
+						buf[n - 1] = '\0';
+						server.command(buf, i);
+						// std::cout << it->getId() <<  " istd::string(buf, 0, bytesRecv)" << std::endl;
+					}
+					if(--nbFds < 0)
+						break;
+				}
+			}   
 		}
 
-		close(clientSocket);
-	}
+	close(server.getFd());
+    }
 	catch ( std::exception & e )
 	{
-		std::cerr << "ERROR: " << e.what() << std::endl;
+		std::cerr << CRED << "ERROR: " << NC << BRED << e.what() << NC << std::endl;
 		return( 127 );
 	}
     return 0;
-}
-
-
-/*
-socket = endpoint of communication ->  You make a call to the socket() system routine. It returns the socket descriptor,
-and you communicate through it using the specialized send() and recv() (man send, man recv) socket calls.
-*/
-
-
-/*
-In order to properly support multiple connections you should fire up
-a new thread for each incoming connection.
-Each new connection is identified by its
-own unique socket descriptor returned by accept(). A simple example:
-*/
+		}
