@@ -73,6 +73,11 @@ void Client::setNick( std::string nick, std::vector<Client> *clients ) {
 	return ;
 }
 
+int	Client::checkRight( void ) {
+	if (this->_connected == true && this->getName() != "" && this->getNickname() != "")
+		return true;
+	return false;
+}
 
 void Client::setAddr( sockaddr_in addr ) {
 
@@ -89,4 +94,42 @@ bool	Client::enterPwd(Server *server, std::string password){
 		return true;
 	}
 	return false;
+}
+
+void    Client::privateMessage( std::vector<Client> *clients, std::string info )
+{
+	std::string name;
+	// parse to find nick
+	int i = 0;
+	while (isspace(info[i]) != 0)
+		i++;
+	while (isspace(info[i]) == 0 || info[i] == ';')
+	{
+		name += info[i];
+		i++;
+	}
+	name[i] = '\0';
+	info = info.substr(i + 1);
+
+	//find nickname dans tout les users
+	std::vector<Client>::iterator it = clients->begin(); 
+	for ( ;it < clients->end(); it++ )
+	{
+		if ( name == it->getNickname() ){
+			
+			// send message to the client
+			send(it->getSocket(), "messade de ", 11, 0);
+			const void * a = this->getNickname().c_str();
+			send(it->getSocket(), a, this->getNickname().size(), 0);
+			send(it->getSocket(), " : ", 3, 0);
+			const void * b = info.c_str();
+			send(it->getSocket(), b, info.size(), 0);
+			send(it->getSocket(), "\n", 1, 0);
+			return ;
+		}
+	}
+	//! code d'erreur a dapater
+	send(this->getSocket(), "Coudn't find Nickname : ", 24, 0);
+	const void * c = name.c_str();
+	send(this->getSocket(), c, name.size(), 0);
 }
