@@ -43,8 +43,10 @@ Server::~Server( void )
 		{
 			int socket = this->getClients()[i].getSocket();
 			close( socket );
+
 			this->_clients[i].setSocket( socket );
 			std::cout << this->getClients()[i].getSocket() << std::endl;
+
 		}
 	}
 
