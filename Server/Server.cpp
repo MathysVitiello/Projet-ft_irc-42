@@ -151,7 +151,6 @@ void	Server::command(std::string cmdSend, int fdClient){
 		if(!cmdSend.find(cmd[i]))
 			break;
 	}
-	std::cout << cmdSend << std::endl;
 	switch (i) {
 	case PASS:
 		this->_clients[fdClient].enterPwd(this, cmdSend.substr(4));
@@ -169,7 +168,7 @@ void	Server::command(std::string cmdSend, int fdClient){
 			this->_clients[fdClient].privateMessage(&this->_clients, cmdSend.substr(8));
 		break;
 	default:
-		send(fdClient, ERR_UNKNOWNCOMMAND(this->_clients[fdClient].getNickname()).c_str(), ERR_UNKNOWNCOMMAND(this->_clients[fdClient].getNickname()).size(), 0);
+		send(this->_clients[fdClient].getSocket(), ERR_UNKNOWNCOMMAND(this->_clients[fdClient].getNickname()).c_str(), ERR_UNKNOWNCOMMAND(this->_clients[fdClient].getNickname()).size(), 0);
 		break;
 	}
 }
