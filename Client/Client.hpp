@@ -43,4 +43,5 @@ class Client
 		bool		_checkRight; //! en construction
 };
 
+
 # endif
