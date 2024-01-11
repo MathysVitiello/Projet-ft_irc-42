@@ -37,19 +37,17 @@ Server::~Server( void )
 {
 	close( this->_socket );
 
-	// for(size_t i = 0; i < this->getClients().size(); i++)
-	// {
-		// if( this->getClients()[i].getSocket() > 0 )
-		// {
-			// std::cout << "LOL" << std::endl;
-			// std::cout << this->getClients()[i].getSocket() << std::endl;
-			// int socket = this->getClients()[i].getSocket();
-			// close( socket );
-			// this->_clients[i].setSocket( socket );
-			// std::cout << this->getClients()[i].getSocket() << std::endl;
-		// }
-	// }
-// 
+	for(size_t i = 0; i < this->getClients().size(); i++)
+	{
+		if( this->getClients()[i].getSocket() > 0 )
+		{
+			int socket = this->getClients()[i].getSocket();
+			close( socket );
+			this->_clients[i].setSocket( socket );
+			std::cout << this->getClients()[i].getSocket() << std::endl;
+		}
+	}
+
 	if ( this->_clients.empty() )
 		this->_clients.erase( this->_clients.begin(), this->_clients.end() );
 	this->_clients.clear();
