@@ -5,29 +5,44 @@
 Server::Server( unsigned int const & port, std::string const & password  ): _port(port),
 																		 	_password(password)
 {
-	// -famille: AF_INET pour socket IPv4.
-	// -type: SOCK_STREAM pour TCP.
-	// -protocol: IPPROTO_TCP pour socket TCP.
 	this->_socket= socket( AF_INET, SOCK_STREAM, IPPROTO_TCP );
 	if( this->_socket == -1 )
 		throw std::runtime_error( "Invalid socket." );
 
 	this->_address.sin_addr.s_addr = INADDR_ANY;// toutes les sources acceptees.
-	this->_address.sin_port = htons( port );// traduit le port en reseau.
-	this->_address.sin_family = AF_INET;// socket TCP IPv4.
+	this->_address.sin_port = htons( port );	// traduit le port en reseau.
+	this->_address.sin_family = AF_INET;		// socket TCP IPv4.
+										
+	// le configurer et le mettre en attente:
+	if (bind(_socket, (struct sockaddr *)&_address, sizeof(_address)) < 0)
+	{
+		close(this->_socket);
+		throw std::runtime_error( "Can't bind to IP/port." );
+	}
+
+	if (listen(_socket, SOMAXCONN) < 0)
+		throw std::runtime_error( "Can't listen, or too many clients to handle." );
 
 	std::cout << "-------------------------------------------" << std::endl;
 	std::cout << "Server port: " << this->_port << std::endl;
 	std::cout << "Server reseau: " << this->_address.sin_port<< std::endl;
 	std::cout << "Server password: " << this->_password << std::endl;
+	std::cout << "Server socket: " << this->_socket << std::endl;
 	std::cout << "-------------------------------------------" << std::endl;
 	return;
 }
 
 Server::~Server( void )
 {
-	std::cout << "Destructor called" << std::endl;
+	close( this->_socket );
+
+	for(size_t i = 0; i < this->getClients().size(); i++)
+	{
+		if( this->getClients()[i].getSocket() > 0 )
+			close( this->getClients()[i].getSocket()  );
+	}
 	this->_clients.clear();
+	std::cout << "Destructor called" << std::endl;
 	return;
 }
 
@@ -40,29 +55,24 @@ Client *Server::operator[](unsigned int index) {
 }
 
 /* ************************************************************************** */
-// ACCESSORS:
-unsigned int const & Server::getPort() const
-{
+// ---------------------- GETTERS -------------------- //
+unsigned int const & Server::getPort() const{
 	return( this->_port );
 }
 
-int	const & Server::getSocket() const
-{
+int	const & Server::getSocket() const{
 	return( this->_socket );
 }
 
-std::string const & Server::getPassword() const
-{
+std::string const & Server::getPassword() const{
 	return( this->_password );
 }
 
-std::vector<Client> const & Server::getClients( void ) const
-{
+std::vector<Client> const & Server::getClients( void ) const{
 	return( this->_clients );
 }
 
-sockaddr_in	const & Server::getAddr() const
-{
+sockaddr_in	const & Server::getAddr() const{
 	return( this->_address );
 }
 
@@ -78,9 +88,11 @@ void	Server::addClient( int const & id, sockaddr_in addr)
 
 void	Server::removeClient( int const & index )
 {
+	int retour = this->_clients[index].getSocket();
+	close( retour );
 	this->_clients.erase( this->_clients.begin() + index );
-
 }
+
 /* ************************************************************************** */
 // NO-MENBER'S FUNCTIONS:
 // Verifie la validitee des arguments:
@@ -111,12 +123,14 @@ std::ostream & operator<<( std::ostream & o, Server const & src )
 
 	for(it = src.getClients().begin(); it != src.getClients().end(); it++)
 	{
-		o << "- id client: " << it->getSocket() << std::endl;
+		// o << "| socket | addresse | name | nickname | password |" << std::endl;
+		o << "| " << it->getSocket() << " | " << it->getAddr().sin_port << std::endl;
+		o << "- socket client: " << it->getSocket() << std::endl;
 		o << "- addresse client: " << it->getAddr().sin_port << std::endl;
 		o << "- name client: " << it->getName() << std::endl;
 		o << "- nickname client: " << it->getNickname() << std::endl;
 		o << "- password: " << it->getConnect() << std::endl;
-	o << "--------" << std::endl;
+		o << "--------" << std::endl;
 	}
 	std::cout << "-------------------------------------------" << std::endl;
 	return( o );

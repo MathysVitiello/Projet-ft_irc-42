@@ -33,9 +33,7 @@ class Server
 
 		// -------------------- Functions ---------------------- //
 		void	addClient( int const & id, sockaddr_in from );
-		void	command(std::string cmdSend, int fdClient);
-		// à faire
-		// void	removeClient( int const & id, sockaddr_in from  );
+		void	command( std::string cmdSend, int fdClient );
 		void	removeClient( int const & index );
 
 	// --------------------------------------------------------- //

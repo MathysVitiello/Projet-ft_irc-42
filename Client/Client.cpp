@@ -73,7 +73,6 @@ void Client::setNick( std::string nick, std::vector<Client> *clients ) {
 	return ;
 }
 
-
 void Client::setAddr( sockaddr_in addr ) {
 
 	this->_address = addr;
