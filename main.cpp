@@ -6,27 +6,33 @@
 /*   By: mvitiell <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/01/04 11:44:21 by mvitiell          #+#    #+#             */
-/*   Updated: 2024/01/10 15:42:21 by alamizan         ###   ########.fr       */
+/*   Updated: 2024/01/11 09:29:11 by alamizan         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
+#include "Client/Client.hpp"
 #include "library.hpp"
-# include<signal.h>
+
+#include <signal.h>
+
+# define BYELLOW	"\001\e[1;33m\002"
+# define BGREEN		"\001\e[1;32m\002"
 
 int exitFlag = 0;
 
 void	sigHandler( int signum )
 {
 	exitFlag = signum;
+	throw std::runtime_error( "throw sigHandler: Dans ta gueule !" );
 }
 
 int main(int argc, char **argv)
 {
 	try
 	{
-		int connfd, sockfd, nbFds;
-		ssize_t				n; //size of buffer.
+		int newSocket, sockfd, nbFds;
+		ssize_t				sizeRead; //size of buffer.
 		char				buf[4096];
-		struct sockaddr_in		clientaddr; 
+		struct sockaddr_in	clientaddr; 
 		socklen_t			clientLen;                 
 
 		// ------------------------------------------------------------- //
@@ -34,17 +40,8 @@ int main(int argc, char **argv)
 		checkArgs( argc, argv );
 
 		// ------------------------------------------------------------- //
-		// [2] Creer un serveur:
+		// [2] Creer un serveur et le configurer:
 		Server server( atoi(argv[1]), argv[2] );
-
-		// le configurer et le mettre en attente:
-		// server.config();
-		if (bind(server.getSocket(), (struct sockaddr *)&server.getAddr(),
-				sizeof(server.getAddr())) < 0)
-			throw std::runtime_error( "Can't bind to IP/port." );
-
-		if (listen(server.getSocket(), SOMAXCONN) < 0)
-			throw std::runtime_error( "Can't listen, or too many clients to handle." );
 
 		// ------------------------------------------------------------- //
 		// [3] integre le serveur dans une liste de "fd":
@@ -55,70 +52,83 @@ int main(int argc, char **argv)
 		// FD_ZERO permet de supprimer tous les bits d une structure fd_set.
 		FD_ZERO(&master);
 		// Integre ce nouvel ensemble de donnees dans le descripteur d archive fd_set master/
-		//i.e server.getSocket() is available for connections.
 		FD_SET(server.getSocket(), &master);
+
 		// ------------------------------------------------------------- //
 		// [4] Boucle du serveur:
-		for(;;)
+
+		// Gestion des signaux:
+		signal( SIGQUIT, SIG_IGN );
+		signal( SIGINT, sigHandler );
+
+		while ( 1 )
 		{
-			signal( SIGQUIT, SIG_IGN);
 			fd_set	copy = master;
-			if((nbFds = select(1024, &copy, NULL, NULL, NULL)) < 0){
+			if( ( nbFds = select(1024, &copy, NULL, NULL, NULL) ) < 0 )
 				throw std::runtime_error( "Error in select" );
-			}
 
 			// ------------------------------------------------------------- //
 			/* this is done for new connections */
-			if(FD_ISSET(server.getSocket(), &copy))   /* new client has requested connection */
+			if( FD_ISSET(server.getSocket(), &copy) )   /* new client has requested connection */
 			{
 				// [5] Ajout de clients:
 				clientLen = sizeof(clientaddr);
-				if((connfd = accept(server.getSocket(), (struct sockaddr *)&clientaddr, 
-								&clientLen)) == -1)
+				if( (newSocket = accept(server.getSocket(), (struct sockaddr *)&clientaddr, 
+								&clientLen)) == -1 )
 					throw std::runtime_error( "Problem with client connecting" );
-				else
-				{
-					server.addClient(connfd, clientaddr);
-					std::cout << server << std::endl;
-				}
-				FD_SET(connfd, &master); /* add the new file descriptor to set */
+
+				server.addClient(newSocket, clientaddr);
+				std::cout << server << std::endl;
+				FD_SET(newSocket, &master); /* add the new file descriptor to set */
 			}
 
 			/* handle all the clients requesting */
-
-			for(size_t i = 0; i < server.getClients().size(); i++)
+			for( size_t i = 0; i < server.getClients().size(); i++ )
 			{
-				if((sockfd = server.getClients()[i].getSocket()) < 0)
+				if( (sockfd = server.getClients()[i].getSocket()) < 0 )
 					continue;
-				
-				if(FD_ISSET(sockfd, &copy))
+
+				if( FD_ISSET(sockfd, &copy) )
 				{
-					if( (n = recv(sockfd, buf, 4096, 0))==0 )
+					sizeRead = recv(sockfd, buf, sizeof(buf), 0);
+					if ( sizeRead <= 0 )
 					{
 						/* connection closed by client side */
+						if ( sizeRead == 0 )
+							std::cerr << "Connection socket's client " << server.getClients()[i].getSocket() << " closed by server" << std::endl;
+						else
+							perror("recv");
 						close(sockfd);
 						FD_CLR(sockfd, &master);
 						server.removeClient( i );
-						// il faut integrer le char buf[1024] pour chaque client
-						//client[i] = -1;
 					}
 					else{
-						buf[n - 1] = '\0';
+						buf[sizeRead - 1] = '\0';
 						server.command(buf, i);
-						// std::cout << it->getSocket() <<  " istd::string(buf, 0, bytesRecv)" << std::endl;
 					}
 					if(--nbFds < 0)
 						break;
 				}
 			}   
 		}
-
-	close(server.getSocket());
+		int al = server.getSocket();
+		close( al );
     }
 	catch ( std::exception & e )
 	{
 		std::cerr << CRED << "ERROR: " << NC << BRED << e.what() << NC << std::endl;
-		return( 127 );
-	}
-    return 0;
+
+		if( exitFlag == SIGINT )
+			std::cerr << BPURPLE << "Ctrl-c: fermeture du serveur et deconnexion des clients !! " << NC << std::endl;
+
+		else
+		{
+			std::cerr << BRED << "Code erreur = " << exitFlag << std::endl;
+			std::cerr << "Renvoi valgrind:"  << std::endl;
+			if( exitFlag == 0 )
+				std::cerr << BGREEN;
 		}
+		return( exitFlag );
+	}
+    return ( 0 );
+}

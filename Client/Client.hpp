@@ -21,6 +21,7 @@ class Client
 		std::string const & getNickname( void ) const;
 		bool		const & getConnect( void ) const;
 
+		void				setSocket( int socket );
 		void				setName( std::string name );
 		void 				setNick( std::string nick, std::vector<Client> *clients );
 		void 				setAddr( sockaddr_in addr );

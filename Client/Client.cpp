@@ -1,6 +1,5 @@
 #include "Client.hpp"
 
-
 /* ************************************************************************** */
 // CONSTRUCTOR / DESTRUCTOR:
 Client::Client( int const & id, sockaddr_in from ) :	_socket( id ),
@@ -51,6 +50,10 @@ bool	const & Client::getConnect( void ) const{
 	return( this->_connected );
 }
 
+void	Client::setSocket( int socket ){
+	this->_socket = socket;
+}
+
 void Client::setName( std::string name ) {
 	if (this->_connected)
 		if(this->_name.empty())
@@ -73,11 +76,13 @@ void Client::setNick( std::string nick, std::vector<Client> *clients ) {
 	return ;
 }
 
+
 int	Client::checkRight( void ) {
 	if (this->_connected == true && this->getName() != "" && this->getNickname() != "")
 		return true;
 	return false;
 }
+
 
 void Client::setAddr( sockaddr_in addr ) {
 
