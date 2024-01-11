@@ -1,6 +1,7 @@
 #ifndef DEFINE_HPP
 #define DEFINE_HPP
 
+# define ERR_NOMOREFDFREE						("421 :Too many connections, try again later\r\n")
 /* PASS message  */
 
 # define ERR_NEEDMOREPARAMS(nick, command)			("461 : " +nick+ " :" +command+ " :Not enough parameters\r\n")

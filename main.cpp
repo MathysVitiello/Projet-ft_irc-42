@@ -6,7 +6,7 @@
 /*   By: mvitiell <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/01/04 11:44:21 by mvitiell          #+#    #+#             */
-/*   Updated: 2024/01/11 09:29:11 by alamizan         ###   ########.fr       */
+/*   Updated: 2024/01/11 13:14:43 by alamizan         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 #include "Client/Client.hpp"
@@ -48,6 +48,7 @@ int main(int argc, char **argv)
 		// fd_set: c est une structure de données qui contient un ensemble 
 		// de descripteurs d'archives:
 		fd_set	master;
+		
 
 		// FD_ZERO permet de supprimer tous les bits d une structure fd_set.
 		FD_ZERO(&master);

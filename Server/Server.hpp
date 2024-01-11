@@ -44,7 +44,6 @@ class Server
 		std::string		const &	_password;
 		int						_socket;
 		sockaddr_in				_address;
-		// fd_set _master;
 		std::vector<Client>		_clients;
 		// std::vector<Channel>	_channels;
 };
