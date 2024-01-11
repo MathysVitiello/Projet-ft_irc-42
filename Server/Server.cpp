@@ -36,19 +36,15 @@ Server::~Server( void )
 {
 	close( this->_socket );
 
-	// for(size_t i = 0; i < this->getClients().size(); i++)
-	// {
-		// if( this->getClients()[i].getSocket() > 0 )
-		// {
-			// std::cout << "LOL" << std::endl;
-			// std::cout << this->getClients()[i].getSocket() << std::endl;
-			// int socket = this->getClients()[i].getSocket();
-			// close( socket );
-			// this->_clients[i].setSocket( socket );
-			// std::cout << this->getClients()[i].getSocket() << std::endl;
-		// }
-	// }
-// 
+	for(size_t i = 0; i < this->getClients().size(); i++)
+	{
+		if( this->getClients()[i].getSocket() > 0 )
+		{
+			int socket = this->getClients()[i].getSocket();
+			close( socket );
+		}
+	}
+
 	if ( this->_clients.empty() )
 		this->_clients.erase( this->_clients.begin(), this->_clients.end() );
 	this->_clients.clear();
@@ -156,19 +152,20 @@ void	Server::command(std::string cmdSend, int fdClient){
 	}
 	switch (i) {
 	case PASS:
-		std::cout << "PASS :" ;
-		std::cout << fdClient;
-		if(this->_clients[fdClient].enterPwd(this, cmdSend.substr(5)) == true)
-			std::cout << "Password correct" << std::endl;
+		// std::cout << "PASS :" ;
+		// std::cout << fdClient;
+		this->_clients[fdClient].enterPwd(this, cmdSend.substr(4));
+		// if (this->_clients[fdClient].getConnect())
+			// std::cout << "Password correct" << std::endl;
 		// this->_clients[fdClient].set
 		break;
 	case NICK:
 		std::cout << "NICK " << std::endl;
-		this->_clients[fdClient].setNick(cmdSend.substr(5), &this->_clients);
+		this->_clients[fdClient].setNick(cmdSend.substr(4), &this->_clients);
 		break;
 	case USER:
 		std::cout << "USER " << std::endl;
-		this->_clients[fdClient].setName(cmdSend.substr(5));
+		this->_clients[fdClient].setName(cmdSend.substr(4));
 		break;
 	case PRIVMSG:
 		if (this->_clients[fdClient].checkRight() == true)
