@@ -150,7 +150,7 @@ void	Server::command(std::string cmdSend, int fdClient){
 	std::string	cmd[] = {"PASS", "NICK", "USER", "PRIVMSG"};
 	int i;
 
-	for (i = 0; i < 3; i++){
+	for (i = 0; i < 4; i++){
 		if(!cmdSend.find(cmd[i]))
 			break;
 	}

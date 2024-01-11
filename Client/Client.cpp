@@ -178,9 +178,9 @@ void    Client::privateMessage( std::vector<Client> *clients, std::string info )
 			
 			// send message to the client
 			if (info.size() == 0)
-				send(it->getSocket(), ERR_NOTEXTTOSEND(this->getNickname()).c_str(), ERR_NOTEXTTOSEND(this->getNickname()).size(), 0);
+				send(this->getSocket(), ERR_NOTEXTTOSEND(this->getNickname()).c_str(), ERR_NOTEXTTOSEND(this->getNickname()).size(), 0);
 			else 
-				send(this->getSocket(), RPL_AWAY(name , info).c_str(), RPL_AWAY(name, info).size(), 0);
+				send(it->getSocket(), RPL_AWAY(name , info).c_str(), RPL_AWAY(name, info).size(), 0);
 			return ;
 		}
 	}
