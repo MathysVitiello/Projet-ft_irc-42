@@ -44,13 +44,13 @@
 # define ERR_USERONCHANNEL(nick, channel)			("443 : "+nick+" :is already on channel :"+channel+"\r\n")
                                       
 /*	PRIVMSG message	*/                
-# define ERR_NOSUCHNICK(nick)					("401 : "+nick+" <nickname> :No such nick/channel\r\n")
-# define ERR_NOSUCHSERVER(nick)					("402 : "+nick+" <server name> :No such server\r\n")
-# define ERR_CANNOTSENDTOCHAN(nick)					("404 : "+nick+" "+channel+" :Cannot send to channel\r\n")
-# define ERR_NORECIPIENT(nick)					("411 : "+nick+" :No recipient given (<command>)\r\n")
-# define ERR_NOTEXTTOSEND(nick)					("412 : "+nick+" :No text to send\r\n")
+# define ERR_NOSUCHNICK(nick)					("401 : "+nick+" :No such nick/channel\r\n") //? DONE
+# define ERR_NOSUCHSERVER(nick)					("402 : "+nick+" <server name> :No such server\r\n")//! PAS A FAIRE CHEZ NOUS ?
+# define ERR_CANNOTSENDTOCHAN(nick)					("404 : "+nick+" "+channel+" :Cannot send to channel\r\n")// A FAIRE QUAND CHANNEL
+# define ERR_NORECIPIENT(nick, command)					("411 : "+nick+" :No recipient given ("+command+")\r\n")//? DONE
+# define ERR_NOTEXTTOSEND(nick)					("412 : "+nick+" :No text to send\r\n")//? DONE
 
-# define RPL_AWAY(nick)					("301 : "+nick+" <nick> :<message>\r\n")
+# define RPL_AWAY(nick, message)					("301 : "+nick+" :"+message+"\r\n")//? DONE
                                       
 /*	KILL message	*/                
                                      

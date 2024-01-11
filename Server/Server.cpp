@@ -165,7 +165,7 @@ void	Server::command(std::string cmdSend, int fdClient){
 		break;
 	case PRIVMSG:
 		if (this->_clients[fdClient].checkRight() == true)
-			this->_clients[fdClient].privateMessage(&this->_clients, cmdSend.substr(8));
+			this->_clients[fdClient].privateMessage(&this->_clients, cmdSend.substr(7));
 		break;
 	default:
 		send(this->_clients[fdClient].getSocket(), ERR_UNKNOWNCOMMAND(this->_clients[fdClient].getNickname()).c_str(), ERR_UNKNOWNCOMMAND(this->_clients[fdClient].getNickname()).size(), 0);

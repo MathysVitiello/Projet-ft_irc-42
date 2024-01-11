@@ -40,7 +40,7 @@ class Client
 		std::string	_name;
 		std::string	_nickname;
 		bool		_connected;
-		bool		_checkRight; //! en construction
+		bool		_checkRight;
 };
 
 
