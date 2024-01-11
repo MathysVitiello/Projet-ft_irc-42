@@ -51,6 +51,10 @@ bool	const & Client::getConnect( void ) const{
 	return( this->_connected );
 }
 
+void	Client::setSocket( int socket ){
+	this->_socket = socket;
+}
+
 void Client::setName( std::string name ) {
 	if (this->_connected)
 		if(this->_name.empty())

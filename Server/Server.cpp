@@ -36,11 +36,21 @@ Server::~Server( void )
 {
 	close( this->_socket );
 
-	for(size_t i = 0; i < this->getClients().size(); i++)
-	{
-		if( this->getClients()[i].getSocket() > 0 )
-			close( this->getClients()[i].getSocket()  );
-	}
+	// for(size_t i = 0; i < this->getClients().size(); i++)
+	// {
+		// if( this->getClients()[i].getSocket() > 0 )
+		// {
+			// std::cout << "LOL" << std::endl;
+			// std::cout << this->getClients()[i].getSocket() << std::endl;
+			// int socket = this->getClients()[i].getSocket();
+			// close( socket );
+			// this->_clients[i].setSocket( socket );
+			// std::cout << this->getClients()[i].getSocket() << std::endl;
+		// }
+	// }
+// 
+	if ( this->_clients.empty() )
+		this->_clients.erase( this->_clients.begin(), this->_clients.end() );
 	this->_clients.clear();
 	std::cout << "Destructor called" << std::endl;
 	return;
@@ -82,8 +92,8 @@ sockaddr_in	const & Server::getAddr() const{
 void	Server::addClient( int const & id, sockaddr_in addr)
 {
 	// max client 1024-> Fd_SETSIZE:
-	Client *client = new Client(id, addr);
-	this->_clients.push_back( *client );
+	Client client(id, addr);
+	this->_clients.push_back( client );
 }
 
 void	Server::removeClient( int const & index )
