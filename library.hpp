@@ -27,7 +27,7 @@
 // --------------------- CLASS ---------------------- //
 # include "./Client/Client.hpp"
 # include "./Server/Server.hpp"
-//#include "./Channel/Channel.hpp"
+# include "./Channel/Channel.hpp"
 # include "define.hpp"
 # include "utils.hpp"
 

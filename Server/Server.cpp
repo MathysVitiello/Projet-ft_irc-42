@@ -43,15 +43,13 @@ Server::~Server( void )
 		{
 			int socket = this->getClients()[i].getSocket();
 			close( socket );
-			this->_clients[i].setSocket( socket );
-			std::cout << this->getClients()[i].getSocket() << std::endl;
 		}
 	}
 
 	if ( this->_clients.empty() )
 		this->_clients.erase( this->_clients.begin(), this->_clients.end() );
 	this->_clients.clear();
-	std::cout << "Destructor called" << std::endl;
+	// std::cout << "Destructor called" << std::endl;
 	return;
 }
 
@@ -149,18 +147,14 @@ void	Server::command(std::string cmdSend, int fdClient){
 	std::string	cmd[] = {"PASS", "NICK", "USER", "PRIVMSG"};
 	int i;
 
-	for (i = 0; i < 3; i++){
+	for (i = 0; i < 4; i++){
 		if(!cmdSend.find(cmd[i]))
 			break;
 	}
+	std::cout << cmdSend << std::endl;
 	switch (i) {
 	case PASS:
-		// std::cout << "PASS :" ;
-		// std::cout << fdClient;
 		this->_clients[fdClient].enterPwd(this, cmdSend.substr(4));
-		// if (this->_clients[fdClient].getConnect())
-			// std::cout << "Password correct" << std::endl;
-		// this->_clients[fdClient].set
 		break;
 	case NICK:
 		std::cout << "NICK " << std::endl;
@@ -175,8 +169,7 @@ void	Server::command(std::string cmdSend, int fdClient){
 			this->_clients[fdClient].privateMessage(&this->_clients, cmdSend.substr(8));
 		break;
 	default:
-		send(fdClient, ERR_UNKNOWNCOMMAND(this->_clients[fdClient].getNickname()).c_str(),\
-				ERR_UNKNOWNCOMMAND(this->_clients[fdClient].getNickname()).size(), 0);
+		send(fdClient, ERR_UNKNOWNCOMMAND(this->_clients[fdClient].getNickname()).c_str(), ERR_UNKNOWNCOMMAND(this->_clients[fdClient].getNickname()).size(), 0);
 		break;
 	}
 }
