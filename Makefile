@@ -6,13 +6,14 @@
 #    By: mvitiell <marvin@42.fr>                    +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2024/01/04 11:45:22 by mvitiell          #+#    #+#              #
-#    Updated: 2024/01/08 11:58:57 by alamizan         ###   ########.fr        #
+#    Updated: 2024/01/11 11:02:33 by nminotte         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
 NAME =	ircserv
 
 SRC =	main.cpp \
+		utils.cpp \
 		Client/Client.cpp \
 		Server/Server.cpp
 

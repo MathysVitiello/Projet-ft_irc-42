@@ -55,8 +55,7 @@ bool	const & Client::getConnect( void ) const{
 }
 
 void Client::setName( std::string name ) {
-	if (name[0] == ' ')
-		name.erase(0, 1);
+	name = trimSpace(name);
 	if (this->_connected){
 		if (name.empty()){
 			std::string cmd = "USER";
@@ -64,6 +63,12 @@ void Client::setName( std::string name ) {
 			return;
 		}
 		if (this->_name.empty()){
+			for(size_t i = 0; i < name.size(); i++){
+				if (!isalnum(name[i]) && name[i] != '-' && name[i] != '[' && name[i] != ']' && name[i] != '\\' &&  name[i] != '^' && name[i] != '_' && name[i] != '{' && name[i] != '|' && name[i] != '}'){
+					send(this->getSocket(),	ERR_ERRONEUSNICKNAME(name).c_str(), ERR_ERRONEUSNICKNAME(name).size(), 0);
+					return;
+				}
+			}
 			this->_name = name;
 			return;
 		}
@@ -73,14 +78,14 @@ void Client::setName( std::string name ) {
 }
 
 void Client::setNick( std::string nick, std::vector<Client> *clients ) {
-	if (nick[0] == ' ')
-		nick.erase(0, 1);
+	nick  = trimSpace(nick);
 	if (this->_connected){
 		if (nick.empty()){
 			std::string cmd = "NICK";
 			send(this->getSocket(), ERR_NEEDMOREPARAMS(this->_nickname, cmd).c_str(), ERR_NEEDMOREPARAMS(this->_nickname, cmd).size(), 0);
+			return;
 		}
-		if (this->_nickname.size() > 9){
+		if (nick.size() > 9){
 			send(this->getSocket(),	ERR_ERRONEUSNICKNAME(nick).c_str(), ERR_ERRONEUSNICKNAME(nick).size(), 0);
 			return;
 		}
