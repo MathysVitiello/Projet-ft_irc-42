@@ -2,6 +2,7 @@
 # define SERVER_HPP
 
 # include "../library.hpp"
+#include <string>
 
 enum cmdUser {
 	PASS,
@@ -43,6 +44,7 @@ class Server
 		void	addClient( int const & id, sockaddr_in from );
 		void	command( std::string cmdSend, int fdClient );
 		void	removeClient( int const & index );
+		// void	createChannel( Client *client, std::string msg );
 
 	// --------------------------------------------------------- //
 	 private:

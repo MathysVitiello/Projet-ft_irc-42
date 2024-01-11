@@ -1,5 +1,4 @@
 #include "Server.hpp"
-#include <sys/socket.h>
 
 /* ************************************************************************** */
 // CONSTRUCTOR / DESTRUCTOR:
@@ -130,7 +129,6 @@ std::ostream & operator<<( std::ostream & o, Server const & src )
 
 	for(it = src.getClients().begin(); it != src.getClients().end(); it++)
 	{
-		// o << "| socket | addresse | name | nickname | password |" << std::endl;
 		o << "| " << it->getSocket() << " | " << it->getAddr().sin_port << std::endl;
 		o << "- socket client: " << it->getSocket() << std::endl;
 		o << "- addresse client: " << it->getAddr().sin_port << std::endl;
@@ -144,10 +142,10 @@ std::ostream & operator<<( std::ostream & o, Server const & src )
 }
 
 void	Server::command(std::string cmdSend, int fdClient){
-	std::string	cmd[] = {"PASS", "NICK", "USER", "PRIVMSG"};
+	std::string	cmd[] = {"PASS", "NICK", "USER", "PRIVMSG", "JOIN"};
 	int i;
 
-	for (i = 0; i < 4; i++){
+	for (i = 0; i < 5; i++){
 		if(!cmdSend.find(cmd[i]))
 			break;
 	}
@@ -167,8 +165,20 @@ void	Server::command(std::string cmdSend, int fdClient){
 		if (this->_clients[fdClient].checkRight() == true)
 			this->_clients[fdClient].privateMessage(&this->_clients, cmdSend.substr(7));
 		break;
+	case JOIN:
+		std::cout << "JOIN " << std::endl;
+		if (this->_clients[fdClient].checkRight() == true)
+		//void	join(socket client);
+		// join #<coco>	
+		break;
 	default:
 		send(this->_clients[fdClient].getSocket(), ERR_UNKNOWNCOMMAND(this->_clients[fdClient].getNickname()).c_str(), ERR_UNKNOWNCOMMAND(this->_clients[fdClient].getNickname()).size(), 0);
 		break;
 	}
 }
+
+// void	createChannel( Client *client, std::string msg ){
+	// if (channel n'existe pas dans  vector<channel>)
+		// creer channel le mettre dans le vector;
+	// if (client dans vector<Channel> )
+// }

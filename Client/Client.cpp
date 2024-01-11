@@ -186,3 +186,13 @@ void    Client::privateMessage( std::vector<Client> *clients, std::string info )
 	}
 	send(this->getSocket(), ERR_NOSUCHNICK(name).c_str(), ERR_NOSUCHNICK(name).size(), 0);
 }
+
+// void				join(Server *server, std::string join){
+	// join = trimSpace(join);
+	// if (join.empty()){
+		//rajouter MSGERR
+		// return;
+	// }
+	// server.createChannel(this, join);
+// }
+

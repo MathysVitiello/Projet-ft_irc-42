@@ -4,8 +4,9 @@
 #include "../library.hpp"
 
 class Channel{
+	// --------------------------------------------------------- //
 	 public:
-		Channel();
+		// Channel( unsigned int const & socket, unsigned in const & clientSocket );
 		~Channel();
 	 private:
 		std::string					channelName;
