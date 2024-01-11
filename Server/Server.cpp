@@ -1,4 +1,5 @@
 #include "Server.hpp"
+#include <sys/socket.h>
 
 /* ************************************************************************** */
 // CONSTRUCTOR / DESTRUCTOR:
@@ -176,7 +177,8 @@ void	Server::command(std::string cmdSend, int fdClient){
 			this->_clients[fdClient].privateMessage(&this->_clients, cmdSend.substr(8));
 		break;
 	default:
-		std::cout << this->_clients[fdClient].getSocket() << ": wrong command" << std::endl;
+		send(fdClient, ERR_UNKNOWNCOMMAND(this->_clients[fdClient].getNickname()).c_str(),\
+				ERR_UNKNOWNCOMMAND(this->_clients[fdClient].getNickname()).size(), 0);
 		break;
 	}
 }

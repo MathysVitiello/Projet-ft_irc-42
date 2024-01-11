@@ -60,5 +60,6 @@
                                       
 # define RPL_WELCOME(nick)					("001 : "+nick+" :Welcome to the IRC Network, "+nick+" !<user>@<host>]\r\n")
 
+# define ERR_UNKNOWNCOMMAND(nick)			 ("421 "+nick+" :Unknown command")
 
 #endif
