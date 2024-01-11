@@ -29,7 +29,7 @@ class Client
 		// -------------------- Functions ---------------------- //
 		void				quit(); //appelle 1 fonction Server qui detruit le Client dans vector
 		void				join(); //creer 1 canal ou en join 1
-		bool				enterPwd(Server *server, std::string password); //verif "PASS" + bon password; si bon change _connected
+		void				enterPwd(Server *server, std::string password); //verif "PASS" + bon password; si bon change _connected
 		void				privateMessage(std::vector<Client> *clients, std::string info); // PRIVMSG "nickname de celui a qui on veut envoye msg" "msg" 
 		int					checkRight( void );
 
@@ -40,7 +40,7 @@ class Client
 		std::string	_name;
 		std::string	_nickname;
 		bool		_connected;
-		bool		_checkRight; //! en construction
+		bool		_checkRight;
 };
 
 

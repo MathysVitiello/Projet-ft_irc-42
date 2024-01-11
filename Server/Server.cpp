@@ -173,7 +173,7 @@ void	Server::command(std::string cmdSend, int fdClient){
 		break;
 	case PRIVMSG:
 		if (this->_clients[fdClient].checkRight() == true)
-			this->_clients[fdClient].privateMessage(&this->_clients, cmdSend.substr(8));
+			this->_clients[fdClient].privateMessage(&this->_clients, cmdSend.substr(7));
 		break;
 	default:
 		std::cout << this->_clients[fdClient].getSocket() << ": wrong command" << std::endl;
