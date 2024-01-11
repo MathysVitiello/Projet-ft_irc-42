@@ -8,8 +8,16 @@ enum cmdUser {
 	NICK,
 	USER,
 	PRIVMSG,
+	JOIN,
 	QUIT,
  };
+
+enum cmdChannel{
+	KICK,
+	INVITE,
+	TOPIC,
+	MODE,
+};
 
 class Client;
 class Server
