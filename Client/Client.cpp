@@ -186,13 +186,44 @@ void    Client::privateMessage( std::vector<Client> *clients, std::string info )
 	}
 	send(this->getSocket(), ERR_NOSUCHNICK(name).c_str(), ERR_NOSUCHNICK(name).size(), 0);
 }
+void                Client::join(Server *server, std::string join)
+{
 
-// void				join(Server *server, std::string join){
-	// join = trimSpace(join);
-	// if (join.empty()){
-		//rajouter MSGERR
-		// return;
-	// }
-	// server.createChannel(this, join);
-// }
+    /*  ERR_NEEDMOREPARAMS              ERR_BANNEDFROMCHAN
+           ERR_INVITEONLYCHAN              ERR_BADCHANNELKEY
+           ERR_CHANNELISFULL               ERR_BADCHANMASK
+           ERR_NOSUCHCHANNEL               ERR_TOOMANYCHANNELS
+           RPL_TOPIC */
+    join = trimSpace(join);
+    if (join.empty()){
+        send(this->getSocket(), ERR_NEEDMOREPARAMS(this->getName(), "JOIN").c_str(), ERR_NEEDMOREPARAMS(this->getName(), "JOIN").size(), 0);
+        return;
+    }
+
+    //faire gaffe si separe par des ",", si oui join plz channels
+    // faire gaffe si il y a unn mdp apres
+
+    //! premiere groupe de mot = join le serv, deuxieme = mdp
+
+    std::cout << join << ": join info" << std::endl;
+    //! check si il y a un mpd apres
+    if (join[0] == '#' || join[0] == '&')
+    {
+        //!check si il ya un mpd
+        // if (join.find(',') != -1)
+        // {
+        //     std::cout << "il y a un mdp" << join << std::endl;
+
+        // }
+        //!check si canal existe deja  
+        std::cout << "veux join le serveur" << join << std::endl;
+
+    }
+    (void)server;
+
+    //JOIN #coco ; accède au canal #coco.
+    //JOIN &foobar ; accède au canal &foobar.
+
+    server->createChannel( this, join);
+}
 

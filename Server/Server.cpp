@@ -166,19 +166,51 @@ void	Server::command(std::string cmdSend, int fdClient){
 			this->_clients[fdClient].privateMessage(&this->_clients, cmdSend.substr(7));
 		break;
 	case JOIN:
-		std::cout << "JOIN " << std::endl;
-		if (this->_clients[fdClient].checkRight() == true)
-		//void	join(socket client);
-		// join #<coco>	
-		break;
+        std::cout << "JOIN " << std::endl;
+        if (this->_clients[fdClient].checkRight() == true)
+            this->_clients[fdClient].join(this, cmdSend.substr(4));
+        break;
 	default:
 		send(this->_clients[fdClient].getSocket(), ERR_UNKNOWNCOMMAND(this->_clients[fdClient].getNickname()).c_str(), ERR_UNKNOWNCOMMAND(this->_clients[fdClient].getNickname()).size(), 0);
 		break;
 	}
 }
 
-// void	createChannel( Client *client, std::string msg ){
+void	Server::createChannel( Client * client, std::string msg )
+{
+	Channel channel( msg );
+	(void)client;
+// 
+	fd_set master = channel.createFdSet();
+	fd_set	copy = master;
+	struct sockaddr_in	clientaddr; 
+	int newSocket;
+	socklen_t clientLen;
+	while ( 1 )
+	{
+		int nbFds;
+		if( ( nbFds = select(1024, &master, NULL, NULL, NULL) ) < 0 )
+				throw std::runtime_error( "Error in select" );
+
+	//	------------------------------------------------------------- //
+		/* this is done for new connections */
+		if( FD_ISSET(client->getSocket(), &copy) )   /* new client has requested connection */
+		{
+	//		[5] Ajout de clients:
+			clientLen = sizeof(clientaddr);
+			if( (newSocket = accept(channel.getSocket(), (struct sockaddr *)&clientaddr, 
+							&clientLen)) == -1 )
+				throw std::runtime_error( "Problem with client connecting" );
+
+			FD_SET(newSocket, &master); /* add the new file descriptor to set */
+		}
+
+		std::cout <<"ok" << std::endl;
+	}
+}
+
+
+
 	// if (channel n'existe pas dans  vector<channel>)
 		// creer channel le mettre dans le vector;
 	// if (client dans vector<Channel> )
-// }
