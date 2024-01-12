@@ -1,13 +1,10 @@
 #include "Client.hpp"
-#include <cstdio>
-#include <cstring>
-#include <string>
 
 /* ************************************************************************** */
 // CONSTRUCTOR / DESTRUCTOR:
 Client::Client( int const & id, sockaddr_in from ) :	_socket( id ),
-	_address( from ),
-	_connected(false)
+														_address( from ),
+														_connected(false)
 {
 	std::cout << "Client constructor called" << std::endl;
 	std::cout << " id:  " << this->_socket << std::endl;
@@ -29,23 +26,19 @@ Client::~Client( void ) {
 
 /* ************************************************************************** */
 // ACCESSORS:
-int	const & Client::getSocket( void ) const
-{
+int	const & Client::getSocket( void ) const{
 	return( this->_socket );
 }
 
-sockaddr_in const & Client::getAddr( void ) const
-{
+sockaddr_in const & Client::getAddr( void ) const{
 	return( this->_address );
 }
 
-std::string const & Client::getName( void ) const
-{
+std::string const & Client::getName( void ) const{
 	return( this->_name );
 }
 
-std::string const & Client::getNickname( void ) const
-{
+std::string const & Client::getNickname( void ) const{
 	return( this->_nickname );
 }
 
@@ -62,20 +55,25 @@ void Client::setName( std::string name ) {
 	if (this->_connected){
 		if (name.empty()){
 			std::string cmd = "USER";
-			send(this->getSocket(), ERR_NEEDMOREPARAMS(this->_nickname, cmd).c_str(), ERR_NEEDMOREPARAMS(this->_nickname, cmd).size(), 0);
+			send(this->getSocket(), ERR_NEEDMOREPARAMS(this->_nickname, cmd).c_str(),
+					ERR_NEEDMOREPARAMS(this->_nickname, cmd).size(), 0);
 			return;
 		}
 		if (this->_name.empty()){
 			for(size_t i = 0; i < name.size(); i++){
-				if (!isalnum(name[i]) && name[i] != '-' && name[i] != '[' && name[i] != ']' && name[i] != '\\' &&  name[i] != '^' && name[i] != '_' && name[i] != '{' && name[i] != '|' && name[i] != '}'){
-					send(this->getSocket(),	ERR_ERRONEUSNICKNAME(name).c_str(), ERR_ERRONEUSNICKNAME(name).size(), 0);
+				if (!isalnum(name[i]) && name[i] != '-' && name[i] != '[' && name[i] != ']' 
+						&& name[i] != '\\' &&  name[i] != '^' && name[i] != '_' 
+						&& name[i] != '{' && name[i] != '|' && name[i] != '}'){
+					send(this->getSocket(),	ERR_ERRONEUSNICKNAME(name).c_str(), 
+							ERR_ERRONEUSNICKNAME(name).size(), 0);
 					return;
 				}
 			}
 			this->_name = name;
 			return;
 		}
-		send(this->getSocket(), ERR_ALREADYREGISTERED(this->_name).c_str(),ERR_ALREADYREGISTERED(this->_name).size(), 0);
+		send(this->getSocket(), ERR_ALREADYREGISTERED(this->_name).c_str(),
+				ERR_ALREADYREGISTERED(this->_name).size(), 0);
 	}
 	return ;
 }
@@ -85,28 +83,35 @@ void Client::setNick( std::string nick, std::vector<Client> *clients ) {
 	if (this->_connected){
 		if (nick.empty()){
 			std::string cmd = "NICK";
-			send(this->getSocket(), ERR_NEEDMOREPARAMS(this->_nickname, cmd).c_str(), ERR_NEEDMOREPARAMS(this->_nickname, cmd).size(), 0);
+			send(this->getSocket(), ERR_NEEDMOREPARAMS(this->_nickname, cmd).c_str(), 
+					ERR_NEEDMOREPARAMS(this->_nickname, cmd).size(), 0);
 			return;
 		}
 		if (nick.size() > 9){
-			send(this->getSocket(),	ERR_ERRONEUSNICKNAME(nick).c_str(), ERR_ERRONEUSNICKNAME(nick).size(), 0);
+			send(this->getSocket(),	ERR_ERRONEUSNICKNAME(nick).c_str(), 
+					ERR_ERRONEUSNICKNAME(nick).size(), 0);
 			return;
 		}
 		for(size_t i = 0; i < nick.size(); i++){
 			if (!isalpha(nick[0])){
 				std::cout << nick << std::endl;
-				send(this->getSocket(),	ERR_ERRONEUSNICKNAME(nick).c_str(), ERR_ERRONEUSNICKNAME(nick).size(), 0);
+				send(this->getSocket(),	ERR_ERRONEUSNICKNAME(nick).c_str(), 
+						ERR_ERRONEUSNICKNAME(nick).size(), 0);
 				return;
 			}
-			if (!isalnum(nick[i]) && nick[i] != '-' && nick[i] != '[' && nick[i] != ']' && nick[i] != '\\' &&  nick[i] != '^' && nick[i] != '_' && nick[i] != '{' && nick[i] != '|' && nick[i] != '}'){
-				send(this->getSocket(),	ERR_ERRONEUSNICKNAME(nick).c_str(), ERR_ERRONEUSNICKNAME(nick).size(), 0);
+			if (!isalnum(nick[i]) && nick[i] != '-' && nick[i] != '[' && nick[i] != ']' 
+					&& nick[i] != '\\' &&  nick[i] != '^' && nick[i] != '_' && nick[i] != '{' 
+					&& nick[i] != '|' && nick[i] != '}'){
+				send(this->getSocket(),	ERR_ERRONEUSNICKNAME(nick).c_str(), 
+						ERR_ERRONEUSNICKNAME(nick).size(), 0);
 				return;
 			}
 		}
 		std::vector<Client>::iterator it = clients->begin(); 
 		for ( ;it < clients->end(); it++ )
 			if ( nick == it->getNickname() ){
-				send(this->getSocket(),ERR_NICKNAMEINUSE(nick).c_str() , ERR_NICKNAMEINUSE(nick).size(), 0);
+				send(this->getSocket(),ERR_NICKNAMEINUSE(nick).c_str(),
+						ERR_NICKNAMEINUSE(nick).size(), 0);
 				return;
 			}
 		this->_nickname = nick;
@@ -135,19 +140,22 @@ void	Client::enterPwd(Server *server, std::string password){
 	if (password[0] == ' ')
 		password.erase(0, 1);
 	if (this->_connected == true){
-		send(this->getSocket(), ERR_ALREADYREGISTERED(this->_nickname).c_str(),ERR_ALREADYREGISTERED(this->_nickname).size(), 0);
+		send(this->getSocket(), ERR_ALREADYREGISTERED(this->_nickname).c_str(),
+				ERR_ALREADYREGISTERED(this->_nickname).size(), 0);
 		return;
 	}
 	if (password.empty()){
 		std::string	cmd = "PASS";
-		send(this->getSocket(), ERR_NEEDMOREPARAMS(this->_nickname, cmd).c_str(), ERR_NEEDMOREPARAMS(this->_nickname, cmd).size(), 0);
+		send(this->getSocket(), ERR_NEEDMOREPARAMS(this->_nickname, cmd).c_str(), 
+				ERR_NEEDMOREPARAMS(this->_nickname, cmd).size(), 0);
 		return;
 	}
 	if (password == server->getPassword()){
 		this->_connected = true;
 		return;
 	}
-	send(this->getSocket(), ERR_PASSWDMISMATCH(this->_nickname).c_str(), ERR_PASSWDMISMATCH(this->_nickname).size(), 0);
+	send(this->getSocket(), ERR_PASSWDMISMATCH(this->_nickname).c_str(),
+			ERR_PASSWDMISMATCH(this->_nickname).size(), 0);
 }
 
 void    Client::privateMessage( std::vector<Client> *clients, std::string info )
@@ -158,7 +166,8 @@ void    Client::privateMessage( std::vector<Client> *clients, std::string info )
 	info = trimSpace(info);
 	if (info.size() == 0)
 	{
-		send(this->getSocket(), ERR_NORECIPIENT(this->getNickname(), "PRIVMSG").c_str(), ERR_NORECIPIENT(this->getNickname(), "PRIVMSG").size(), 0);
+		send(this->getSocket(), ERR_NORECIPIENT(this->getNickname(), "PRIVMSG").c_str(), 
+				ERR_NORECIPIENT(this->getNickname(), "PRIVMSG").size(), 0);
 		return ;
 	}
 	while (info[i] && isspace(info[i]) == 0)
@@ -186,44 +195,68 @@ void    Client::privateMessage( std::vector<Client> *clients, std::string info )
 	}
 	send(this->getSocket(), ERR_NOSUCHNICK(name).c_str(), ERR_NOSUCHNICK(name).size(), 0);
 }
-void                Client::join(Server *server, std::string join)
-{
 
-    /*  ERR_NEEDMOREPARAMS              ERR_BANNEDFROMCHAN
-           ERR_INVITEONLYCHAN              ERR_BADCHANNELKEY
-           ERR_CHANNELISFULL               ERR_BADCHANMASK
-           ERR_NOSUCHCHANNEL               ERR_TOOMANYCHANNELS
-           RPL_TOPIC */
+void                Client::join(Server *server, std::string join )
+{
+	(void) server;
     join = trimSpace(join);
     if (join.empty()){
         send(this->getSocket(), ERR_NEEDMOREPARAMS(this->getName(), "JOIN").c_str(), ERR_NEEDMOREPARAMS(this->getName(), "JOIN").size(), 0);
         return;
     }
-
-    //faire gaffe si separe par des ",", si oui join plz channels
-    // faire gaffe si il y a unn mdp apres
-
-    //! premiere groupe de mot = join le serv, deuxieme = mdp
-
-    std::cout << join << ": join info" << std::endl;
-    //! check si il y a un mpd apres
     if (join[0] == '#' || join[0] == '&')
     {
-        //!check si il ya un mpd
-        // if (join.find(',') != -1)
-        // {
-        //     std::cout << "il y a un mdp" << join << std::endl;
+        if (join.find(",") > 0 && join.size() > join.find(","))
+        {
+            //ici il y a plz channels
+            //! checker quils soient differents
+            int nb_chanel = std::count(join.begin(), join.end(), ',') + 1;
+             std::string chanels[nb_chanel];
+            int i = 0;
 
-        // }
-        //!check si canal existe deja  
-        std::cout << "veux join le serveur" << join << std::endl;
+            // double array des chanels 
+            while(join.find(',') < join.find(' ') || join.find(',') < join.size())
+            {
+                //! checkoer 0 == # oub &
+                chanels[i] = join.substr(0, join.find(','));
+                std::cout << chanels[i] << " | " << std::endl;
+                join = join.substr(join.find(',') + 1);
+                i++;
+            }
+            chanels[i] = join.substr(0, join.find(' '));
+            join = join.substr(chanels[i].size());
 
-    }
-    (void)server;
+            join = trimSpace(join);
+            if (join.size() > 0)
+                std::cout << "il y a des MDP MTN" << join.size() << std::endl;
+            else{
+                for(int i = 0; i < nb_chanel - 1; i++)
+                	server->createChannel(this, chanels[i], "");
+            }
+        } 
+	else 
+	{
+				//> il y a que un canal
+				std::string chanel = join.substr(0, join.find(' '));
+				join = join.substr(0, join.find(' '));
 
-    //JOIN #coco ; accède au canal #coco.
-    //JOIN &foobar ; accède au canal &foobar.
+				std::cout << "jion avant :" << join << std::endl;
+				join = trimSpace(join);
+				std::cout << "jion apres :" << join << std::endl;
 
-    server->createChannel( this, join);
+				if (chanel.size() == join.size())
+				{
+					std::cout << "pas de mdp, que un canal"  << std::endl;
+					server->createChannel(this, chanel, "");
+					return;
+				} else 
+				{
+
+					//find password
+					join = join.substr(join.find(' '), join.size() - join.find(' '));
+					std::cout << "check PASSWORD :" << join << std::endl;
+				}
+			//!check si canal existe deja  
+	}
+	}
 }
-

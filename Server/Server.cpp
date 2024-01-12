@@ -1,4 +1,5 @@
 #include "Server.hpp"
+#include <sys/socket.h>
 
 /* ************************************************************************** */
 // CONSTRUCTOR / DESTRUCTOR:
@@ -114,33 +115,6 @@ void	checkArgs(int argc, char **argv)
 	if (std::string(argv[2]).length() == 0)
         throw std::runtime_error("write password, pls.");
 }
-
-// Permet l affichage de toutes les donnees inclut dans le serveur:
-// - std::cout << server << std::endl;
-std::ostream & operator<<( std::ostream & o, Server const & src )
-{
-	std::vector<Client>::const_iterator it;
-
-	std::cout << "-------------------------------------------" << std::endl;
-	o << "Server port: " << src.getPort() << std::endl;
-	o << "Server reseau: " << src.getAddr().sin_port<< std::endl;
-	o << "Server password: " << src.getPassword() << std::endl;
-	o << "--------" << std::endl;
-
-	for(it = src.getClients().begin(); it != src.getClients().end(); it++)
-	{
-		o << "| " << it->getSocket() << " | " << it->getAddr().sin_port << std::endl;
-		o << "- socket client: " << it->getSocket() << std::endl;
-		o << "- addresse client: " << it->getAddr().sin_port << std::endl;
-		o << "- name client: " << it->getName() << std::endl;
-		o << "- nickname client: " << it->getNickname() << std::endl;
-		o << "- password: " << it->getConnect() << std::endl;
-		o << "--------" << std::endl;
-	}
-	std::cout << "-------------------------------------------" << std::endl;
-	return( o );
-}
-
 void	Server::command(std::string cmdSend, int fdClient){
 	std::string	cmd[] = {"PASS", "NICK", "USER", "PRIVMSG", "JOIN"};
 	int i;
@@ -176,37 +150,12 @@ void	Server::command(std::string cmdSend, int fdClient){
 	}
 }
 
-void	Server::createChannel( Client * client, std::string msg )
+void	Server::createChannel( Client * client, std::string name, std::string passwd )
 {
-	Channel channel( msg );
-	(void)client;
-// 
-	fd_set master = channel.createFdSet();
-	fd_set	copy = master;
-	struct sockaddr_in	clientaddr; 
-	int newSocket;
-	socklen_t clientLen;
-	while ( 1 )
-	{
-		int nbFds;
-		if( ( nbFds = select(1024, &master, NULL, NULL, NULL) ) < 0 )
-				throw std::runtime_error( "Error in select" );
+	Channel channel( client, name, passwd );
 
-	//	------------------------------------------------------------- //
-		/* this is done for new connections */
-		if( FD_ISSET(client->getSocket(), &copy) )   /* new client has requested connection */
-		{
-	//		[5] Ajout de clients:
-			clientLen = sizeof(clientaddr);
-			if( (newSocket = accept(channel.getSocket(), (struct sockaddr *)&clientaddr, 
-							&clientLen)) == -1 )
-				throw std::runtime_error( "Problem with client connecting" );
-
-			FD_SET(newSocket, &master); /* add the new file descriptor to set */
-		}
-
-		std::cout <<"ok" << std::endl;
-	}
+	char buf[4096] = "client ok\r\n";
+	send(client->getSocket(), buf, strlen(buf), 0);
 }
 
 
@@ -214,3 +163,33 @@ void	Server::createChannel( Client * client, std::string msg )
 	// if (channel n'existe pas dans  vector<channel>)
 		// creer channel le mettre dans le vector;
 	// if (client dans vector<Channel> )
+
+
+
+// Permet l affichage de toutes les donnees inclut dans le serveur:
+// - std::cout << server << std::endl;
+std::ostream & operator<<( std::ostream & o, Server const & src )
+{
+	std::vector<Client>::const_iterator it;
+
+	std::cout << "-------------------------------------------" << std::endl;
+	o << "Server port: " << src.getPort() << std::endl;
+	o << "Server reseau: " << src.getAddr().sin_port<< std::endl;
+	o << "Server password: " << src.getPassword() << std::endl;
+	o << "--------" << std::endl;
+
+	for(it = src.getClients().begin(); it != src.getClients().end(); it++)
+	{
+		o << "| " << it->getSocket() << " | " << it->getAddr().sin_port << std::endl;
+		o << "- socket client: " << it->getSocket() << std::endl;
+		o << "- addresse client: " << it->getAddr().sin_port << std::endl;
+		o << "- name client: " << it->getName() << std::endl;
+		o << "- nickname client: " << it->getNickname() << std::endl;
+		o << "- password: " << it->getConnect() << std::endl;
+		o << "--------" << std::endl;
+	}
+	std::cout << "-------------------------------------------" << std::endl;
+	return( o );
+}
+
+

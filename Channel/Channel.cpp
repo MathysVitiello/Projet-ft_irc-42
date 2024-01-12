@@ -1,53 +1,30 @@
 #include "Channel.hpp"
-#include <netinet/in.h>
 
 /* ************************************************************************** */
 // CONSTRUCTOR / DESTRUCTOR:
-Channel::Channel( std::string name ) : _name(name)
+Channel::Channel( Client *user, std::string name, std::string mdp) : _name(name),
+																	   _password(mdp)
 {
-	this->_socket= socket( AF_INET, SOCK_STREAM, IPPROTO_TCP );
-	if( this->_socket == -1 )
-		throw std::runtime_error( "Invalid socket." );
-
-	this->_address.sin_addr.s_addr = INADDR_ANY;// toutes les sources acceptees.
-	//this->_address.sin_port = htons( port );	// traduit le port en reseau.
-	this->_address.sin_family = AF_INET;		// socket TCP IPv4.
-										
-	// le configurer et le mettre en attente:
-	if (bind(_socket, (struct sockaddr *)&_address, sizeof(_address)) < 0)
-	{
-		close(this->_socket);
-		throw std::runtime_error( "Can't bind to IP/port." );
-	}
-
-	if (listen(_socket, SOMAXCONN) < 0)
-		throw std::runtime_error( "Can't listen, or too many clients to handle." );
-
-	std::cout << "Channel " << this->_name << " created" << std::endl;
+	std::cout << "Channel [" << this->_name << "] created" << std::endl;
+	this->_user.push_back( *user );
 }
 
 Channel::~Channel( void )
 {
-	std::cout << "Destructeur called" << std::endl;
-}
-
-fd_set	Channel::createFdSet( void )
-{
-	FD_ZERO(&this->_master);
-	FD_SET(this->_socket, &this->_master);
-	return(this->_master );
+	std::cout << "channel ["<< this->_name << "] Destructeur called" << std::endl;
 }
 
 /* ************************************************************************** */
 // ACCESSORS:
-int	const & Channel::getSocket( void ) const{
-	return( this->_socket );
-}
-
 std::string	const & Channel::getName( void ) const{
 	return( this->_name);
 }
 
-sockaddr_in	const & Channel::getAddr( void ) const{
-	return( this->_address );
+std::vector<Client>	const & Channel::getUser( void ) const{
+	return( this->_user);
 }
+
+std::string	const & Channel::getPasswd( void ) const{
+	return( this->_password );
+}
+
