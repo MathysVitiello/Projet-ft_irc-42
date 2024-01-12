@@ -1,5 +1,4 @@
 #include "Server.hpp"
-#include <sys/socket.h>
 
 /* ************************************************************************** */
 // CONSTRUCTOR / DESTRUCTOR:
@@ -98,6 +97,31 @@ void	Server::removeClient( int const & index )
 	int retour = this->_clients[index].getSocket();
 	close( retour );
 	this->_clients.erase( this->_clients.begin() + index );
+
+	std::vector<Channel>::iterator it;
+	for(it = this->_channels.begin(); it != this->_channels.end(); it++)
+	{
+		std::string name = it->getUser()[index].getName();
+		for(size_t i = 0; i < it->getUser().size(); i++)
+		{
+			if( name == it->getUser()[i].getName() )
+			{
+				it->removeClientChannel(i);
+				std::cout << "Client [" << name << " ] remove channel" << std::cout;
+				// it->getUser()[i].erase(it->getUser().begin() + index);
+
+			}
+			std::cout << "- name client: " << it->getUser()[i].getName() << std::endl;
+			std::cout << "- socket client: " << it->getUser()[i].getSocket() << std::endl;
+			std::cout << "- addresse client: " << it->getUser()[i].getAddr().sin_port << std::endl;
+			std::cout << "- nickname client: " << it->getUser()[i].getNickname() << std::endl;
+			std::cout << "- password: " << it->getUser()[i].getConnect() << std::endl;
+			std::cout << "--------" << std::endl;
+
+		}
+	}
+
+
 }
 
 /* ************************************************************************** */
@@ -153,6 +177,34 @@ void	Server::command(std::string cmdSend, int fdClient){
 void	Server::createChannel( Client * client, std::string name, std::string passwd )
 {
 	Channel channel( client, name, passwd );
+
+	this->_channels.push_back( channel );
+
+	std::vector<Channel>::const_iterator it;
+	for(it = this->_channels.begin(); it != this->_channels.end(); it++)
+	{
+		std::cout << "channel [" << it->getName() << "]" << std::endl;
+		for(size_t i = 0; i < it->getUser().size(); i++)
+		{
+			std::cout << "- name client: " << it->getUser()[i].getName() << std::endl;
+			std::cout << "- socket client: " << it->getUser()[i].getSocket() << std::endl;
+			std::cout << "- addresse client: " << it->getUser()[i].getAddr().sin_port << std::endl;
+			std::cout << "- nickname client: " << it->getUser()[i].getNickname() << std::endl;
+			std::cout << "- password: " << it->getUser()[i].getConnect() << std::endl;
+			std::cout << "--------" << std::endl;
+
+		}
+	}
+
+// 
+		// for(ite = this->_channels.getUser().begin(); ite != this->_channels.getName().end(); ite++)
+		// std::cout << "- socket client: " << it->getSocket() << std::endl;
+		// std::cout << "- addresse client: " << it->getAddr().sin_port << std::endl;
+		// std::cout << "- name client: " << it->getName() << std::endl;
+		// std::cout << "- nickname client: " << it->getNickname() << std::endl;
+		// std::cout << "- password: " << it->getConnect() << std::endl;
+		// std::cout << "--------" << std::endl;
+
 
 	char buf[4096] = "client ok\r\n";
 	send(client->getSocket(), buf, strlen(buf), 0);

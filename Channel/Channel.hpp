@@ -3,6 +3,7 @@
 
 #include "../library.hpp"
 
+class Client;
 class Channel{
 	// --------------------------------------------------------- //
 	 public:
@@ -10,18 +11,20 @@ class Channel{
 		Channel( Client *user, std::string name, std::string password );
 		~Channel( void );
 
+		Client *operator[]( unsigned int index );
 		// ------------------- Accessors ----------------------- //
 		std::string				const & getName( void ) const;
 		std::string				const & getPasswd( void ) const;
 		std::vector<Client>		const & getUser ( void ) const;
 
 		// -------------------- Functions ---------------------- //
+		void	removeClientChannel( int index );
 
 	// --------------------------------------------------------- //
 	 private:
 		std::string				_name;
 		std::string				_password;
-		std::vector<Client>			_user;	//User without privilege
+		std::vector<Client>		_user;	//User without privilege
 											
 		// unsigned int				_owner;  //Admin
 		// std::vector<Client>			_ircOps; //Operator

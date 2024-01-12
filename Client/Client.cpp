@@ -198,65 +198,30 @@ void    Client::privateMessage( std::vector<Client> *clients, std::string info )
 
 void                Client::join(Server *server, std::string join )
 {
-	(void) server;
     join = trimSpace(join);
     if (join.empty()){
-        send(this->getSocket(), ERR_NEEDMOREPARAMS(this->getName(), "JOIN").c_str(), ERR_NEEDMOREPARAMS(this->getName(), "JOIN").size(), 0);
+        send(this->getSocket(), ERR_NEEDMOREPARAMS(this->getName(), "JOIN").c_str(),
+            ERR_NEEDMOREPARAMS(this->getName(), "JOIN").size(), 0);
         return;
     }
     if (join[0] == '#' || join[0] == '&')
     {
-        if (join.find(",") > 0 && join.size() > join.find(","))
+        if (join.size() <= join.find(' '))
         {
-            //ici il y a plz channels
-            //! checker quils soient differents
-            int nb_chanel = std::count(join.begin(), join.end(), ',') + 1;
-             std::string chanels[nb_chanel];
-            int i = 0;
-
-            // double array des chanels 
-            while(join.find(',') < join.find(' ') || join.find(',') < join.size())
-            {
-                //! checkoer 0 == # oub &
-                chanels[i] = join.substr(0, join.find(','));
-                std::cout << chanels[i] << " | " << std::endl;
-                join = join.substr(join.find(',') + 1);
-                i++;
-            }
-            chanels[i] = join.substr(0, join.find(' '));
-            join = join.substr(chanels[i].size());
-
+            //no password
+            if (join[0] != '#')
+                return;
+            server->createChannel(this, join, "");
+            return;
+        }  else {
+            //find password
+            std::string chanel = join.substr(0, join.find(' '));
+            if (chanel[0] != '&')
+                return;
+            join = join.substr(join.find(' '));
             join = trimSpace(join);
-            if (join.size() > 0)
-                std::cout << "il y a des MDP MTN" << join.size() << std::endl;
-            else{
-                for(int i = 0; i < nb_chanel - 1; i++)
-                	server->createChannel(this, chanels[i], "");
-            }
-        } 
-	else 
-	{
-				//> il y a que un canal
-				std::string chanel = join.substr(0, join.find(' '));
-				join = join.substr(0, join.find(' '));
+            server->createChannel(this, chanel, join);
+        }
+    }
+} 
 
-				std::cout << "jion avant :" << join << std::endl;
-				join = trimSpace(join);
-				std::cout << "jion apres :" << join << std::endl;
-
-				if (chanel.size() == join.size())
-				{
-					std::cout << "pas de mdp, que un canal"  << std::endl;
-					server->createChannel(this, chanel, "");
-					return;
-				} else 
-				{
-
-					//find password
-					join = join.substr(join.find(' '), join.size() - join.find(' '));
-					std::cout << "check PASSWORD :" << join << std::endl;
-				}
-			//!check si canal existe deja  
-	}
-	}
-}

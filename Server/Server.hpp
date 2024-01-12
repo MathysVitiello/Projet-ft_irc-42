@@ -2,7 +2,6 @@
 # define SERVER_HPP
 
 # include "../library.hpp"
-#include <string>
 
 enum cmdUser {
 	PASS,
@@ -20,6 +19,7 @@ enum cmdChannel{
 	MODE,
 };
 
+class Channel;
 class Client;
 class Server
 {
@@ -38,7 +38,7 @@ class Server
 		int						const & getSocket( void ) const;
 		sockaddr_in				const & getAddr( void ) const;
 		std::vector<Client>		const & getClients( void  ) const;
-		// std::vector<Channel>	const & getChannels( void  ) const;
+		std::vector<Channel>	const & getChannels( void  ) const;
 
 		// -------------------- Functions ---------------------- //
 		void	addClient( int const & id, sockaddr_in from );
@@ -55,7 +55,7 @@ class Server
 		int						_socket;
 		sockaddr_in				_address;
 		std::vector<Client>		_clients;
-		// std::vector<Channel>	_channels;
+		std::vector<Channel>	_channels;
 };
 
 // --------------------------------------------------------- //

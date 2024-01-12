@@ -27,16 +27,15 @@ class Client
 		void 				setAddr( sockaddr_in addr );
 
 		// -------------------- Functions ---------------------- //
-		void				quit(); //appelle 1 fonction Server qui detruit le Client dans vector
-		void				join(Server *server, std::string join); //creer 1 canal ou en join 1
-		void				enterPwd(Server *server, std::string password); //verif "PASS" + bon password; si bon change _connected
-		void				privateMessage(std::vector<Client> *clients, std::string info); // PRIVMSG "nickname de celui a qui on veut envoye msg" "msg" 
+		void				quit(); 
+		void				join(Server *server, std::string join); 
+		void				enterPwd(Server *server, std::string password); 
+		void				privateMessage(std::vector<Client> *clients, std::string info);
 		int					checkRight( void );
 
 
 		// --------------------------------------------------------- //
 	private:
-
 		int 		_socket;
 		sockaddr_in	_address;
 		std::string	_name;
