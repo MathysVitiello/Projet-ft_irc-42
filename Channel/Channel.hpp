@@ -16,7 +16,7 @@ class Channel{
 		std::string				const & getName( void ) const;
 		std::string				const & getPasswd( void ) const;
 		std::vector<Client>		const & getUser ( void ) const;
-
+		void		setUSER( int index );
 		// -------------------- Functions ---------------------- //
 		void	removeClientChannel( int index );
 

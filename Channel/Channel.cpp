@@ -7,12 +7,16 @@ Channel::Channel( Client *user, std::string name, std::string mdp) : _name(name)
 {
 	std::cout << "Channel [" << this->_name << "] created" << std::endl;
 	this->_user.push_back( *user );
-	// std::cout << "Client admin: " << std::cout << user->getName();
 }
 
 Channel::~Channel( void )
 {
 	std::cout << "channel ["<< this->_name << "] Destructeur called" << std::endl;
+
+	if ( this->_user.empty() )
+		this->_user.erase( this->_user.begin(), this->_user.end() );
+	this->_user.clear();
+
 }
 
 /* ************************************************************************** */
@@ -38,7 +42,14 @@ std::string	const & Channel::getPasswd( void ) const{
 	return( this->_password );
 }
 
+// void		setUSER( int index , std::string name ){	
+// }
+
+/* ************************************************************************** */
+// FUNCTIONS:
 void	Channel::removeClientChannel( int index ){
+	// this->_user[index] = NULL;
+
 	this->_user.erase( this->_user.begin() + index );
 }
 
