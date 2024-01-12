@@ -46,6 +46,10 @@ bool	const & Client::getConnect( void ) const{
 	return( this->_connected );
 }
 
+bool	const & Client::getInCanal( void ) const{
+	return( this->_inCanal );
+}
+
 void	Client::setSocket( int socket ){
 	this->_socket = socket;
 }
@@ -119,6 +123,9 @@ void Client::setNick( std::string nick, std::vector<Client> *clients ) {
 	return ;
 }
 
+void	Client::setInCanal( bool foo ){
+	this->_inCanal = foo;
+}
 
 int	Client::checkRight( void ) {
 	if (this->_connected == true && this->getName() != "" && this->getNickname() != "")
@@ -196,7 +203,7 @@ void    Client::privateMessage( std::vector<Client> *clients, std::string info )
 	send(this->getSocket(), ERR_NOSUCHNICK(name).c_str(), ERR_NOSUCHNICK(name).size(), 0);
 }
 
-void                Client::join(Server *server, std::string join )
+void	Client::join(Server *server, std::string join )
 {
     join = trimSpace(join);
     if (join.empty()){
@@ -223,5 +230,6 @@ void                Client::join(Server *server, std::string join )
             server->createChannel(this, chanel, join);
         }
     }
-} 
+}
+
 

@@ -20,11 +20,13 @@ class Client
 		std::string const & getName( void ) const;
 		std::string const & getNickname( void ) const;
 		bool		const & getConnect( void ) const;
+		bool		const & getInCanal( void ) const;
 
 		void				setSocket( int socket );
 		void				setName( std::string name );
 		void 				setNick( std::string nick, std::vector<Client> *clients );
 		void 				setAddr( sockaddr_in addr );
+		void				setInCanal( bool foo );
 
 		// -------------------- Functions ---------------------- //
 		void				quit(); 
@@ -32,7 +34,6 @@ class Client
 		void				enterPwd(Server *server, std::string password); 
 		void				privateMessage(std::vector<Client> *clients, std::string info);
 		int					checkRight( void );
-
 
 		// --------------------------------------------------------- //
 	private:
@@ -42,6 +43,7 @@ class Client
 		std::string	_nickname;
 		bool		_connected;
 		bool		_checkRight;
+		bool		_inCanal;
 };
 
 

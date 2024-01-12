@@ -52,4 +52,3 @@ void	Channel::removeClientChannel( int index ){
 
 	this->_user.erase( this->_user.begin() + index );
 }
-
