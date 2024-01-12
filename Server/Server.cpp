@@ -139,6 +139,7 @@ void	checkArgs(int argc, char **argv)
 	if (std::string(argv[2]).length() == 0)
         throw std::runtime_error("write password, pls.");
 }
+
 void	Server::command(std::string cmdSend, int fdClient){
 	std::string	cmd[] = {"PASS", "NICK", "USER", "PRIVMSG", "JOIN"};
 	int i;
@@ -169,7 +170,10 @@ void	Server::command(std::string cmdSend, int fdClient){
             this->_clients[fdClient].join(this, cmdSend.substr(4));
         break;
 	default:
-		send(this->_clients[fdClient].getSocket(), ERR_UNKNOWNCOMMAND(this->_clients[fdClient].getNickname()).c_str(), ERR_UNKNOWNCOMMAND(this->_clients[fdClient].getNickname()).size(), 0);
+		if (this->_clients[fdClient].getInCanal() == true)
+			commandChannel(this, cmdSend, fdClient);
+		if (this->_clients[fdClient].getInCanal() == false)
+			send(this->_clients[fdClient].getSocket(), ERR_UNKNOWNCOMMAND(this->_clients[fdClient].getNickname()).c_str(), ERR_UNKNOWNCOMMAND(this->_clients[fdClient].getNickname()).size(), 0);
 		break;
 	}
 }
@@ -205,7 +209,7 @@ void	Server::createChannel( Client * client, std::string name, std::string passw
 		// std::cout << "- password: " << it->getConnect() << std::endl;
 		// std::cout << "--------" << std::endl;
 
-
+	client->setInCanal(true);
 	char buf[4096] = "client ok\r\n";
 	send(client->getSocket(), buf, strlen(buf), 0);
 }
@@ -245,3 +249,52 @@ std::ostream & operator<<( std::ostream & o, Server const & src )
 }
 
 
+//! testtt de mathys le con
+void	Server::commandChannel(Server *server, std::string cmdSend, int fdClient)
+{
+(void)server;
+(void)fdClient;
+	std::string	cmd[] = {"KICK", "INVITE"};
+	int i;
+
+	for (i = 0; i < 2; i++){
+		if(!cmdSend.find(cmd[i]))
+			break;
+	}
+	switch (i) {
+	case KICK:
+		std::cout << "KICK a faire" << std::endl;
+		break;
+	case INVITE:
+		std::cout << "INVITE a faire" << std::endl;
+		break;
+	default:
+		sendMessageChanel( fdClient );
+		break;
+	}
+
+	return ;
+}
+
+void	Server::sendMessageChanel( int fdClient )
+{
+	// trouve avec _user le channel
+	(void)fdClient;
+	//! ici a faire, trouve le channel et envoye le message a tout ceux qui sont dedans 
+	for( size_t i = 0; i < this->getClients().size(); i++ )
+	{
+
+		std::cout << this->getClients()[i].getSocket() << std::endl;
+
+	}
+
+
+
+	//std::cout << fdClient << std::endl;
+	//std::cout << this->_clients[fdClient].getNickname() << std::endl;
+	//while, parcours tout le connecte au channel, et send le message
+	//getChannel . getUser . getId
+		//send(this->getSocket(), "wesh", 4, 0);
+	return ;
+
+}

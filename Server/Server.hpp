@@ -46,6 +46,11 @@ class Server
 		void	removeClient( int const & index );
 		void	createChannel( Client * client, std::string name, std::string passwd );
 
+		//! test mathys
+		void	commandChannel(Server *server, std::string cmdSend, int fdClient);
+		void	sendMessageChanel( int fdClient );
+
+
 	// --------------------------------------------------------- //
 	 private:
 		Server( void );
