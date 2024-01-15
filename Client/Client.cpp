@@ -218,7 +218,7 @@ void	Client::join(Server *server, std::string join )
             //no password
             if (join[0] != '#')
                 return;
-            server->createChannel(this, join, "");
+            server->createChannel(this->getSocket(), join, "");
             return;
         }  else {
             //find password
@@ -227,9 +227,7 @@ void	Client::join(Server *server, std::string join )
                 return;
             join = join.substr(join.find(' '));
             join = trimSpace(join);
-            server->createChannel(this, chanel, join);
+            server->createChannel(this->getSocket(), chanel, join);
         }
     }
 }
-
-

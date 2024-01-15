@@ -44,7 +44,7 @@ class Server
 		void	addClient( int const & id, sockaddr_in from );
 		void	command( std::string cmdSend, int fdClient );
 		void	removeClient( int const & index );
-		void	createChannel( Client * client, std::string name, std::string passwd );
+		void	createChannel( int clientSocket, std::string name, std::string passwd );
 
 		//! test mathys
 		void	commandChannel(Server *server, std::string cmdSend, int fdClient);
