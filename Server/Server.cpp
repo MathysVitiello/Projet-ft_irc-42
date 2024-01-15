@@ -89,6 +89,20 @@ std::vector<Channel> const & Server::getChannels( void ) const{
 	return( this->_channels );
 }
 
+bool	Server::getInCanal( Server * server, int fdClient ){
+
+	std::vector<Channel>::iterator it;
+	for(it = this->_channels.begin(); it != this->_channels.end(); it++)
+	{
+		for(size_t i = 0; i < it->getUser().size(); i++)
+		{
+			if( server->_clients[fdClient].getSocket() == it->getUser()[i] )
+				return true;
+		}
+	}
+	return false;
+}
+
 /* ************************************************************************** */
 // FUNCTIONS:
 // Rajoute un client dans le tableau de clients du serveur:
@@ -129,22 +143,6 @@ void	Server::removeClient( int const & index )
 	this->_clients.erase( this->_clients.begin() + index );
 }
 
-
-bool	Server::getInCanal( Server * server, int fdClient ){
-
-	std::vector<Channel>::iterator it;
-	for(it = this->_channels.begin(); it != this->_channels.end(); it++)
-	{
-		for(size_t i = 0; i < it->getUser().size(); i++)
-		{
-			if( server->_clients[fdClient].getSocket() == it->getUser()[i] )
-				return true;
-		}
-	}
-	return false;
-}
-
-
 void	Server::command(std::string cmdSend, int fdClient){
 	std::string	cmd[] = {"PASS", "NICK", "USER", "PRIVMSG", "JOIN"};
 	int i;
@@ -155,6 +153,7 @@ void	Server::command(std::string cmdSend, int fdClient){
 	}
 	switch (i) {
 	case PASS:
+		std::cout << "PASS " << std::endl;
 		this->_clients[fdClient].enterPwd(this, cmdSend.substr(4));
 		break;
 	case NICK:
@@ -177,11 +176,40 @@ void	Server::command(std::string cmdSend, int fdClient){
         break;
 	default:
 		if (getInCanal(this, fdClient) == true)
-			commandChannel(this, cmdSend, fdClient);
+			commandChannel(cmdSend, fdClient);
 		else
 			send(this->_clients[fdClient].getSocket(), ERR_UNKNOWNCOMMAND(this->_clients[fdClient].getNickname()).c_str(), ERR_UNKNOWNCOMMAND(this->_clients[fdClient].getNickname()).size(), 0);
 		break;
 	}
+}
+
+void	Server::commandChannel( std::string cmdSend, int fdClient)
+{
+	std::string	cmd[] = {"KICK", "INVITE", "TOPIC", "MODE"};
+	int i;
+
+	for (i = 0; i < 4; i++){
+		if(!cmdSend.find(cmd[i]))
+			break;
+	}
+	switch (i) {
+	case KICK:
+		std::cout << "KICK a faire" << std::endl;
+		break;
+	case INVITE:
+		std::cout << "INVITE a faire" << std::endl;
+		break;
+	case TOPIC:
+		std::cout << "TOPIC a faire" << std::endl;
+		break;
+	case MODE:
+		std::cout << "MODE a faire" << std::endl;
+		break;
+	default:
+		send(this->_clients[fdClient].getSocket(), ERR_UNKNOWNCOMMAND(this->_clients[fdClient].getNickname()).c_str(), ERR_UNKNOWNCOMMAND(this->_clients[fdClient].getNickname()).size(), 0);
+		break;
+	}
+	return ;
 }
 
 // Verifie si le channel exsite:
@@ -238,31 +266,6 @@ void	Server::createChannel( int clientSocket, std::string name, std::string pass
 	for (; i != this->_channels[index].getUser().end(); i++)
 		 std::cout << "- socket client: " << *i << std::endl;
 
-}
-//! testtt de mathys le con
-void	Server::commandChannel(Server *server, std::string cmdSend, int fdClient)
-{
-(void)server;
-	std::string	cmd[] = {"KICK", "INVITE"};
-	int i;
-
-	for (i = 0; i < 2; i++){
-		if(!cmdSend.find(cmd[i]))
-			break;
-	}
-	switch (i) {
-	case KICK:
-		std::cout << "KICK a faire" << std::endl;
-		break;
-	case INVITE:
-		std::cout << "INVITE a faire" << std::endl;
-		break;
-	default:
-		send(this->_clients[fdClient].getSocket(), ERR_UNKNOWNCOMMAND(this->_clients[fdClient].getNickname()).c_str(), ERR_UNKNOWNCOMMAND(this->_clients[fdClient].getNickname()).size(), 0);
-		break;
-	}
-
-	return ;
 }
 
 void    Server::sendMessageChanel( int fdClient, std::string cmdSend)

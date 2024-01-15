@@ -47,7 +47,7 @@ class Server
 		void	removeClient( int const & index );
 		void	createChannel( int clientSocket, std::string name, std::string passwd );
 		unsigned int	checkChannel( std::string name );
-		void	commandChannel(Server *server, std::string cmdSend, int fdClient);
+		void	commandChannel(std::string cmdSend, int fdClient);
 		void    sendMessageChanel( int fdClient, std::string cmdSend);
 
 
