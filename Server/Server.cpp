@@ -129,6 +129,22 @@ void	Server::removeClient( int const & index )
 	this->_clients.erase( this->_clients.begin() + index );
 }
 
+
+bool	Server::getInCanal( Server * server, int fdClient ){
+
+	std::vector<Channel>::iterator it;
+	for(it = this->_channels.begin(); it != this->_channels.end(); it++)
+	{
+		for(size_t i = 0; i < it->getUser().size(); i++)
+		{
+			if( server->_clients[fdClient].getSocket() == it->getUser()[i] )
+				return true;
+		}
+	}
+	return false;
+}
+
+
 void	Server::command(std::string cmdSend, int fdClient){
 	std::string	cmd[] = {"PASS", "NICK", "USER", "PRIVMSG", "JOIN"};
 	int i;
@@ -150,8 +166,9 @@ void	Server::command(std::string cmdSend, int fdClient){
 		this->_clients[fdClient].setName(cmdSend.substr(4));
 		break;
 	case PRIVMSG:
+        std::cout << "PRIVMSG " << std::endl;
 		if (this->_clients[fdClient].checkRight() == true)
-			this->_clients[fdClient].privateMessage(&this->_clients, cmdSend.substr(7));
+			this->_clients[fdClient].privateMessage(&this->_clients, this ,cmdSend.substr(7), fdClient);
 		break;
 	case JOIN:
         std::cout << "JOIN " << std::endl;
@@ -159,14 +176,13 @@ void	Server::command(std::string cmdSend, int fdClient){
             this->_clients[fdClient].join(this, cmdSend.substr(4));
         break;
 	default:
-		if (this->_clients[fdClient].getInCanal() == true)
+		if (getInCanal(this, fdClient) == true)
 			commandChannel(this, cmdSend, fdClient);
-		if (this->_clients[fdClient].getInCanal() == false)
+		else
 			send(this->_clients[fdClient].getSocket(), ERR_UNKNOWNCOMMAND(this->_clients[fdClient].getNickname()).c_str(), ERR_UNKNOWNCOMMAND(this->_clients[fdClient].getNickname()).size(), 0);
 		break;
 	}
 }
-
 
 // Verifie si le channel exsite:
 unsigned int Server::checkChannel( std::string name ){
@@ -202,7 +218,6 @@ void	Server::createChannel( int clientSocket, std::string name, std::string pass
 			}
 		}
 		// si le client n est pas dans le canal:
-		this->_clients[i].setInCanal( true );
 		this->_channels[index].addClientChannel( clientSocket );
 		char bufff[4096] = "client ajoute dans le canal\r\n";
 		send(clientSocket, bufff, strlen(bufff), 0);
@@ -243,7 +258,7 @@ void	Server::commandChannel(Server *server, std::string cmdSend, int fdClient)
 		std::cout << "INVITE a faire" << std::endl;
 		break;
 	default:
-		sendMessageChanel( fdClient, cmdSend );
+		send(this->_clients[fdClient].getSocket(), ERR_UNKNOWNCOMMAND(this->_clients[fdClient].getNickname()).c_str(), ERR_UNKNOWNCOMMAND(this->_clients[fdClient].getNickname()).size(), 0);
 		break;
 	}
 
@@ -252,7 +267,7 @@ void	Server::commandChannel(Server *server, std::string cmdSend, int fdClient)
 
 void    Server::sendMessageChanel( int fdClient, std::string cmdSend)
 {
-    //pas oublier privmsg dans le cnaal avec kick et tout     
+    //pas oublier privmsg dans le cnaal avec kick et tout
     int i = 0;
     int senderFd = 0;
 

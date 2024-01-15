@@ -46,10 +46,6 @@ bool	const & Client::getConnect( void ) const{
 	return( this->_connected );
 }
 
-bool	const & Client::getInCanal( void ) const{
-	return( this->_inCanal );
-}
-
 void	Client::setSocket( int socket ){
 	this->_socket = socket;
 }
@@ -123,9 +119,6 @@ void Client::setNick( std::string nick, std::vector<Client> *clients ) {
 	return ;
 }
 
-void	Client::setInCanal( bool foo ){
-	this->_inCanal = foo;
-}
 
 int	Client::checkRight( void ) {
 	if (this->_connected == true && this->getName() != "" && this->getNickname() != "")
@@ -165,7 +158,7 @@ void	Client::enterPwd(Server *server, std::string password){
 			ERR_PASSWDMISMATCH(this->_nickname).size(), 0);
 }
 
-void    Client::privateMessage( std::vector<Client> *clients, std::string info )
+void    Client::privateMessage( std::vector<Client> *clients, Server *server, std::string info, int fdClient)
 {
 	int i = 0;
 	std::string name;
@@ -200,7 +193,21 @@ void    Client::privateMessage( std::vector<Client> *clients, std::string info )
 			return ;
 		}
 	}
-	send(this->getSocket(), ERR_NOSUCHNICK(name).c_str(), ERR_NOSUCHNICK(name).size(), 0);
+	if (name[0] != '#' && name[0] != '&')
+		send(this->getSocket(), ERR_NOSUCHNICK(name).c_str(), ERR_NOSUCHNICK(name).size(), 0);
+
+	//! check si cest un channel
+	std::vector<Channel>::const_iterator itChan = server->getChannels().begin();
+	for ( ; itChan < server->getChannels().end(); itChan++)
+		if ( itChan->getName() == name )
+		{
+			// send message to the clients of the channel
+			server->sendMessageChanel( fdClient, info ); //! pas le bon fd je crois. envoie dans le terminal et a sois
+			return;
+		}
+	send(this->getSocket(), ERR_NOSUCHSERVER(name).c_str(), ERR_NOSUCHSERVER(name).size(), 0);
+
+
 }
 
 void	Client::join(Server *server, std::string join )

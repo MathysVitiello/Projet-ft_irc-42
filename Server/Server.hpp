@@ -39,6 +39,7 @@ class Server
 		sockaddr_in				const & getAddr( void ) const;
 		std::vector<Client>		const & getClients( void  ) const;
 		std::vector<Channel>	const & getChannels( void  ) const;
+		bool							getInCanal( Server * server, int fdClient );
 
 		// -------------------- Functions ---------------------- //
 		void	addClient( int const & id, sockaddr_in from );
@@ -46,8 +47,6 @@ class Server
 		void	removeClient( int const & index );
 		void	createChannel( int clientSocket, std::string name, std::string passwd );
 		unsigned int	checkChannel( std::string name );
-
-		//! test mathys
 		void	commandChannel(Server *server, std::string cmdSend, int fdClient);
 		void    sendMessageChanel( int fdClient, std::string cmdSend);
 
