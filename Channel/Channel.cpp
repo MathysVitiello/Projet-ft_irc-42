@@ -1,5 +1,4 @@
 #include "Channel.hpp"
-#include <sys/select.h>
 
 /* ************************************************************************** */
 // CONSTRUCTOR / DESTRUCTOR:
@@ -51,7 +50,7 @@ int const &	Channel::getOwner( void ) const{
 }
 
 std::vector<int>	const & Channel::getIrcOps( void ) const{
-	return( this->_user);
+	return( this->_ircOps );
 }
 
 std::vector<int>	const & Channel::getUser( void ) const{
@@ -63,11 +62,13 @@ std::vector<int>	const & Channel::getUser( void ) const{
 
 /* ************************************************************************** */
 // FUNCTIONS:
-void	Channel::addClientChannel( int clientSocket ){
-	if( static_cast<unsigned>(this->_maxUser) >= this->_user.size() )
+bool	Channel::addClientChannel( int clientSocket ){
+	if( static_cast<unsigned>(this->_maxUser) > this->_user.size() )
+	{
 		this->_user.push_back( clientSocket );
-	else
-		std::cout << "No more user" << std::endl;
+		return( true );
+	}
+	return( false );
 }
 
 void	Channel::removeClientChannel( int userSocket ){

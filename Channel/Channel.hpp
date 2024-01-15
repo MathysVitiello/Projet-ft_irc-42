@@ -22,7 +22,7 @@ class Channel{
 
 		// -------------------- Functions ---------------------- //
 		void	removeClientChannel( int index );
-		void	addClientChannel( int clientSocket );
+		bool	addClientChannel( int clientSocket );
 
 	// --------------------------------------------------------- //
 	 private:

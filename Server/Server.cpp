@@ -250,9 +250,24 @@ void	Server::createChannel( int clientSocket, std::string name, std::string pass
 						break;
 				}
 				// si le client n est pas dans le canal:
-				this->_channels[i].addClientChannel( clientSocket );
-				char bufff[4096] = "client ajoute dans le canal\r\n";
-				send(clientSocket, bufff, strlen(bufff), 0);
+				if( this->_channels[i].addClientChannel(clientSocket) == true )
+				{
+					char bufff[4096] = "client ajoute dans le canal\r\n";
+					send(clientSocket, bufff, strlen(bufff), 0);
+				}
+				else
+				{
+					std::vector<Client>::iterator it;
+					for( it = this->_clients.begin(); it != this->_clients.end(); it++)
+					{
+						if( it->getSocket() == clientSocket )
+						{
+							std::string nick = it->getNickname();
+							send(it->getSocket(), ERR_CHANNELISFULL(nick, name).c_str(), ERR_CHANNELISFULL(nick, name).size(), 0);
+
+						}
+					}	
+				}
 
 			}
 		}
@@ -263,21 +278,6 @@ void	Server::createChannel( int clientSocket, std::string name, std::string pass
 		Channel channel( clientSocket, name, passwd );
 		this->_channels.push_back( channel );
 	}
-
-	//Recherche le client par rapport a la socket:
-	//et affiche tout les client du channel:
-	std::cout << "Channel " << name << std::endl;
-	std::vector<Channel>::const_iterator itChannel;
-	for(itChannel = this->getChannels().begin() ; itChannel != this->getChannels().end(); itChannel++)
-	{
-		if( itChannel->getName() == name )
-		{
-			for( unsigned i = 0; i < itChannel->getUser().size(); i++ )
-				std::cout << "- socket client: " << itChannel->getUser()[i] << std::endl;
-			break;
-		}
-	}
-
 }
 
 void    Server::sendMessageChanel( int fdClient, std::string cmdSend)
@@ -318,6 +318,7 @@ std::ostream & operator<<( std::ostream & o, Server const & src )
 	o << "Server password: " << src.getPassword() << std::endl;
 	o << "--------" << std::endl;
 
+	// Affiche tous les clients du serveur:
 	for(it = src.getClients().begin(); it != src.getClients().end(); it++)
 	{
 		o << "| " << it->getSocket() << " | " << it->getAddr().sin_port << std::endl;
@@ -327,6 +328,18 @@ std::ostream & operator<<( std::ostream & o, Server const & src )
 		o << "- nickname client: " << it->getNickname() << std::endl;
 		o << "- password: " << it->getConnect() << std::endl;
 		o << "--------" << std::endl;
+	}
+
+	// affiche tout les channels actifs ainsi que leur user:
+	std::vector<Channel>::const_iterator itChannel;
+	for(itChannel = src.getChannels().begin() ; itChannel != src.getChannels().end(); itChannel++)
+	{
+		o << "Channel [" << itChannel->getName() << " ]:" << std::endl;
+		o << "socket owner: " << itChannel->getOwner() << std::endl;
+		for( unsigned i = 0; i < itChannel->getIrcOps().size(); i++ )
+			o << "- socket ircOps: " << itChannel->getIrcOps()[i] << std::endl;
+		for( unsigned i = 0; i < itChannel->getUser().size(); i++ )
+			o << "- socket user: " << itChannel->getUser()[i] << std::endl;
 	}
 	std::cout << "-------------------------------------------" << std::endl;
 	return( o );
