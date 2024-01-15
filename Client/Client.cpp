@@ -194,7 +194,7 @@ void    Client::privateMessage( std::vector<Client> *clients, Server *server, st
 		}
 	}
 	if (name[0] != '#' && name[0] != '&')
-		send(this->getSocket(), ERR_NOSUCHNICK(name).c_str(), ERR_NOSUCHNICK(name).size(), 0);
+		send(this->getSocket(), ERR_NOSUCHNICK(this->_nickname, name).c_str(), ERR_NOSUCHNICK(this->_nickname, name).size(), 0);
 
 	//! check si cest un channel
 	std::vector<Channel>::const_iterator itChan = server->getChannels().begin();

@@ -1,5 +1,4 @@
 #include "Channel.hpp"
-#include <sys/select.h>
 
 /* ************************************************************************** */
 // CONSTRUCTOR / DESTRUCTOR:
@@ -58,6 +57,26 @@ std::vector<int>	const & Channel::getUser( void ) const{
 	return( this->_user);
 }
 
+std::string	const & Channel::getTopicName( void ) const{
+	return	this->_topicName;
+}
+
+bool	const & Channel::getTopic( void ) const{
+	return this->_topic;
+}
+
+std::vector<int>		const & Channel::getUserInvite ( void ) const{
+	return ( this->_userInvitation );
+}
+
+void	Channel::setTopicName( std::string topic ){
+	this->_topicName = topic;
+}
+
+void	Channel::setTopic( bool topic ){
+	this->_topic = topic;
+}
+
 // void		setUSER( int index , std::string name ){
 // }
 
@@ -90,5 +109,17 @@ void	Channel::removeClientChannel( int userSocket ){
 			this->_user.erase( it );
 			std::cout << "User socket [" << userSocket << "] erased" << std::endl;
 		}
+	}
+}
+
+
+void		Channel::setUserInvite ( int socketInvite, int flag ){
+	if(flag == PUSH)
+		this->_userInvitation.push_back(socketInvite);
+	else{
+		std::vector<int>::iterator it = find(this->_userInvitation.begin(), this->_userInvitation.end(), socketInvite);
+		if (it == this->_userInvitation.end())
+			return;
+		this->_userInvitation.erase(it);
 	}
 }

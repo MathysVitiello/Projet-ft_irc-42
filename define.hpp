@@ -32,19 +32,21 @@
 # define RPL_ENDOFNAMES(nick, channel)			("366 : "+nick+" "+channel+" :End of /NAMES list\r\n")
                                       
 /*	TOPIC message	*/                
-                                      
+ 
+# define RPL_NOTOPIC(nick, channel)	("331 : "+nick+" "+channel+" : There is no topic yet\r\n")                                     
 # define ERR_NOTONCHANNEL(nick, channel)			("442 : "+nick+" "+channel+" :You're not on that channel\r\n")
 # define ERR_CHANOPRIVSNEEDED(nick, channel)			("482 : "+nick+" "+channel+" :You're not channel operator\r\n")
                                      
 /* INVITE message	*/               
 
-# define RPL_INVITING(nick, channel)			("341 : "+nick+" invited "+guest+" to the channel "+channel+"\r\n")
-
+# define RPL_INVITING(nick, guest, channel)			("341 : "+nick+" invited "+guest+" to the channel "+channel+"\r\n")
+# define RPL_INVITED(guest, channel, nick)			("345 : "+guest+" is invited on "+channel+" by "+nick+"\r\n")
 # define ERR_CHANOPRIVSNEEDED(nick, channel)			("482 : "+nick+" "+channel+" :You're not channel operator\r\n")
-# define ERR_USERONCHANNEL(nick, channel)			("443 : "+nick+" :is already on channel :"+channel+"\r\n")
+# define ERR_USERONCHANNEL(nick, guest, channel)			("443 : "+nick+"   "+guest+" :is already on channel :"+channel+"\r\n")
+# define ERR_INVALIDTOPIC(nick, channel)						( "442 "+nick+" "+channel+" :Invalid characters in topic\r\n")
                                       
 /*	PRIVMSG message	*/                
-# define ERR_NOSUCHNICK(nick)					("401 : "+nick+" :No such nick/channel\r\n") //? DONE
+# define ERR_NOSUCHNICK(nick, guest)					("401 : "+nick+" "+guest+" :No such nick/channel\r\n")
 # define ERR_NOSUCHSERVER(nick)					("402 : "+nick+" :No such server\r\n")//? DONE
 # define ERR_CANNOTSENDTOCHAN(nick)					("404 : "+nick+" "+channel+" :Cannot send to channel\r\n")// A FAIRE QUAND CHANNEL
 # define ERR_NORECIPIENT(nick, command)					("411 : "+nick+" :No recipient given ("+command+")\r\n")//? DONE

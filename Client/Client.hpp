@@ -32,6 +32,7 @@ class Client
 		void				enterPwd(Server *server, std::string password); 
 		void				privateMessage(std::vector<Client> *clients, Server *server, std::string info, int fdClient);
 		int					checkRight( void );
+		void				invitation( Server *server, std::string invite );
 
 		// --------------------------------------------------------- //
 	private:

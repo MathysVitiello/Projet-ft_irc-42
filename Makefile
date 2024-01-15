@@ -6,7 +6,7 @@
 #    By: mvitiell <marvin@42.fr>                    +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2024/01/04 11:45:22 by mvitiell          #+#    #+#              #
-#    Updated: 2024/01/11 16:20:22 by alamizan         ###   ########.fr        #
+#    Updated: 2024/01/15 17:03:31 by nminotte         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -15,8 +15,10 @@ NAME =	ircserv
 SRC =	main.cpp \
 		utils.cpp \
 		Client/Client.cpp \
+		Client/command.cpp \
 		Server/Server.cpp \
 		Channel/Channel.cpp \
+		Channel/commandChan.cpp \
 
 CFLAGS = -Wall -Wextra -Werror -g -std=c++98
 

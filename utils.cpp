@@ -21,3 +21,11 @@ void	checkArgs(int argc, char **argv)
 	if (std::string(argv[2]).length() == 0)
         throw std::runtime_error("write password, pls.");
 }
+
+int indexFirstArg( std::string str ){
+	int i = 0;
+	while (str[i] && isspace(str[i]) == 0){
+		i++;
+	}
+	return i;
+}

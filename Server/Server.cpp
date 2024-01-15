@@ -1,5 +1,4 @@
 #include "Server.hpp"
-#include <algorithm> 
 /* ************************************************************************** */
 // CONSTRUCTOR / DESTRUCTOR:
 Server::Server( unsigned int const & port, std::string const & password  ): _port(port),
@@ -143,7 +142,7 @@ void	Server::removeClient( int const & index )
 }
 
 void	Server::command(std::string cmdSend, int fdClient){
-	std::string	cmd[] = {"PASS", "NICK", "USER", "PRIVMSG", "JOIN"};
+	std::string	cmd[] = {"PASS ", "NICK ", "USER ", "PRIVMSG ", "JOIN "};
 	int i;
 
 	for (i = 0; i < 5; i++){
@@ -184,7 +183,7 @@ void	Server::command(std::string cmdSend, int fdClient){
 
 void	Server::commandChannel( std::string cmdSend, int fdClient)
 {
-	std::string	cmd[] = {"KICK", "INVITE", "TOPIC", "MODE"};
+	std::string	cmd[] = {"KICK ", "INVITE ", "TOPIC ", "MODE "};
 	int i;
 
 	for (i = 0; i < 4; i++){
@@ -196,9 +195,11 @@ void	Server::commandChannel( std::string cmdSend, int fdClient)
 		std::cout << "KICK a faire" << std::endl;
 		break;
 	case INVITE:
+		this->_clients[fdClient].invitation( this, cmdSend.substr(6) );
 		std::cout << "INVITE a faire" << std::endl;
 		break;
 	case TOPIC:
+		// this->.topic( this->_clients[fdClient], cmdSend );
 		std::cout << "TOPIC a faire" << std::endl;
 		break;
 	case MODE:
