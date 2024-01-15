@@ -1,5 +1,5 @@
 #include "Server.hpp"
-
+#include <algorithm> 
 /* ************************************************************************** */
 // CONSTRUCTOR / DESTRUCTOR:
 Server::Server( unsigned int const & port, std::string const & password  ): _port(port),
@@ -167,69 +167,67 @@ void	Server::command(std::string cmdSend, int fdClient){
 	}
 }
 
+
+// Verifie si le channel exsite:
+unsigned int Server::checkChannel( std::string name ){
+	for(unsigned int i = 0; i < this->_channels.size(); i++ )
+	{
+		if( this->getChannels()[i].getName() == name )
+		{
+			std::cout << "le canal [" << name << "] existe deja" << std::endl;
+			return( i );
+		}
+	}
+	return( 0 );
+}
+
 void	Server::createChannel( int clientSocket, std::string name, std::string passwd )
 {
-	// int ret = 0;
-	// en priorite faut regarder si le canal existe:
-	Channel channel( clientSocket, name, passwd );
+	int ret = 0;
+	unsigned int index = this->checkChannel( name );
 
-	this->_channels.push_back( channel );
-// 
-	// for(std::vector<Channel>::const_iterator it = this->_channels.begin(); it != this->_channels.end(); it++)
-	// {
-		// 
-		// if( it->getName() == name )// verifier si le client est dans le cannal
-		// {
-			// std::cout << "le canal exite deja" << std::endl;
-			// ret = 1;
-			// break;
-		// }
-		// else pas le client
-	// }
-	// if( ret == 0 )
-	// {
-		// std::cout << "le canal nexiste pas" << std::endl;
-		// Channel channel( client, name, passwd );
-// 
-		// this->_channels.push_back( channel );
-// 
-// 
-	// }
+	if( index != 0 )
+	{
+		ret = 1;
+		std::vector<Client>::iterator it;
+		int i = 0;
+		for( it = this->_clients.begin(); it != this->_clients.end(); it++, i++ )
+		{
+			if( it->getSocket() == clientSocket )
+			{
+				char buff[4096] = "client deja dans le canal\r\n";
+				send(clientSocket, buff, strlen(buff), 0);
+				std::cout << "--------" << std::endl;
+				return;
+			}
+		}
+		// si le client n est pas dans le canal:
+		this->_clients[i].setInCanal( true );
+		this->_channels[index].addClientChannel( clientSocket );
+		char bufff[4096] = "client ajoute dans le canal\r\n";
+		send(clientSocket, bufff, strlen(bufff), 0);
+	}
+		
+	if( ret == 0 )
+	{
+		std::cout << "Ajout du channel [" << name << "]" << std::endl;
+		Channel channel( clientSocket, name, passwd );
+		this->_channels.push_back( channel );
+	}
 
+	//Recherche le client par rapport a la socket:
+	//et affiche tout les client du channel:
+	index = this->checkChannel( name );
+	std::vector<int>::const_iterator i = this->_channels[index].getUser().begin();
+	std::cout << "Channel " << name << std::endl;
+	for (; i != this->_channels[index].getUser().end(); i++)
+		 std::cout << "- socket client: " << *i << std::endl;
 
-//	for(std::vector<Channel>::const_iterator it = this->_channels.begin(); it != this->_channels.end(); it++)
-//	{
-//		std::cout << "channel [" << it->getName() << "]" << std::endl;
-//		for(size_t i = 0; i < it->getUser().size(); i++)
-//		{
-//			std::cout << "- name client: " << it->getUser()[i].getName() << std::endl;
-//			std::cout << "- socket client: " << it->getUser()[i].getSocket() << std::endl;
-//			std::cout << "- addresse client: " << it->getUser()[i].getAddr().sin_port << std::endl;
-//			std::cout << "- nickname client: " << it->getUser()[i].getNickname() << std::endl;
-//			std::cout << "- password: " << it->getUser()[i].getConnect() << std::endl;
-//			std::cout << "--------" << std::endl;
-
-//		}
-//	}
-
-// 
-		// for(ite = this->_channels.getUser().begin(); ite != this->_channels.getName().end(); ite++)
-		// std::cout << "- socket client: " << it->getSocket() << std::endl;
-		// std::cout << "- addresse client: " << it->getAddr().sin_port << std::endl;
-		// std::cout << "- name client: " << it->getName() << std::endl;
-		// std::cout << "- nickname client: " << it->getNickname() << std::endl;
-		// std::cout << "- password: " << it->getConnect() << std::endl;
-		// std::cout << "--------" << std::endl;
-
-	//client->setInCanal(true);
-	char buf[4096] = "client ok\r\n";
-	send(clientSocket, buf, strlen(buf), 0);
 }
 //! testtt de mathys le con
 void	Server::commandChannel(Server *server, std::string cmdSend, int fdClient)
 {
 (void)server;
-(void)fdClient;
 	std::string	cmd[] = {"KICK", "INVITE"};
 	int i;
 
@@ -245,35 +243,38 @@ void	Server::commandChannel(Server *server, std::string cmdSend, int fdClient)
 		std::cout << "INVITE a faire" << std::endl;
 		break;
 	default:
-		sendMessageChanel( fdClient );
+		sendMessageChanel( fdClient, cmdSend );
 		break;
 	}
 
 	return ;
 }
 
-void	Server::sendMessageChanel( int fdClient )
+void    Server::sendMessageChanel( int fdClient, std::string cmdSend)
 {
-	// trouve avec _user le channel
-	(void)fdClient;
-	//! ici a faire, trouve le channel et envoye le message a tout ceux qui sont dedans 
-	for( size_t i = 0; i < this->getClients().size(); i++ )
-	{
+    //pas oublier privmsg dans le cnaal avec kick et tout     
+    int i = 0;
+    int senderFd = 0;
 
-		std::cout << this->getClients()[i].getSocket() << std::endl;
-
-	}
-
-
-
-	//std::cout << fdClient << std::endl;
-	//std::cout << this->_clients[fdClient].getNickname() << std::endl;
-	//while, parcours tout le connecte au channel, et send le message
-	//getChannel . getUser . getId
-		//send(this->getSocket(), "wesh", 4, 0);
-	return ;
-
-}
+    std::vector<Client>::iterator it;
+    for( it = this->_clients.begin(); it != this->_clients.end(); it++ )
+    {
+        if( it->getSocket() == fdClient )
+            senderFd = i;
+        i++;
+    }
+    for( size_t i = 0; i < this->getClients().size(); i++ )
+    {
+        if (fdClient != this->getClients()[i].getSocket())
+        {
+            //RPL_TOPIC(nick, channel, topic)
+            send(this->getClients()[i].getSocket(), RPL_TOPIC(this->getClients()[senderFd].getNickname(), this->getChannels()[i].getName(), cmdSend).c_str(),
+                RPL_TOPIC(this->getClients()[fdClient].getNickname(), this->getChannels()[i].getName(), cmdSend).size(), 0);
+            send(this->getClients()[i].getSocket(), "\n", 1, 0);
+        }
+    }
+    return ;
+} 
 
 // Permet l affichage de toutes les donnees inclut dans le serveur:
 // - std::cout << server << std::endl;

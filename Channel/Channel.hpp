@@ -22,6 +22,7 @@ class Channel{
 
 		// -------------------- Functions ---------------------- //
 		void	removeClientChannel( int index );
+		void	addClientChannel( int clientSocket );
 
 	// --------------------------------------------------------- //
 	 private:
@@ -30,10 +31,9 @@ class Channel{
 		int 				_owner;  //Admin
 		std::vector<int>	_ircOps; //Operator
 		std::vector<int>	_user;								
-	//	std::vector<Client>	_user;	//User without privilege
 		// std::string		_topicName;
 		// std::vector<int>	_userInvitation;
-		// int			_maxClient;
+		int					_maxUser;
 	
 				/* MODE  Active/Unactive */
 		// bool						_pwd;

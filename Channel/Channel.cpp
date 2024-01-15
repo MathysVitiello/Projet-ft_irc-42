@@ -1,11 +1,13 @@
 #include "Channel.hpp"
+#include <sys/select.h>
 
 /* ************************************************************************** */
 // CONSTRUCTOR / DESTRUCTOR:
 Channel::Channel( int userSocket, std::string name, std::string mdp) :
 	_name( name ),
 	_password( mdp ),
-	_owner( userSocket ){
+	_owner( userSocket ),
+	_maxUser( FD_SETSIZE ){
 	// Verifier en amont si le canal existe deja et que le client n'y est pas.
 	std::cout << "Channel [" << this->_name << "] created" "Owner socket: " << userSocket << std::endl;
 
@@ -14,7 +16,7 @@ Channel::Channel( int userSocket, std::string name, std::string mdp) :
 }
 
 Channel::~Channel( void ){
-	std::cout << "channel ["<< this->_name << "] closed" << std::endl;
+	// std::cout << "channel ["<< this->_name << "] closed" << std::endl;
 
 	if ( this->_user.empty() )
 		this->_user.erase( this->_user.begin(), this->_user.end() );
@@ -33,7 +35,6 @@ int Channel::operator[](unsigned int index) {
 		 throw std::runtime_error( "Index is invalid" );
 	return this->_user[index];
 }
-
 
 /* ************************************************************************** */
 // ACCESSORS:
@@ -62,6 +63,13 @@ std::vector<int>	const & Channel::getUser( void ) const{
 
 /* ************************************************************************** */
 // FUNCTIONS:
+void	Channel::addClientChannel( int clientSocket ){
+	if( static_cast<unsigned>(this->_maxUser) >= this->_user.size() )
+		this->_user.push_back( clientSocket );
+	else
+		std::cout << "No more user" << std::endl;
+}
+
 void	Channel::removeClientChannel( int userSocket ){
 	//Supprime l'ircOps du canal:
 	for(std::vector<int>::iterator it = this->_ircOps.begin(); it != this->_ircOps.end(); it++)
