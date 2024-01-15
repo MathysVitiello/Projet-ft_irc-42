@@ -135,7 +135,6 @@ void	Server::removeClient( int const & index )
 			}
 		}
 	}
-	std::cout << "Client [" << name << "] est dans aucun channel" << std::endl;
 	std::cout << "--------" << std::endl;
 
 	// Ferme le socket du client et l'efface du tableau de client:
@@ -213,45 +212,52 @@ void	Server::commandChannel( std::string cmdSend, int fdClient)
 }
 
 // Verifie si le channel exsite:
-unsigned int Server::checkChannel( std::string name ){
-	for(unsigned int i = 0; i < this->_channels.size(); i++ )
+bool Server::checkChannel( std::string name ){
+	for(unsigned int i = 0; i  < this->_channels.size(); i++ )
 	{
 		if( this->getChannels()[i].getName() == name )
 		{
 			std::cout << "le canal [" << name << "] existe deja" << std::endl;
-			return( i );
+			return( true);
 		}
 	}
-	return( 0 );
+	return( false );
 }
 
 void	Server::createChannel( int clientSocket, std::string name, std::string passwd )
 {
-	int ret = 0;
-	unsigned int index = this->checkChannel( name );
-
-	if( index != 0 )
+	if( this->checkChannel( name ) == true )
 	{
-		ret = 1;
-		std::vector<Client>::iterator it;
-		int i = 0;
-		for( it = this->_clients.begin(); it != this->_clients.end(); it++, i++ )
+		for(unsigned int i = 0; i  < this->_channels.size(); i++ )
 		{
-			if( it->getSocket() == clientSocket )
+			if( this->getChannels()[i].getName() == name )
 			{
-				char buff[4096] = "client deja dans le canal\r\n";
-				send(clientSocket, buff, strlen(buff), 0);
-				std::cout << "--------" << std::endl;
-				return;
+				std::vector<int>::const_iterator ite = this->getChannels()[i].getUser().begin();
+				for (; ite != this->getChannels()[i].getUser().end(); ite++)
+				{
+					if( *ite == clientSocket )
+					{
+						char buff[4096] = "client deja dans le canal\r\n";
+						send(clientSocket, buff, strlen(buff), 0);
+						std::cout << "--------" << std::endl;
+						return;
+					}
+				}
+				std::vector<Client>::iterator it;
+				for( it = this->_clients.begin(); it != this->_clients.end(); it++)
+				{
+					if( it->getSocket() == clientSocket )
+						break;
+				}
+				// si le client n est pas dans le canal:
+				this->_channels[i].addClientChannel( clientSocket );
+				char bufff[4096] = "client ajoute dans le canal\r\n";
+				send(clientSocket, bufff, strlen(bufff), 0);
+
 			}
 		}
-		// si le client n est pas dans le canal:
-		this->_channels[index].addClientChannel( clientSocket );
-		char bufff[4096] = "client ajoute dans le canal\r\n";
-		send(clientSocket, bufff, strlen(bufff), 0);
 	}
-		
-	if( ret == 0 )
+	else	
 	{
 		std::cout << "Ajout du channel [" << name << "]" << std::endl;
 		Channel channel( clientSocket, name, passwd );
@@ -260,11 +266,17 @@ void	Server::createChannel( int clientSocket, std::string name, std::string pass
 
 	//Recherche le client par rapport a la socket:
 	//et affiche tout les client du channel:
-	index = this->checkChannel( name );
-	std::vector<int>::const_iterator i = this->_channels[index].getUser().begin();
 	std::cout << "Channel " << name << std::endl;
-	for (; i != this->_channels[index].getUser().end(); i++)
-		 std::cout << "- socket client: " << *i << std::endl;
+	std::vector<Channel>::const_iterator itChannel;
+	for(itChannel = this->getChannels().begin() ; itChannel != this->getChannels().end(); itChannel++)
+	{
+		if( itChannel->getName() == name )
+		{
+			for( unsigned i = 0; i < itChannel->getUser().size(); i++ )
+				std::cout << "- socket client: " << itChannel->getUser()[i] << std::endl;
+			break;
+		}
+	}
 
 }
 

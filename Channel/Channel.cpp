@@ -9,7 +9,7 @@ Channel::Channel( int userSocket, std::string name, std::string mdp) :
 	_owner( userSocket ),
 	_maxUser( FD_SETSIZE ){
 	// Verifier en amont si le canal existe deja et que le client n'y est pas.
-	std::cout << "Channel [" << this->_name << "] created" "Owner socket: " << userSocket << std::endl;
+	std::cout << "Channel [" << this->_name << "] created Owner socket: " << userSocket << std::endl;
 
 	this->_ircOps.push_back( userSocket );
 	this->_user.push_back( userSocket );
