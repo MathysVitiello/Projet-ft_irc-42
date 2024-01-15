@@ -23,6 +23,7 @@ Server::Server( unsigned int const & port, std::string const & password  ): _por
 	if (listen(_socket, SOMAXCONN) < 0)
 		throw std::runtime_error( "Can't listen, or too many clients to handle." );
 
+	// fonction void displayConfigServer( Server server )
 	std::cout << "-------------------------------------------" << std::endl;
 	std::cout << "Server port: " << this->_port << std::endl;
 	std::cout << "Server reseau: " << this->_address.sin_port<< std::endl;
@@ -308,10 +309,7 @@ void    Server::sendMessageChanel( int fdClient, std::string cmdSend)
 
 // Permet l affichage de toutes les donnees inclut dans le serveur:
 // - std::cout << server << std::endl;
-std::ostream & operator<<( std::ostream & o, Server const & src )
-{
-	std::vector<Client>::const_iterator it;
-
+std::ostream & operator<<( std::ostream & o, Server const & src ){
 	std::cout << "-------------------------------------------" << std::endl;
 	o << "Server port: " << src.getPort() << std::endl;
 	o << "Server reseau: " << src.getAddr().sin_port<< std::endl;
@@ -319,9 +317,9 @@ std::ostream & operator<<( std::ostream & o, Server const & src )
 	o << "--------" << std::endl;
 
 	// Affiche tous les clients du serveur:
+	std::vector<Client>::const_iterator it;
 	for(it = src.getClients().begin(); it != src.getClients().end(); it++)
 	{
-		o << "| " << it->getSocket() << " | " << it->getAddr().sin_port << std::endl;
 		o << "- socket client: " << it->getSocket() << std::endl;
 		o << "- addresse client: " << it->getAddr().sin_port << std::endl;
 		o << "- name client: " << it->getName() << std::endl;
