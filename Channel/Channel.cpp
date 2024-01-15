@@ -29,10 +29,19 @@ Channel::~Channel( void ){
 
 /* ************************************************************************** */
 // OPERATOR OVERLOAD:
+// user -> flag = 0
+// ircops -> flag = 1
+// int Channel::operator[](unsigned int index, int flag) {
 int Channel::operator[](unsigned int index) {
+	// if( flag == 0 )
 	if ( index >= this->_user.size() )
-		 throw std::runtime_error( "Index is invalid" );
-	return this->_user[index];
+		 throw std::runtime_error( "Index in user is invalid" );
+	return( this->_user[index] );
+	
+	// if( flag == 1 )
+	// if ( index >= this->_ircOos.size() )
+	//	 throw std::runtime_error( "Index in ircOs is invalid" );
+	// return( this->_ircOps[index] );
 }
 
 /* ************************************************************************** */
