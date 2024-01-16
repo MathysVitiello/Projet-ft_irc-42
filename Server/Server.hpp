@@ -2,6 +2,7 @@
 # define SERVER_HPP
 
 # include "../library.hpp"
+#include <string>
 
 enum cmdUser {
 	PASS,
@@ -10,9 +11,6 @@ enum cmdUser {
 	PRIVMSG,
 	JOIN,
 	QUIT,
- };
-
-enum cmdChannel{
 	KICK,
 	INVITE,
 	TOPIC,
@@ -41,30 +39,26 @@ class Server
 		std::vector<Channel>	const & getChannels( void  ) const;
 		bool							getInCanal( Server * server, int fdClient );
 
+		void							setClients( char *buf, int index );
+
 		// -------------------- Functions ---------------------- //
 		void	addClient( int const & id, sockaddr_in from );
-		void	command( std::string cmdSend, int fdClient );
+		void	command( int fdClient );
 		void	removeClient( int const & index );
 		void	createChannel( int clientSocket, std::string name, std::string passwd );
 		bool	checkChannel( std::string name );
-		void	commandChannel(std::string cmdSend, int fdClient);
 		void    sendMessageChanel( int fdClient, std::string cmdSend);
-		void	splitCmd( std::sting cmdSend );
 
-	// --------------------------------------------------------- //
+		// --------------------------------------------------------- //
 	 private:
 		Server( void );
 
-		unsigned int 	const & _port;	
-		std::string		const &	_password;
-		int						_socket;
-		sockaddr_in				_address;
-		std::vector<Client>		_clients;
-		std::vector<Channel>	_channels;
-
-		// ------------------ CMD BUFF ----------------------//
-		std::string					_cmdTmp;
-		std::vector<std::string>	_splitBuf;
+		unsigned int 	const &		_port;	
+		std::string		const &		_password;
+		int							_socket;
+		sockaddr_in					_address;
+		std::vector<Client>			_clients;
+		std::vector<Channel>		_channels;
 };
 
 // --------------------------------------------------------- //

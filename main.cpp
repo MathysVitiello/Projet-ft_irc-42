@@ -6,17 +6,23 @@
 /*   By: mvitiell <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/01/04 11:44:21 by mvitiell          #+#    #+#             */
-/*   Updated: 2024/01/16 09:25:05 by alamizan         ###   ########.fr       */
+/*   Updated: 2024/01/16 13:12:38 by nminotte         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
+#include "Client/Client.hpp"
 #include "library.hpp"
+
+#include <signal.h>
+
+# define BYELLOW	"\001\e[1;33m\002"
+# define BGREEN		"\001\e[1;32m\002"
 
 int exitFlag = 0;
 
 void	sigHandler( int signum )
 {
 	exitFlag = signum;
-	throw std::runtime_error( "" );
+	throw std::runtime_error( "throw sigHandler: Dans ta gueule !" );
 }
 
 int main(int argc, char **argv)
@@ -98,8 +104,8 @@ int main(int argc, char **argv)
 						server.removeClient( i );
 					}
 					else{
-						buf[sizeRead - 1] = '\0';
-						server.command(buf, i);
+						server.setClients( buf, i ); //. SplitCmd( buf );
+						server.command(i);
 					}
 					if(--nbFds < 0)
 						break;
@@ -111,11 +117,11 @@ int main(int argc, char **argv)
     }
 	catch ( std::exception & e )
 	{
-		if( exitFlag != SIGINT )
-			std::cerr << CRED << "ERROR: " << NC << BRED << e.what() << NC << std::endl;
+		std::cerr << CRED << "ERROR: " << NC << BRED << e.what() << NC << std::endl;
+
 		if( exitFlag == SIGINT )
-			std::cerr << BPURPLE << "Fermeture du serveur et deconnexion des clients! " \
-				<< NC << std::endl;
+			std::cerr << BPURPLE << "Ctrl-c: fermeture du serveur et deconnexion des clients !! " << NC << std::endl;
+
 		else
 		{
 			std::cerr << BRED << "Code erreur = " << exitFlag << std::endl;

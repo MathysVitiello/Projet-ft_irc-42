@@ -5,7 +5,6 @@ std::string	trimSpace(std::string str){
 		str.erase(i, i + 1);
 		i = -1; 
 	}
-	std::cout << str << std::endl;
 	return str;	
 }
 
