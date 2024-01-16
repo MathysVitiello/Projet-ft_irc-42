@@ -158,7 +158,7 @@ void	Server::command(int fdClient){
 	}
 	switch (i) {
 	case PASS:
-		std::cout << "PASS " << std::endl;
+		std::cout << "PASS" << std::endl;
 		this->_clients[fdClient].enterPwd(this);
 		break;
 	case NICK:
