@@ -49,7 +49,7 @@ class Server
 		bool	checkChannel( std::string name );
 		void	commandChannel(std::string cmdSend, int fdClient);
 		void    sendMessageChanel( int fdClient, std::string cmdSend);
-
+		void	splitCmd( std::sting cmdSend );
 
 	// --------------------------------------------------------- //
 	 private:
@@ -61,6 +61,10 @@ class Server
 		sockaddr_in				_address;
 		std::vector<Client>		_clients;
 		std::vector<Channel>	_channels;
+
+		// ------------------ CMD BUFF ----------------------//
+		std::string					_cmdTmp;
+		std::vector<std::string>	_splitBuf;
 };
 
 // --------------------------------------------------------- //
