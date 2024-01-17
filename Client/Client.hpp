@@ -24,7 +24,7 @@ class Client
 
 		void				setSocket( int socket );
 		void				setName( std::string name );
-		void 				setNick( std::string nick, std::vector<Client> *clients );
+		void 				setNick( Server *server );
 		void 				setAddr( sockaddr_in addr );
 		void				splitCmd( std::string cmdSend );
 	
@@ -35,6 +35,8 @@ class Client
 		void				privateMessage(std::vector<Client> *clients, Server *server, std::string info, int fdClient);
 		int					checkRight( void );
 		void				invitation( Server *server, std::string invite );
+		void				removeCmdBuf( void );
+		void				parsHexchat( void );
 
 		// --------------------------------------------------------- //
 	private:

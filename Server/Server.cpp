@@ -153,6 +153,10 @@ void	Server::command(int fdClient){
 	int i;
 
 	for (i = 0; i < 10; i++){
+		if(this->_clients[fdClient].getCmdBuf().empty()){
+			i = -1; 
+			break;
+		}
 		if(!this->_clients[fdClient].getCmdBuf()[0].find(cmd[i]))
 			break;
 	}
@@ -162,12 +166,12 @@ void	Server::command(int fdClient){
 		this->_clients[fdClient].enterPwd(this);
 		break;
 	case NICK:
-		std::cout << "NICK " << std::endl;
-		// this->_clients[fdClient].setNick(cmdSend.substr(4), &this->_clients);
+		std::cout << "NICK  dans switch case " << std::endl;
+		this->_clients[fdClient].setNick(this);
 		break;
 	case USER:
 		std::cout << "USER " << std::endl;
-		// this->_clients[fdClient].setName(cmdSend.substr(4));
+		this->_clients[fdClient].setName(cmdSend.substr(4));
 		break;
 	case PRIVMSG:
         std::cout << "PRIVMSG " << std::endl;
@@ -195,6 +199,7 @@ void	Server::command(int fdClient){
 		break;
 	default:
 		send(this->_clients[fdClient].getSocket(), ERR_UNKNOWNCOMMAND(this->_clients[fdClient].getNickname()).c_str(), ERR_UNKNOWNCOMMAND(this->_clients[fdClient].getNickname()).size(), 0);
+		this->_clients[fdClient].removeCmdBuf();
 		break;
 	}
 }

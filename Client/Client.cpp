@@ -3,8 +3,8 @@
 /* ************************************************************************** */
 // CONSTRUCTOR / DESTRUCTOR:
 Client::Client( int const & id, sockaddr_in from ) :	_socket( id ),
-														_address( from ),
-														_connected(false)
+	_address( from ),
+	_connected(false)
 {
 	std::cout << "Client constructor called" << std::endl;
 	std::cout << " id:  " << this->_socket << std::endl;
@@ -82,45 +82,53 @@ void Client::setName( std::string name ) {
 	return ;
 }
 
-void Client::setNick( std::string nick, std::vector<Client> *clients ) {
-	nick  = trimSpace(nick);
+void Client::setNick( Server *server ) {
+	parsHexchat();
 	if (this->_connected){
-		if (nick.empty()){
-			std::string cmd = "NICK";
-			send(this->getSocket(), ERR_NEEDMOREPARAMS(this->_nickname, cmd).c_str(), 
-					ERR_NEEDMOREPARAMS(this->_nickname, cmd).size(), 0);
+		if (_splitBuf[0].empty()){
+			send(this->getSocket(), ERR_NEEDMOREPARAMS(this->_nickname, _splitBuf[0]).c_str(),
+					ERR_NEEDMOREPARAMS(this->_nickname, _splitBuf[0]).size(), 0);
+			removeCmdBuf();
 			return;
 		}
-		if (nick.size() > 9){
-			send(this->getSocket(),	ERR_ERRONEUSNICKNAME(nick).c_str(), 
-					ERR_ERRONEUSNICKNAME(nick).size(), 0);
+		if (_splitBuf[1].size() > 9){
+			send(this->getSocket(),	ERR_ERRONEUSNICKNAME(_splitBuf[1]).c_str(), 
+					ERR_ERRONEUSNICKNAME(_splitBuf[1]).size(), 0);
+			removeCmdBuf();
 			return;
 		}
-		for(size_t i = 0; i < nick.size(); i++){
-			if (!isalpha(nick[0])){
-				std::cout << nick << std::endl;
-				send(this->getSocket(),	ERR_ERRONEUSNICKNAME(nick).c_str(), 
-						ERR_ERRONEUSNICKNAME(nick).size(), 0);
+		for(size_t i = 0; i <_splitBuf[1].size(); i++){
+			if (!isalpha(_splitBuf[1][0])){
+				std::cout << _splitBuf[1] << std::endl;
+				send(this->getSocket(),	ERR_ERRONEUSNICKNAME(_splitBuf[1]).c_str(), 
+						ERR_ERRONEUSNICKNAME(_splitBuf[1]).size(), 0);
+				removeCmdBuf();
 				return;
 			}
-			if (!isalnum(nick[i]) && nick[i] != '-' && nick[i] != '[' && nick[i] != ']' 
-					&& nick[i] != '\\' &&  nick[i] != '^' && nick[i] != '_' && nick[i] != '{' 
-					&& nick[i] != '|' && nick[i] != '}'){
-				send(this->getSocket(),	ERR_ERRONEUSNICKNAME(nick).c_str(), 
-						ERR_ERRONEUSNICKNAME(nick).size(), 0);
+			if (!isalnum(_splitBuf[1][i]) && _splitBuf[1][i] != '-' && _splitBuf[1][i] != '[' && _splitBuf[1][i] != ']' 
+					&& _splitBuf[1][i] != '\\' &&  _splitBuf[1][i] != '^' && _splitBuf[1][i] != '_' && _splitBuf[1][i] != '{' 
+					&& _splitBuf[1][i] != '|' && _splitBuf[1][i] != '}'){
+				send(this->getSocket(),	ERR_ERRONEUSNICKNAME(_splitBuf[1]).c_str(), 
+						ERR_ERRONEUSNICKNAME(_splitBuf[1]).size(), 0);
+				removeCmdBuf();
 				return;
 			}
 		}
-		std::vector<Client>::iterator it = clients->begin(); 
-		for ( ;it < clients->end(); it++ )
-			if ( nick == it->getNickname() ){
-				send(this->getSocket(),ERR_NICKNAMEINUSE(nick).c_str(),
-						ERR_NICKNAMEINUSE(nick).size(), 0);
+		std::vector<Client>::const_iterator it = server->getClients().begin(); 
+		for ( ;it < server->getClients().end(); it++ )
+			if ( _splitBuf[1] == it->getNickname() ){
+				send(this->getSocket(),ERR_NICKNAMEINUSE(_splitBuf[1]).c_str(),
+						ERR_NICKNAMEINUSE(_splitBuf[1]).size(), 0);
+				removeCmdBuf();
 				return;
 			}
-		this->_nickname = nick;
+		this->_nickname = _splitBuf[1];
+		if (3 == _splitBuf.size()){
+			_splitBuf.erase(_splitBuf.begin(), _splitBuf.begin() + 1);
+			server->command(this->_socket);
+		}
 	}
-	return ;
+	removeCmdBuf();
 }
 
 
@@ -141,20 +149,8 @@ void Client::setAddr( sockaddr_in addr ) {
 // FONCTIONS:
 
 void	Client::enterPwd(Server *server){
-	size_t delem = _splitBuf[1].find("\r\n"); 
-	if ( delem != std::string::npos){
-
-		std::string tmp = _splitBuf[1];
-		std::cout << std::endl <<  tmp << std::endl << std::endl << tmp.substr(0, delem) << std::endl << std::endl  << std::endl << std::endl  ;
-		_splitBuf[1].erase();
-		_splitBuf.push_back(tmp.substr(0, delem));
-		_splitBuf.push_back(tmp.substr(delem + 1));
-		for (int i = 0; i < 3; i++)
-			std::cout << "ICI =" << _splitBuf[i] << "=" << std::endl;
-	}
-	else
-		_splitBuf[1].erase(_splitBuf[1].size() - 1);
-	std::cout << " ++++++++" <<  _splitBuf[1] << std::endl;
+	parsHexchat();
+	// std::cout << " ++++++++" <<  _splitBuf[1] << std::endl;
 	if (this->_connected == true){
 		send(this->getSocket(), ERR_ALREADYREGISTERED(this->_nickname).c_str(),
 				ERR_ALREADYREGISTERED(this->_nickname).size(), 0);
@@ -164,25 +160,23 @@ void	Client::enterPwd(Server *server){
 				ERR_NEEDMOREPARAMS(this->_nickname, _splitBuf[1]).size(), 0);
 	}
 	else if (_splitBuf[1] == server->getPassword()){
-			// std::cout << " -------------------" << std::endl;
+		//	 std::cout << " -|||||||||||||||||||||||||||||||||||||||||||||||||||||||||||" << std::endl;
 
 		this->_connected = true;
 		if (3 == _splitBuf.size()){
 			_splitBuf.erase(_splitBuf.begin(), _splitBuf.begin() + 1);
 			// std::cout << " -------------------" << _splitBuf[0] << std::endl;
-			std::cout << "Merde " << std::endl;	
+			//		std::cout << "Merde " << std::endl;	
 			server->command(this->_socket);
 		}
 	}
 	else{
 		send(this->getSocket(), ERR_PASSWDMISMATCH(this->_nickname).c_str(),
-			ERR_PASSWDMISMATCH(this->_nickname).size(), 0);
+				ERR_PASSWDMISMATCH(this->_nickname).size(), 0);
 	}
 	// for (int i = 0; i < 2; i++)
-		// _splitBuf[i].erase();
-	_splitBuf.clear();
-	for (int i = 0; i < 2; i++)
-			std::cout << "33333333333=" << _splitBuf[i] << "=" << std::endl;
+	// _splitBuf[i].erase();
+	removeCmdBuf();
 }
 
 void    Client::privateMessage( std::vector<Client> *clients, Server *server, std::string info, int fdClient)
@@ -211,7 +205,7 @@ void    Client::privateMessage( std::vector<Client> *clients, Server *server, st
 	for ( ;it < clients->end(); it++ )
 	{
 		if ( name == it->getNickname() ){
-			
+
 			// send message to the client
 			if (info.size() == 0)
 				send(this->getSocket(), ERR_NOTEXTTOSEND(this->getNickname()).c_str(), ERR_NOTEXTTOSEND(this->getNickname()).size(), 0);
@@ -239,82 +233,81 @@ void    Client::privateMessage( std::vector<Client> *clients, Server *server, st
 
 void	Client::join(Server *server, std::string join )
 {
-    join = trimSpace(join);
-    if (join.empty()){
-        send(this->getSocket(), ERR_NEEDMOREPARAMS(this->getName(), "JOIN").c_str(),
-            ERR_NEEDMOREPARAMS(this->getName(), "JOIN").size(), 0);
-        return;
-    }
-    if (join[0] == '#' || join[0] == '&')
-    {
-        if (join.size() <= join.find(' '))
-        {
-            //no password
-            if (join[0] != '#')
-                return;
-            server->createChannel(this->getSocket(), join, "");
-            return;
-        }  else {
-            //find password
-            std::string chanel = join.substr(0, join.find(' '));
-            if (chanel[0] != '&')
-                return;
-            join = join.substr(join.find(' '));
-            join = trimSpace(join);
-            server->createChannel(this->getSocket(), chanel, join);
-        }
-    }
+	join = trimSpace(join);
+	if (join.empty()){
+		send(this->getSocket(), ERR_NEEDMOREPARAMS(this->getName(), "JOIN").c_str(),
+				ERR_NEEDMOREPARAMS(this->getName(), "JOIN").size(), 0);
+		return;
+	}
+	if (join[0] == '#' || join[0] == '&')
+	{
+		if (join.size() <= join.find(' '))
+		{
+			//no password
+			if (join[0] != '#')
+				return;
+			server->createChannel(this->getSocket(), join, "");
+			return;
+		}  else {
+			//find password
+			std::string chanel = join.substr(0, join.find(' '));
+			if (chanel[0] != '&')
+				return;
+			join = join.substr(join.find(' '));
+			join = trimSpace(join);
+			server->createChannel(this->getSocket(), chanel, join);
+		}
+	}
 }
 
 void	Client::splitCmd( std::string cmdSend ){
-	// size_t checkR = cmdSend.find("\n");
-	// if (cmdSend[checkR - 1] != '\r')
-	// 	cmdSend.insert(checkR - 1, "\r");
-
+	std::cout << "Notre buf initial :" << cmdSend;
+	// if (!_splitBuf.empty())
+		// for (size_t i = 0; i <= _splitBuf.size(); i++)
+			// std::cout << "Notre splitbuf initial :" <<  _splitBuf[i] << std::endl;
 	if (cmdSend.find("CAP") != std::string::npos ){
 
 		cmdSend.erase(0, 12);
-		// std::cout << " ici  hexchat: " << cmdSend << std::endl;
 
 	}
-	// for (unsigned int i = 0; i < cmdSend.size(); i++){
-		size_t j = cmdSend.find(" ");
-	 if (j != std::string::npos){
-		// 	this->_splitBuf.push_back(cmdSend.substr(0));
-		// 	cmdSend.erase(cmdSend.begin(), cmdSend.end());
-		// 	return;
-		// }
-		// size_t k = cmdSend.find("\r\n");
-		// if ( k != std::string::npos && k < j){
-		
-		// 	this->_splitBuf.push_back(cmdSend.substr(0, k));
-		// 	cmdSend.erase(cmdSend.begin(), cmdSend.begin() + k);
-			// std::cout << " ---  " << cmdSend;
-
-			// this->_splitBuf.push_back(cmdSend.substr(0, 2));
-			// cmdSend.erase(cmdSend.begin(), cmdSend.begin() + 2);
-			// std::cout << " +++  " << cmdSend;
-
+	size_t j = cmdSend.find(" ");
+	if (j != std::string::npos){
 		this->_splitBuf.push_back(cmdSend.substr(0, j));
-	 	// std::cout  << j << std::endl;
 		cmdSend.erase(cmdSend.begin() , cmdSend.begin() + j);
-	 	// std::cout  << j << std::endl;
 		cmdSend = trimSpace(cmdSend);
 		this->_splitBuf.push_back(cmdSend);
-	 	std::cout  << "==============================-" << std::endl;
-		// }
-		// else {
-		// 	this->_splitBuf.push_back(cmdSend.substr(0, j));
-		// cmdSend.erase(cmdSend.begin() , cmdSend.begin() + j);
-		// 	cmdSend = trimSpace(cmdSend);
-		// }
+		// std::cout << "ICI" <<  this->_splitBuf[0] << std::endl;
+		// std::cout << "ou la "  << cmdSend << std::endl;
 	}
 	else
 		this->_splitBuf.push_back(cmdSend);
-
-	
-	// if (_splitBuf[0] == "CAP"){
-	// 	_splitBuf.erase(_splitBuf.begin(), _splitBuf.begin() + 3	);
-	// }
-	std::cout << _splitBuf[0] << std::endl;
+	// std::cout << _splitBuf[0] << std::endl;
 }
+
+void	Client::removeCmdBuf(){
+		// std::cout << "    REMOVE buff " << std::endl;
+	for (size_t i = 0; i <= _splitBuf.size(); i++){
+		std::cout << _splitBuf[i] << std::endl;
+		_splitBuf.erase(_splitBuf.begin( ) + i);
+}
+		// std::cout << " END   REMOVE buff " << std::endl;
+}
+
+void	Client::parsHexchat( void ){
+	size_t delem = _splitBuf[1].find("\r\n"); 
+	if ( delem != std::string::npos){
+
+		std::string tmp = _splitBuf[1];
+		std::cout << std::endl <<  tmp << std::endl << std::endl << tmp.substr(0, delem) << std::endl << std::endl  << std::endl << std::endl  ;
+		_splitBuf[1].erase();
+		_splitBuf.push_back(tmp.substr(0, delem));
+		_splitBuf.push_back(tmp.substr(delem + 1));
+		// for (int i = 0; i < 3; i++)
+		// std::cout << "ICI =" << _splitBuf[i] << "=" << std::endl;
+	}
+	else
+		_splitBuf[1].erase(_splitBuf[1].size() - 1); //remove \n
+
+	std::cout << " l'argument commande a ce moment " << _splitBuf[1];
+}
+
