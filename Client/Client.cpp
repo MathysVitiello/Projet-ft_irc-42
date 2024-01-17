@@ -207,7 +207,7 @@ void    Client::privateMessage( std::vector<Client> *clients, Server *server, in
 		if (nickOrChannel[0] != '#' && nickOrChannel[0] != '&')
 			send(this->getSocket(), ERR_NOSUCHNICK(this->_nickname, nickOrChannel).c_str(), ERR_NOSUCHNICK(this->_nickname, nickOrChannel).size(), 0);
 
-		//! check si cest un channel
+		// check si cest un channel
 		std::vector<Channel>::const_iterator itChan = server->getChannels().begin();
 		for ( ; itChan < server->getChannels().end(); itChan++)
 			if ( itChan->getName() == nickOrChannel )
@@ -252,6 +252,7 @@ void	Client::join( Server *server )
             _splitBuf[1] = _splitBuf[1].substr(_splitBuf[1].find(' '));
             _splitBuf[1] = trimSpace(_splitBuf[1]);
 			//! ici si il y a un espace, pas bon
+			//! sassure que il t a un mdpppp
 			if (_splitBuf[1].find(" ") < _splitBuf[1].find("\n"))
 			{
 				std::cout << "il y a trop d'args apres le mdp" << std::endl;
