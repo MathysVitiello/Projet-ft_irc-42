@@ -164,7 +164,7 @@ void	Server::command(int fdClient){
 			i = -1; 
 			break;
 		}
-		if(!this->_clients[fdClient].getCmdBuf()[0].find(cmd[i]))
+		if(this->_clients[fdClient].getCmdBuf()[0] == cmd[i])
 			break;
 	}
 	switch (i) {

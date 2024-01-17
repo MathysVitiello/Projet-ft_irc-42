@@ -10,7 +10,6 @@ enum cmdUser {
 	USER,
 	PRIVMSG,
 	JOIN,
-	QUIT,
 	KICK,
 	INVITE,
 	TOPIC,
