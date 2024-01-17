@@ -50,6 +50,7 @@ class Server
 		void	channelFull( int clientSocket );
 		bool	checkChannel( std::string name );
 		void    sendMessageChanel( int fdClient, std::string cmdSend);
+		void	eraseOwnerChannel( int socket );
 
 		// --------------------------------------------------------- //
 	 private:

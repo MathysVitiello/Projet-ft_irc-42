@@ -1,6 +1,8 @@
 #include "Channel.hpp"
 
-
+// :Wiz TOPIC #test :New topic ; L'utilisateur Wiz définit le sujet.
+// TOPIC #test :another topic ; Change le sujet du canal #test en "another topic".
+// TOPIC #test ; Vérifie le sujet de #test.
 void	Channel::topic( Client *client, std::string topic ){
 	topic = trimSpace( topic );
 	std::cout << "dsf" << std::endl;

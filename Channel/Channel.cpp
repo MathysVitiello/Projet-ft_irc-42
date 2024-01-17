@@ -16,7 +16,7 @@ Channel::Channel( int userSocket, std::string name, std::string mdp) :
 
 Channel::~Channel( void ){
 	std::cout << "channel ["<< this->_name << "] closed" << std::endl;
-// 
+
 	// if ( this->_user.empty() )
 		// this->_user.erase( this->_user.begin(), this->_user.end() );
 // 
@@ -25,8 +25,8 @@ Channel::~Channel( void ){
 // 
 	// if ( this->_userInvitation.empty() )
 		// this->_userInvitation.erase( this->_userInvitation.begin(), this->_userInvitation.end() );
-// 
 
+ 
 	this->_ircOps.clear();
 	this->_user.clear();
 	this->_userInvitation.clear();
@@ -55,7 +55,7 @@ int const &	Channel::getOwner( void ) const{
 }
 
 std::vector<int>	const & Channel::getIrcOps( void ) const{
-	return( this->_user);
+	return( this->_ircOps);
 }
 
 std::vector<int>	const & Channel::getUser( void ) const{
@@ -101,23 +101,28 @@ bool	Channel::addClientChannel( int clientSocket ){
 
 void	Channel::removeClientChannel( int userSocket ){
 	//Supprime l'ircOps du canal:
-	for(std::vector<int>::iterator it = this->_ircOps.begin(); it != this->_ircOps.end(); it++)
+	if( !this->_ircOps.empty() )
 	{
-		if( *it == userSocket )
+		for(std::vector<int>::iterator it = this->_ircOps.begin(); it != this->_ircOps.end(); it++)
 		{
-			this->_ircOps.erase( it );
-			std::cout << "IrcOps socket [" << userSocket << "] erased" << std::endl;
-			// pensez a close les clients respectifs
+			if( *it == userSocket )
+			{
+				this->_ircOps.erase( it );
+				std::cout << "IrcOps socket [" << userSocket << "] erased" << std::endl;
+			}
 		}
 	}
 
 	// Supprime le user du canal:
-	for(std::vector<int>::iterator it = this->_user.begin(); it != this->_user.end(); it++)
+	if( !this->_user.empty() )
 	{
-		if( *it == userSocket )
+		for(std::vector<int>::iterator it = this->_user.begin(); it != this->_user.end(); it++)
 		{
-			this->_user.erase( it );
-			std::cout << "User socket [" << userSocket << "] erased" << std::endl;
+			if( *it == userSocket )
+			{
+				this->_user.erase( it );
+				std::cout << "User socket [" << userSocket << "] erased" << std::endl;
+			}
 		}
 	}
 }
