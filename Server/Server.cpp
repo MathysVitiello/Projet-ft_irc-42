@@ -198,7 +198,7 @@ void	Server::command(int fdClient){
 		std::cout << "KICK a faire   dans switch case " << std::endl;
 		break;
 	case INVITE:
-		// this->_clients[fdClient].invitation( this, cmdSend.substr(6) );
+		this->_clients[fdClient].invitation( this );
 		std::cout << "INVITE a faire  dans switch case  " << std::endl;
 		break;
 	case TOPIC:
