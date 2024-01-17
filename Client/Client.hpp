@@ -27,12 +27,12 @@ class Client
 		void 				setNick( Server *server );
 		void 				setAddr( sockaddr_in addr );
 		void				splitCmd( std::string cmdSend );
-	
+
 		// -------------------- Functions ---------------------- //
 		void				quit(); 
-		void				join(Server *server, std::string join); 
+		void				join( Server *server );
 		void				enterPwd(Server *server); 
-		void				privateMessage(std::vector<Client> *clients, Server *server, std::string info, int fdClient);
+		void    			privateMessage( std::vector<Client> *clients, Server *server, int fdClient);
 		int					checkRight( void );
 		void				invitation( Server *server, std::string invite );
 		void				removeCmdBuf( void );
