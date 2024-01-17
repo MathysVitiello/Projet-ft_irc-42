@@ -145,9 +145,12 @@ void	Client::enterPwd(Server *server){
 	if ( delem != std::string::npos){
 
 		std::string tmp = _splitBuf[1];
+		std::cout << std::endl <<  tmp << std::endl << std::endl << tmp.substr(0, delem) << std::endl << std::endl  << std::endl << std::endl  ;
 		_splitBuf[1].erase();
-		_splitBuf.push_back(tmp.substr(0, delem - 1));
+		_splitBuf.push_back(tmp.substr(0, delem));
 		_splitBuf.push_back(tmp.substr(delem + 1));
+		for (int i = 0; i < 3; i++)
+			std::cout << "ICI =" << _splitBuf[i] << "=" << std::endl;
 	}
 	else
 		_splitBuf[1].erase(_splitBuf[1].size() - 1);
