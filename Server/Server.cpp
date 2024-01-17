@@ -171,13 +171,16 @@ void	Server::command(int fdClient){
 		break;
 	case PRIVMSG:
         std::cout << "PRIVMSG " << std::endl;
-		// if (this->_clients[fdClient].checkRight() == true)
-		// 	this->_clients[fdClient].privateMessage(&this->_clients, this ,cmdSend.substr(7), fdClient);
+		// if (this->_clients[fdClient].checkRight() == true) //!
+		this->_clients[fdClient].privateMessage(&this->_clients, this, fdClient);
+		this->_clients[fdClient].removeCmdBuf();
 		break;
 	case JOIN:
         std::cout << "JOIN " << std::endl;
         // if (this->_clients[fdClient].checkRight() == true)
-        //     this->_clients[fdClient].join(this, cmdSend.substr(4));
+		this->_clients[fdClient].join(this);
+		this->_clients[fdClient].removeCmdBuf(); //! a changer a la fin, question nuil, est ce que a aprt pass nick user on peut tout faure sur une ligne
+
         break;
 	case KICK:
 		std::cout << "KICK a faire" << std::endl;
