@@ -6,23 +6,16 @@
 /*   By: mvitiell <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/01/04 11:44:21 by mvitiell          #+#    #+#             */
-/*   Updated: 2024/01/16 13:12:38 by nminotte         ###   ########.fr       */
+/*   Updated: 2024/01/17 10:42:17 by alamizan         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
-#include "Client/Client.hpp"
 #include "library.hpp"
-
-#include <signal.h>
-
-# define BYELLOW	"\001\e[1;33m\002"
-# define BGREEN		"\001\e[1;32m\002"
-
 int exitFlag = 0;
 
 void	sigHandler( int signum )
 {
 	exitFlag = signum;
-	throw std::runtime_error( "throw sigHandler: Dans ta gueule !" );
+	throw std::runtime_error( "" );
 }
 
 int main(int argc, char **argv)
@@ -64,6 +57,7 @@ int main(int argc, char **argv)
 
 		while ( 1 )
 		{
+			std::cout << server << std::endl;
 			fd_set	copy = master;
 			if( ( nbFds = select(1024, &copy, NULL, NULL, NULL) ) < 0 )
 				throw std::runtime_error( "Error in select" );
@@ -79,7 +73,6 @@ int main(int argc, char **argv)
 					throw std::runtime_error( "Problem with client connecting" );
 
 				server.addClient(newSocket, clientaddr);
-				std::cout << server << std::endl;
 				FD_SET(newSocket, &master); /* add the new file descriptor to set */
 			}
 
@@ -117,18 +110,15 @@ int main(int argc, char **argv)
     }
 	catch ( std::exception & e )
 	{
-		std::cerr << CRED << "ERROR: " << NC << BRED << e.what() << NC << std::endl;
+		if( exitFlag != SIGINT )
+			std::cerr << CRED << "ERROR: " << NC << BRED << e.what() << NC << std::endl;
 
 		if( exitFlag == SIGINT )
-			std::cerr << BPURPLE << "Ctrl-c: fermeture du serveur et deconnexion des clients !! " << NC << std::endl;
+			std::cerr << BPURPLE << "Fermeture du serveur et deconnexion des clients !! " << NC << std::endl;
 
-		else
-		{
-			std::cerr << BRED << "Code erreur = " << exitFlag << std::endl;
-			std::cerr << "Renvoi valgrind:"  << std::endl;
-			if( exitFlag == 0 )
-				std::cerr << BGREEN;
-		}
+		std::cerr << BRED << "Code erreur = " << exitFlag << std::endl;
+		std::cerr << "Renvoi valgrind: ( valgrind --track-origins=yes --leak-check=full --track-fds=yes ./ircserv arg1 arg2 )"  << std::endl;
+		std::cerr << BGREEN;
 		return( exitFlag );
 	}
     return ( 0 );

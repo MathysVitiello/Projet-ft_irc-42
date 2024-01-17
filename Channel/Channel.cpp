@@ -6,8 +6,8 @@ Channel::Channel( int userSocket, std::string name, std::string mdp) :
 	_name( name ),
 	_password( mdp ),
 	_owner( userSocket ),
-	_maxUser( FD_SETSIZE ){
-	// Verifier en amont si le canal existe deja et que le client n'y est pas.
+	_maxUser( FD_SETSIZE ),
+	_topic( false ){
 	std::cout << "Channel [" << this->_name << "] created Owner socket: " << userSocket << std::endl;
 
 	this->_ircOps.push_back( userSocket );
@@ -15,16 +15,21 @@ Channel::Channel( int userSocket, std::string name, std::string mdp) :
 }
 
 Channel::~Channel( void ){
-	// std::cout << "channel ["<< this->_name << "] closed" << std::endl;
-
-	if ( this->_user.empty() )
-		this->_user.erase( this->_user.begin(), this->_user.end() );
-
-	if ( this->_ircOps.empty() )
-		this->_user.erase( this->_user.begin(), this->_user.end() );
+	std::cout << "channel ["<< this->_name << "] closed" << std::endl;
+// 
+	// if ( this->_user.empty() )
+		// this->_user.erase( this->_user.begin(), this->_user.end() );
+// 
+	// if ( this->_ircOps.empty() )
+		// this->_user.erase( this->_user.begin(), this->_user.end() );
+// 
+	// if ( this->_userInvitation.empty() )
+		// this->_userInvitation.erase( this->_userInvitation.begin(), this->_userInvitation.end() );
+// 
 
 	this->_ircOps.clear();
 	this->_user.clear();
+	this->_userInvitation.clear();
 }
 
 /* ************************************************************************** */
@@ -69,6 +74,10 @@ std::vector<int>		const & Channel::getUserInvite ( void ) const{
 	return ( this->_userInvitation );
 }
 
+int	const & Channel::getMaxUser( void ) const{
+	return( this->_maxUser );
+}
+
 void	Channel::setTopicName( std::string topic ){
 	this->_topicName = topic;
 }
@@ -77,16 +86,17 @@ void	Channel::setTopic( bool topic ){
 	this->_topic = topic;
 }
 
-// void		setUSER( int index , std::string name ){
-// }
-
 /* ************************************************************************** */
 // FUNCTIONS:
-void	Channel::addClientChannel( int clientSocket ){
+bool	Channel::addClientChannel( int clientSocket ){
 	if( static_cast<unsigned>(this->_maxUser) >= this->_user.size() )
+	{
 		this->_user.push_back( clientSocket );
+		return( true );
+	}
 	else
 		std::cout << "No more user" << std::endl;
+	return( false );
 }
 
 void	Channel::removeClientChannel( int userSocket ){

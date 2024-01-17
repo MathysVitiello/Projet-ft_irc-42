@@ -4,20 +4,18 @@
 // CONSTRUCTOR / DESTRUCTOR:
 Client::Client( int const & id, sockaddr_in from ) :	_socket( id ),
 														_address( from ),
-														_connected(false)
-{
+														_connected(false),
+														_checkRight(false){
 	std::cout << "Client constructor called" << std::endl;
 	std::cout << " id:  " << this->_socket << std::endl;
 	std::cout << " reseau :  " << this->_address.sin_port << std::endl;
 	this->_name = "";
 	this->_nickname = "*";
-
 	return ;
 }
 
 Client::~Client( void ) {
-
-	//std::cout << "Client Destructor called" << std::endl;
+	std::cout << "Client Destructor called" << std::endl;
 	return ;
 }
 /* ************************************************************************** */
@@ -132,7 +130,6 @@ int	Client::checkRight( void ) {
 
 
 void Client::setAddr( sockaddr_in addr ) {
-
 	this->_address = addr;
 	return ;
 }

@@ -21,9 +21,10 @@ class Channel{
 		int						const & getOwner( void ) const;
 		std::vector<int>		const & getIrcOps ( void ) const;
 		std::vector<int>		const & getUser ( void ) const;
-		bool			const & getTopic ( void ) const;
-		std::string		const & getTopicName( void ) const;
+		bool					const & getTopic ( void ) const;
+		std::string				const & getTopicName( void ) const;
 		std::vector<int>		const & getUserInvite ( void ) const;
+		int						const & getMaxUser( void ) const;
 						
 		// void				setUSER( int index );
 		void			setTopicName( std::string topic );
@@ -32,7 +33,7 @@ class Channel{
 		
 		// -------------------- Functions ---------------------- //
 		void	removeClientChannel( int index );
-		void	addClientChannel( int clientSocket );
+		bool	addClientChannel( int clientSocket );
 		void	topic( Client *client, std::string topic );
 
 	// --------------------------------------------------------- //
@@ -42,7 +43,7 @@ class Channel{
 		int 				_owner;  //Admin
 		std::vector<int>	_ircOps; //Operator
 		std::vector<int>	_user;								
-		std::string		_topicName;
+		std::string			_topicName;
 		std::vector<int>	_userInvitation;
 		int					_maxUser;
 	
