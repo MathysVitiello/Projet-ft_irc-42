@@ -228,7 +228,6 @@ void    Client::privateMessage( std::vector<Client> *clients, Server *server, in
 //! test apres merge si JOIN sans espace core dump, meme  pour privmsg
 void	Client::join( Server *server )
 {
-	std::cout << "size :" << _splitBuf[1].size() << std::endl;
     if (_splitBuf[1].empty()){ //! ne focntionone pas, voir avec NIL
         send(this->getSocket(), ERR_NEEDMOREPARAMS(this->getName(), "JOIN").c_str(),
             ERR_NEEDMOREPARAMS(this->getName(), "JOIN").size(), 0);
@@ -250,11 +249,12 @@ void	Client::join( Server *server )
 		    if (chanel[0] != '&')
                 return;
             _splitBuf[1] = _splitBuf[1].substr(_splitBuf[1].find(' '));
-            _splitBuf[1] = trimSpace(_splitBuf[1]);
-			//! ici si il y a un espace, pas bon
-			//! sassure que il t a un mdpppp
-			if (_splitBuf[1].find(" ") < _splitBuf[1].find("\n"))
-			{
+			_splitBuf[1] = trimSpace(_splitBuf[1]);
+
+			if (_splitBuf[1][0] == '\n') {
+				std::cout << "need a password" << std::endl;
+				return;		
+			} else if (_splitBuf[1].find(" ") < _splitBuf[1].find("\n")) {
 				std::cout << "il y a trop d'args apres le mdp" << std::endl;
 				return;
 			}
