@@ -10,14 +10,14 @@ Client::Client( int const & id, sockaddr_in from ) :	_socket( id ),
 	std::cout << " id:  " << this->_socket << std::endl;
 	std::cout << " reseau :  " << this->_address.sin_port << std::endl;
 	this->_name = "";
-	this->_nickname = "";
+	this->_nickname = "*";
 
 	return ;
 }
 
 Client::~Client( void ) {
 
-	std::cout << "Client Destructor called" << std::endl;
+	//std::cout << "Client Destructor called" << std::endl;
 	return ;
 }
 /* ************************************************************************** */
@@ -44,6 +44,10 @@ std::string const & Client::getNickname( void ) const{
 
 bool	const & Client::getConnect( void ) const{
 	return( this->_connected );
+}
+
+std::vector<std::string>	const & Client::getCmdBuf(void) const{
+	return this->_splitBuf;
 }
 
 void	Client::setSocket( int socket ){
@@ -136,26 +140,49 @@ void Client::setAddr( sockaddr_in addr ) {
 /* ************************************************************************** */
 // FONCTIONS:
 
-void	Client::enterPwd(Server *server, std::string password){
-	if (password[0] == ' ')
-		password.erase(0, 1);
+void	Client::enterPwd(Server *server){
+	size_t delem = _splitBuf[1].find("\r\n"); 
+	if ( delem != std::string::npos){
+
+		std::string tmp = _splitBuf[1];
+		std::cout << std::endl <<  tmp << std::endl << std::endl << tmp.substr(0, delem) << std::endl << std::endl  << std::endl << std::endl  ;
+		_splitBuf[1].erase();
+		_splitBuf.push_back(tmp.substr(0, delem));
+		_splitBuf.push_back(tmp.substr(delem + 1));
+		for (int i = 0; i < 3; i++)
+			std::cout << "ICI =" << _splitBuf[i] << "=" << std::endl;
+	}
+	else
+		_splitBuf[1].erase(_splitBuf[1].size() - 1);
+	std::cout << " ++++++++" <<  _splitBuf[1] << std::endl;
 	if (this->_connected == true){
 		send(this->getSocket(), ERR_ALREADYREGISTERED(this->_nickname).c_str(),
 				ERR_ALREADYREGISTERED(this->_nickname).size(), 0);
-		return;
 	}
-	if (password.empty()){
-		std::string	cmd = "PASS";
-		send(this->getSocket(), ERR_NEEDMOREPARAMS(this->_nickname, cmd).c_str(), 
-				ERR_NEEDMOREPARAMS(this->_nickname, cmd).size(), 0);
-		return;
+	else if (this->_splitBuf[1].empty()){
+		send(this->getSocket(), ERR_NEEDMOREPARAMS(this->_nickname, _splitBuf[0]).c_str(), 
+				ERR_NEEDMOREPARAMS(this->_nickname, _splitBuf[1]).size(), 0);
 	}
-	if (password == server->getPassword()){
+	else if (_splitBuf[1] == server->getPassword()){
+			// std::cout << " -------------------" << std::endl;
+
 		this->_connected = true;
-		return;
+		if (3 == _splitBuf.size()){
+			_splitBuf.erase(_splitBuf.begin(), _splitBuf.begin() + 1);
+			// std::cout << " -------------------" << _splitBuf[0] << std::endl;
+			std::cout << "Merde " << std::endl;	
+			server->command(this->_socket);
+		}
 	}
-	send(this->getSocket(), ERR_PASSWDMISMATCH(this->_nickname).c_str(),
+	else{
+		send(this->getSocket(), ERR_PASSWDMISMATCH(this->_nickname).c_str(),
 			ERR_PASSWDMISMATCH(this->_nickname).size(), 0);
+	}
+	// for (int i = 0; i < 2; i++)
+		// _splitBuf[i].erase();
+	_splitBuf.clear();
+	for (int i = 0; i < 2; i++)
+			std::cout << "33333333333=" << _splitBuf[i] << "=" << std::endl;
 }
 
 void    Client::privateMessage( std::vector<Client> *clients, Server *server, std::string info, int fdClient)
@@ -237,4 +264,57 @@ void	Client::join(Server *server, std::string join )
             server->createChannel(this->getSocket(), chanel, join);
         }
     }
+}
+
+void	Client::splitCmd( std::string cmdSend ){
+	// size_t checkR = cmdSend.find("\n");
+	// if (cmdSend[checkR - 1] != '\r')
+	// 	cmdSend.insert(checkR - 1, "\r");
+
+	if (cmdSend.find("CAP") != std::string::npos ){
+
+		cmdSend.erase(0, 12);
+		// std::cout << " ici  hexchat: " << cmdSend << std::endl;
+
+	}
+	// for (unsigned int i = 0; i < cmdSend.size(); i++){
+		size_t j = cmdSend.find(" ");
+	 if (j != std::string::npos){
+		// 	this->_splitBuf.push_back(cmdSend.substr(0));
+		// 	cmdSend.erase(cmdSend.begin(), cmdSend.end());
+		// 	return;
+		// }
+		// size_t k = cmdSend.find("\r\n");
+		// if ( k != std::string::npos && k < j){
+		
+		// 	this->_splitBuf.push_back(cmdSend.substr(0, k));
+		// 	cmdSend.erase(cmdSend.begin(), cmdSend.begin() + k);
+			// std::cout << " ---  " << cmdSend;
+
+			// this->_splitBuf.push_back(cmdSend.substr(0, 2));
+			// cmdSend.erase(cmdSend.begin(), cmdSend.begin() + 2);
+			// std::cout << " +++  " << cmdSend;
+
+		this->_splitBuf.push_back(cmdSend.substr(0, j));
+	 	// std::cout  << j << std::endl;
+		cmdSend.erase(cmdSend.begin() , cmdSend.begin() + j);
+	 	// std::cout  << j << std::endl;
+		cmdSend = trimSpace(cmdSend);
+		this->_splitBuf.push_back(cmdSend);
+	 	std::cout  << "==============================-" << std::endl;
+		// }
+		// else {
+		// 	this->_splitBuf.push_back(cmdSend.substr(0, j));
+		// cmdSend.erase(cmdSend.begin() , cmdSend.begin() + j);
+		// 	cmdSend = trimSpace(cmdSend);
+		// }
+	}
+	else
+		this->_splitBuf.push_back(cmdSend);
+
+	
+	// if (_splitBuf[0] == "CAP"){
+	// 	_splitBuf.erase(_splitBuf.begin(), _splitBuf.begin() + 3	);
+	// }
+	std::cout << _splitBuf[0] << std::endl;
 }

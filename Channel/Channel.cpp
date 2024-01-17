@@ -29,19 +29,10 @@ Channel::~Channel( void ){
 
 /* ************************************************************************** */
 // OPERATOR OVERLOAD:
-// user -> flag = 0
-// ircops -> flag = 1
-// int Channel::operator[](unsigned int index, int flag) {
 int Channel::operator[](unsigned int index) {
-	// if( flag == 0 )
 	if ( index >= this->_user.size() )
-		 throw std::runtime_error( "Index in user is invalid" );
-	return( this->_user[index] );
-	
-	// if( flag == 1 )
-	// if ( index >= this->_ircOos.size() )
-	//	 throw std::runtime_error( "Index in ircOs is invalid" );
-	// return( this->_ircOps[index] );
+		 throw std::runtime_error( "Index is invalid" );
+	return this->_user[index];
 }
 
 /* ************************************************************************** */
@@ -59,7 +50,7 @@ int const &	Channel::getOwner( void ) const{
 }
 
 std::vector<int>	const & Channel::getIrcOps( void ) const{
-	return( this->_ircOps );
+	return( this->_user);
 }
 
 std::vector<int>	const & Channel::getUser( void ) const{
@@ -91,13 +82,11 @@ void	Channel::setTopic( bool topic ){
 
 /* ************************************************************************** */
 // FUNCTIONS:
-bool	Channel::addClientChannel( int clientSocket ){
-	if( static_cast<unsigned>(this->_maxUser) > this->_user.size() )
-	{
+void	Channel::addClientChannel( int clientSocket ){
+	if( static_cast<unsigned>(this->_maxUser) >= this->_user.size() )
 		this->_user.push_back( clientSocket );
-		return( true );
-	}
-	return( false );
+	else
+		std::cout << "No more user" << std::endl;
 }
 
 void	Channel::removeClientChannel( int userSocket ){

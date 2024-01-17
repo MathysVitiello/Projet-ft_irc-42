@@ -20,16 +20,18 @@ class Client
 		std::string const & getName( void ) const;
 		std::string const & getNickname( void ) const;
 		bool		const & getConnect( void ) const;
+		std::vector<std::string>	const & getCmdBuf(void) const;
 
 		void				setSocket( int socket );
 		void				setName( std::string name );
 		void 				setNick( std::string nick, std::vector<Client> *clients );
 		void 				setAddr( sockaddr_in addr );
-
+		void				splitCmd( std::string cmdSend );
+	
 		// -------------------- Functions ---------------------- //
 		void				quit(); 
 		void				join(Server *server, std::string join); 
-		void				enterPwd(Server *server, std::string password); 
+		void				enterPwd(Server *server); 
 		void				privateMessage(std::vector<Client> *clients, Server *server, std::string info, int fdClient);
 		int					checkRight( void );
 		void				invitation( Server *server, std::string invite );
@@ -42,7 +44,8 @@ class Client
 		std::string	_nickname;
 		bool		_connected;
 		bool		_checkRight;
-		bool		_inCanal;
+		std::string					_cmdTmp;
+		std::vector<std::string>	_splitBuf;  // 0: CMD 1:ARG 2:ARG ...
 };
 
 

@@ -1,7 +1,7 @@
 #ifndef DEFINE_HPP
 #define DEFINE_HPP
 
-# define ERR_NOMOREFDFREE						("421 :Too many connections, try again later\r\n")
+# define ERR_NOMOREFDFREE						"421 :Too many connections, try again later\r\n"
 /* PASS message  */
 
 # define ERR_NEEDMOREPARAMS(nick, command)			("461 : " +nick+ " :" +command+ " :Not enough parameters\r\n")
@@ -17,13 +17,14 @@
                                       
 /*	JOIN message */                   
                                       
+
 # define ERR_NOSUCHCHANNEL(nick, channel)			("403 : "+nick+" "+channel+" :No such channel\r\n")
 # define ERR_TOOMANYCHANNELS(nick, channel)			("405 : "+nick+" "+channel+" :You have joined too many channels\r\n")
 # define ERR_BADCHANNELKEY(nick, channel)			("475 : "+nick+" "+channel+" :Cannot join channel (+k)\r\n")
 # define ERR_BANNEDFROMCHAN(nick, channel)			("474 : "+nick+" "+channel+" :Cannot join channel (+b)\r\n")
 # define ERR_CHANNELISFULL(nick, channel)			("471 : "+nick+" "+channel+" :Cannot join channel (+l)\r\n")
 # define ERR_INVITEONLYCHAN(nick, channel)			("473 : "+nick+" "+channel+" :Cannot join channel (+i)\r\n")
-# define ERR_BADCHANMASK(channel)				("476 : "+channel+" :Bad Channel Mask" )
+# define ERR_BADCHANMASK(channel)				("476 : "+channel+" :Bad Channel Mask\r\n" )
 
 
 # define RPL_TOPIC(nick, channel, topic)	("332 : "+nick+" "+channel+" :"+topic+"\r\n")
