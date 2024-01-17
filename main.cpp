@@ -24,7 +24,7 @@ int main(int argc, char **argv)
 	{
 		int newSocket, sockfd, nbFds;
 		ssize_t				sizeRead; //size of buffer.
-		char				buf[4096];
+		char 				buf[4096];
 		struct sockaddr_in	clientaddr; 
 		socklen_t			clientLen;                 
 
@@ -97,6 +97,8 @@ int main(int argc, char **argv)
 						server.removeClient( i );
 					}
 					else{
+						buf[sizeRead - 1] = '\0';
+						std::cout << buf << "MAIN" << std::endl;
 						server.setClients( buf, i ); //. SplitCmd( buf );
 						server.command(i);
 					}

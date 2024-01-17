@@ -169,7 +169,7 @@ void	Server::command(int fdClient){
 	}
 	switch (i) {
 	case PASS:
-		std::cout << "PASS" << std::endl;
+		std::cout << "PASS  dans switch case " << std::endl;
 		this->_clients[fdClient].enterPwd(this);
 		break;
 	case NICK:
@@ -177,35 +177,36 @@ void	Server::command(int fdClient){
 		this->_clients[fdClient].setNick(this);
 		break;
 	case USER:
-		std::cout << "USER " << std::endl;
-		//this->_clients[fdClient].setName(cmdSend.substr(4));
+		std::cout << "USER   dans switch case " << std::endl;
+		this->_clients[fdClient].setName();
+		this->_clients[fdClient].removeCmdBuf();
 		break;
 	case PRIVMSG:
-        std::cout << "PRIVMSG " << std::endl;
+        std::cout << "PRIVMSG   dans switch case " << std::endl;
 		// if (this->_clients[fdClient].checkRight() == true) //!
 		this->_clients[fdClient].privateMessage(&this->_clients, this, fdClient);
 		this->_clients[fdClient].removeCmdBuf();
 		break;
 	case JOIN:
-        std::cout << "JOIN " << std::endl;
+        std::cout << "JOIN  dans switch case  " << std::endl;
         // if (this->_clients[fdClient].checkRight() == true)
 		this->_clients[fdClient].join(this);
 		this->_clients[fdClient].removeCmdBuf(); //! a changer a la fin, question nuil, est ce que a aprt pass nick user on peut tout faure sur une ligne
 
         break;
 	case KICK:
-		std::cout << "KICK a faire" << std::endl;
+		std::cout << "KICK a faire   dans switch case " << std::endl;
 		break;
 	case INVITE:
 		// this->_clients[fdClient].invitation( this, cmdSend.substr(6) );
-		std::cout << "INVITE a faire" << std::endl;
+		std::cout << "INVITE a faire  dans switch case  " << std::endl;
 		break;
 	case TOPIC:
 		// this->.topic( this->_clients[fdClient], cmdSend );
-		std::cout << "TOPIC a faire" << std::endl;
+		std::cout << "TOPIC a faire   dans switch case " << std::endl;
 		break;
 	case MODE:
-		std::cout << "MODE a faire" << std::endl;
+		std::cout << "MODE a faire  dans switch case " << std::endl;
 		break;
 	default:
 		send(this->_clients[fdClient].getSocket(), ERR_UNKNOWNCOMMAND(this->_clients[fdClient].getNickname()).c_str(), ERR_UNKNOWNCOMMAND(this->_clients[fdClient].getNickname()).size(), 0);

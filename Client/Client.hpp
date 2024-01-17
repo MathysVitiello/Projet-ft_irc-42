@@ -23,7 +23,7 @@ class Client
 		std::vector<std::string>	const & getCmdBuf(void) const;
 
 		void				setSocket( int socket );
-		void				setName( std::string name );
+		void				setName( void );
 		void 				setNick( Server *server );
 		void 				setAddr( sockaddr_in addr );
 		void				splitCmd( std::string cmdSend );
