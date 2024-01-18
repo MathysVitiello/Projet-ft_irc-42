@@ -48,7 +48,7 @@ class Server
 		bool	userInChannel( int i, int clientSocket );
 		void	channelFull( int clientSocket );
 		bool	checkChannel( std::string name );
-		void    sendMessageChanel( int fdClient, std::string cmdSend);
+		void    sendMessageChanel( std::string nickOrChannel, int clientPlace, std::string cmdSend, int socket);
 
 		// --------------------------------------------------------- //
 	 private:

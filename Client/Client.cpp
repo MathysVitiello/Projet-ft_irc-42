@@ -174,10 +174,9 @@ void	Client::enterPwd(Server *server){
 	removeCmdBuf();
 }
 
-void    Client::privateMessage( std::vector<Client> *clients, Server *server, int fdClient)
+void    Client::privateMessage( std::vector<Client> *clients, Server *server, int clientPlace)
 {
 //! CETTE FUNCTION FONCTIONNE AVEC NC, SANS TEST AVEC D'AUTRES USERS
-	
 	if (_splitBuf[1].find(" ") < _splitBuf[1].find("\n"))
 	{
 		std::string nickOrChannel = _splitBuf[1].substr(0, _splitBuf[1].find(" "));
@@ -205,7 +204,7 @@ void    Client::privateMessage( std::vector<Client> *clients, Server *server, in
 			if ( itChan->getName() == nickOrChannel )
 			{
 				// send message to the clients of the channel
-				server->sendMessageChanel( fdClient, _splitBuf[1].substr(_splitBuf[1].find(" "))); //! pas le bon fd je crois. envoie dans le terminal et a sois				_splitBuf.erase (_splitBuf.begin()+1); // efface pour la prochaine commande
+				server->sendMessageChanel( nickOrChannel, clientPlace, _splitBuf[1].substr(_splitBuf[1].find(" ")), this->getSocket());
 				return;
 			}
 		send(this->getSocket(), ERR_NOSUCHSERVER(nickOrChannel).c_str(), ERR_NOSUCHSERVER(nickOrChannel).size(), 0);

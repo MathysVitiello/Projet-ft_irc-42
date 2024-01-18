@@ -332,29 +332,48 @@ void	Server::createChannel( int clientSocket, std::string name, std::string pass
 // 
 // }
 // 
-void    Server::sendMessageChanel( int fdClient, std::string cmdSend)
+void    Server::sendMessageChanel( std::string nickOrChannel, int clientPlace, std::string cmdSend, int socket)
 {
-    //pas oublier privmsg dans le cnaal avec kick et tout
-    int i = 0;
-    int senderFd = 0;
+//TODO chamge son nom, cst pas le socket ou le fd mais lemplcement , le i dans le tab fdCLient
+	int nbChannel = 0;
+	// check si le channel existe
+    for( size_t i = 0; i < this->getChannels().size(); i++ ){
 
-    std::vector<Client>::iterator it;
-    for( it = this->_clients.begin(); it != this->_clients.end(); it++ )
-    {
-        if( it->getSocket() == fdClient )
-            senderFd = i;
-        i++;
-    }
-    for( size_t i = 0; i < this->getClients().size(); i++ )
-    {
-        if (fdClient != this->getClients()[i].getSocket())
-        {
-            //RPL_TOPIC(nick, channel, topic)
-            send(this->getClients()[i].getSocket(), RPL_TOPIC(this->getClients()[senderFd].getNickname(), this->getChannels()[i].getName(), cmdSend).c_str(),
-                RPL_TOPIC(this->getClients()[fdClient].getNickname(), this->getChannels()[i].getName(), cmdSend).size(), 0);
-            send(this->getClients()[i].getSocket(), "\n", 1, 0);
-        }
-    }
+		if (this->getChannels()[i].getName() == nickOrChannel)
+		{
+			nbChannel = i;
+			std::cout << this->getChannels()[i].getName() << " est le channel" << std::endl;
+		}
+	}
+
+	// check si le client est dans le channel 
+	bool clientInChannel = false;
+	for( size_t i = 0; i < this->getChannels()[nbChannel].getUser().size(); i++ ){
+		if (socket == this->getChannels()[nbChannel].getUser()[i])
+			clientInChannel = true;
+	}
+	if (clientInChannel == false){
+		std::cout << "le client nest pas dans le channel dans lequel il veut PRIVMSG" << std::endl;
+		return;
+	}
+
+
+
+	if (this->getChannels()[nbChannel].getUser().size() > 1)
+	{
+		for( size_t i = 0; i < this->getChannels()[nbChannel].getUser().size(); i++ ){
+
+			std::cout << "les users du channel " << this->getChannels()[nbChannel].getUser()[i] << std::endl;
+			std::cout << "socket " << socket << std::endl;
+			std::cout << "this client socket " << this->getClients()[clientPlace].getSocket() << std::endl;
+		  	if (socket != this->getChannels()[nbChannel].getUser()[i])
+			{
+				send(this->getClients()[i].getSocket(), RPL_TOPIC(this->getClients()[clientPlace].getNickname(), nickOrChannel, cmdSend).c_str(),
+					RPL_TOPIC(this->getClients()[clientPlace].getNickname(), nickOrChannel, cmdSend).size(), 0);
+				send(this->getClients()[i].getSocket(), "\n", 1, 0);
+			}
+		}
+	}
     return ;
 } 
 
