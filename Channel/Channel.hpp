@@ -34,7 +34,6 @@ class Channel{
 		// -------------------- Functions ---------------------- //
 		void	removeClientChannel( int index );
 		bool	addClientChannel( int clientSocket );
-		void	topic( Client *client, std::string topic );
 
 	// --------------------------------------------------------- //
 	 private:

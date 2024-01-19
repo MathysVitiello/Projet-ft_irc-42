@@ -152,9 +152,8 @@ void	Client::enterPwd(Server *server){
 		send(this->getSocket(), ERR_ALREADYREGISTERED(this->_nickname).c_str(),
 				ERR_ALREADYREGISTERED(this->_nickname).size(), 0);
 	}
-	else if (this->_splitBuf[1].empty()){
-		send(this->getSocket(), ERR_NEEDMOREPARAMS(this->_nickname, _splitBuf[0]).c_str(), 
-				ERR_NEEDMOREPARAMS(this->_nickname, _splitBuf[1]).size(), 0);
+	else if (this->_splitBuf.size() != 2){
+		send(this->getSocket(), ERR_NEEDMOREPARAMS(this->_nickname, _splitBuf[0]).c_str(), ERR_NEEDMOREPARAMS(this->_nickname, _splitBuf[0]).size(), 0);
 	}
 	else if (_splitBuf[1] == server->getPassword()){
 		//	 std::cout << " -|||||||||||||||||||||||||||||||||||||||||||||||||||||||||||" << std::endl;
@@ -219,8 +218,9 @@ void    Client::privateMessage( std::vector<Client> *clients, Server *server, in
 //! test apres merge si JOIN sans espace core dump, meme  pour privmsg
 void	Client::join( Server *server )
 {
-    if (_splitBuf[1].empty()){ //! ne focntionone pas, voir avec NIL
-        send(this->getSocket(), ERR_NEEDMOREPARAMS(this->getName(), "JOIN").c_str(),
+	std::cout << " ca passe bien ici !!!!!!!!!!" << std::endl;
+    if (_splitBuf.size() == 1){
+		send(this->getSocket(), ERR_NEEDMOREPARAMS(this->getName(), "JOIN").c_str(),
             ERR_NEEDMOREPARAMS(this->getName(), "JOIN").size(), 0);
         return;
     }

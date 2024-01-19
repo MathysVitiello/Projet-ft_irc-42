@@ -41,6 +41,7 @@ class Client
 		void 				mode( Server *server );
 		void				removeCmdBuf( void );
 		void				parsHexchat( void );
+		void				topic( Server *server );
 
 		// --------------------------------------------------------- //
 	private:

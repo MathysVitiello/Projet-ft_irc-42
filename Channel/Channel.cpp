@@ -129,6 +129,7 @@ void	Channel::removeClientChannel( int userSocket ){
 
 
 void		Channel::setUserInvite ( int socketInvite, int flag ){
+	std::cout << "dans Channle :" << socketInvite << std::endl;
 	if(flag == PUSH)
 		this->_userInvitation.push_back(socketInvite);
 	else{

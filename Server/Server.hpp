@@ -50,6 +50,8 @@ class Server
 		bool	checkChannel( std::string name );
 		void    sendMessageChanel( std::string nickOrChannel, int clientPlace, std::string cmdSend, int socket);
 		void	eraseOwnerChannel( int socket );
+		void	addInviteUser( int guestSocket, std::string channelName );
+		void	changeTopic( std::string topic, std::string chanName );
 
 		// --------------------------------------------------------- //
 	 private:

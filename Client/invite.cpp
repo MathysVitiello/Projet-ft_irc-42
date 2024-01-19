@@ -24,7 +24,7 @@ void	Client::invitation( Server *server ){
 			break;
 	}
 	if ( it == server->getClients().end()){
-		send(this->_socket, ERR_NOSUCHNICK(this->_nickname, _splitBuf[2]).c_str(), ERR_NOSUCHNICK(this->_nickname, _splitBuf[2]).size(), 0);
+		send(this->_socket, ERR_NOSUCHNICK(this->_nickname, _splitBuf[1]).c_str(), ERR_NOSUCHNICK(this->_nickname, _splitBuf[1]).size(), 0);
 		return ;
 	}
 
@@ -46,11 +46,9 @@ void	Client::invitation( Server *server ){
 		}
 	}
 
-	// int socket  = it->getSocket();
-	// itChan->setUserInvite(socket, PUSH);
 	send(it->getSocket(), RPL_INVITING(this->_nickname, _splitBuf[1], _splitBuf[2]).c_str(), RPL_INVITING(this->_nickname, _splitBuf[1], _splitBuf[2]).size(), 0); 
 	send(this->_socket, RPL_INVITED(_splitBuf[1], _splitBuf[2], this->_nickname).c_str(), RPL_INVITED(_splitBuf[1], _splitBuf[2], this->_nickname).size(), 0); 
-
+	std::cout <<  it->getSocket() << std::endl;
+	server->addInviteUser( it->getSocket(), itChan->getName() );
 }
-
 

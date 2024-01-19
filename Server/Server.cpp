@@ -1,4 +1,5 @@
 #include "Server.hpp"
+#include <string>
 /* ************************************************************************** */
 // CONSTRUCTOR / DESTRUCTOR:
 Server::Server( unsigned int const & port, std::string const & password  ): _port(port),
@@ -199,10 +200,12 @@ void	Server::command(int fdClient){
 	case INVITE:
 		this->_clients[fdClient].invitation( this );
 		std::cout << "INVITE a faire  dans switch case  " << std::endl;
+		this->_clients[fdClient].removeCmdBuf();
 		break;
 	case TOPIC:
-		// this->.topic( this->_clients[fdClient], cmdSend );
+		this->_clients[fdClient].topic( this );
 		std::cout << "TOPIC a faire   dans switch case " << std::endl;
+		this->_clients[fdClient].removeCmdBuf();
 		break;
 	case MODE:
 		std::cout << "MODE" << std::endl;
@@ -372,10 +375,27 @@ std::ostream & operator<<( std::ostream & o, Server const & src )
 		for( unsigned i = 0; i < itChannel->getUser().size(); i++ )
 			o << "- socket user: " << itChannel->getUser()[i] << std::endl;
 		for( unsigned i = 0; i < itChannel->getUserInvite().size(); i++ )
-			o << "- user invitated: " << itChannel->getUser()[i] << std::endl;
+			o << "- user invitated: " << itChannel->getUserInvite()[i] << std::endl;
 	}
 	std::cout << "-------------------------------------------"<< NC << std::endl;
 	return( o );
 }
 
+void	Server::addInviteUser( int guestSocket, std::string channelName ){
+	std::cout << "dasn Server :" << guestSocket << std::endl;	
+	for (size_t i = 0; i < this->_channels.size(); i++){
+		if (channelName == this->_channels[i].getName()){
+			this->_channels[i].setUserInvite( guestSocket, PUSH );
+			return ;
+		}
+	}
+}
 
+void	Server::changeTopic( std::string topic, std::string chanName ){
+	for (size_t i = 0; i < this->_channels.size(); i++){
+		if (chanName == this->_channels[i].getName()){
+			this->_channels[i].setTopicName( topic );
+			this->_channels[i].setTopic( true );
+		}
+	}
+}
