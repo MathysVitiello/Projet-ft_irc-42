@@ -176,7 +176,7 @@ void	Client::enterPwd(Server *server){
 
 void    Client::privateMessage( std::vector<Client> *clients, Server *server, int clientPlace)
 {
-//! CETTE FUNCTION FONCTIONNE AVEC NC, SANS TEST AVEC D'AUTRES USERS
+//! CETTE FUNCTION FONCTIONNE AVEC NC
 	if (_splitBuf[1].find(" ") < _splitBuf[1].find("\n"))
 	{
 		std::string nickOrChannel = _splitBuf[1].substr(0, _splitBuf[1].find(" "));

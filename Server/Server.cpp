@@ -334,7 +334,6 @@ void	Server::createChannel( int clientSocket, std::string name, std::string pass
 // 
 void    Server::sendMessageChanel( std::string nickOrChannel, int clientPlace, std::string cmdSend, int socket)
 {
-//TODO chamge son nom, cst pas le socket ou le fd mais lemplcement , le i dans le tab fdCLient
 	int nbChannel = 0;
 	// check si le channel existe
     for( size_t i = 0; i < this->getChannels().size(); i++ ){
@@ -356,7 +355,6 @@ void    Server::sendMessageChanel( std::string nickOrChannel, int clientPlace, s
 		std::cout << "le client nest pas dans le channel dans lequel il veut PRIVMSG" << std::endl;
 		return;
 	}
-
 
 
 	if (this->getChannels()[nbChannel].getUser().size() > 1)
