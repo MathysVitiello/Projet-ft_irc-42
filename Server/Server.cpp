@@ -183,19 +183,21 @@ void	Server::command(int fdClient){
 		break;
 	case PRIVMSG:
         std::cout << "PRIVMSG   dans switch case " << std::endl;
-		// if (this->_clients[fdClient].checkRight() == true) //!
-		this->_clients[fdClient].privateMessage(&this->_clients, this, fdClient);
+		if (this->_clients[fdClient].checkRight() == true)
+			this->_clients[fdClient].privateMessage(&this->_clients, this, fdClient);
 		this->_clients[fdClient].removeCmdBuf();
 		break;
 	case JOIN:
         std::cout << "JOIN  dans switch case  " << std::endl;
-        // if (this->_clients[fdClient].checkRight() == true)
-		this->_clients[fdClient].join(this);
-		this->_clients[fdClient].removeCmdBuf(); //! a changer a la fin, question nuil, est ce que a aprt pass nick user on peut tout faure sur une ligne
-
+        if (this->_clients[fdClient].checkRight() == true)
+			this->_clients[fdClient].join(this);
+		this->_clients[fdClient].removeCmdBuf();
         break;
 	case KICK:
+		//pour l'operateur uniquement
 		std::cout << "KICK a faire   dans switch case " << std::endl;
+		this->_clients[fdClient].kick(this);
+		this->_clients[fdClient].removeCmdBuf();
 		break;
 	case INVITE:
 		this->_clients[fdClient].invitation( this );
