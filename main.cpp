@@ -6,7 +6,7 @@
 /*   By: mvitiell <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/01/04 11:44:21 by mvitiell          #+#    #+#             */
-/*   Updated: 2024/01/17 10:42:17 by alamizan         ###   ########.fr       */
+/*   Updated: 2024/01/17 15:24:27 by alamizan         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 #include "library.hpp"
@@ -98,7 +98,6 @@ int main(int argc, char **argv)
 					}
 					else{
 						buf[sizeRead - 1] = '\0';
-						std::cout << buf << "MAIN" << std::endl;
 						server.setClients( buf, i ); //. SplitCmd( buf );
 						server.command(i);
 					}
