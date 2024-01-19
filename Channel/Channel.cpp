@@ -6,6 +6,7 @@ Channel::Channel( int userSocket, std::string name, std::string mdp) :
 	_name( name ),
 	_password( mdp ),
 	_owner( userSocket ),
+	_invitation( false ),
 	_maxUser( FD_SETSIZE ),
 	_topic( false ){
 	std::cout << "Channel [" << this->_name << "] created Owner socket: " << userSocket << std::endl;
@@ -17,16 +18,6 @@ Channel::Channel( int userSocket, std::string name, std::string mdp) :
 Channel::~Channel( void ){
 	std::cout << "channel ["<< this->_name << "] closed" << std::endl;
 
-	// if ( this->_user.empty() )
-		// this->_user.erase( this->_user.begin(), this->_user.end() );
-// 
-	// if ( this->_ircOps.empty() )
-		// this->_user.erase( this->_user.begin(), this->_user.end() );
-// 
-	// if ( this->_userInvitation.empty() )
-		// this->_userInvitation.erase( this->_userInvitation.begin(), this->_userInvitation.end() );
-
- 
 	this->_ircOps.clear();
 	this->_user.clear();
 	this->_userInvitation.clear();
@@ -70,12 +61,20 @@ bool	const & Channel::getTopic( void ) const{
 	return this->_topic;
 }
 
+bool		const & Channel::getInvitation ( void ) const{
+	return ( this->_invitation );
+}
+
 std::vector<int>		const & Channel::getUserInvite ( void ) const{
 	return ( this->_userInvitation );
 }
 
 int	const & Channel::getMaxUser( void ) const{
 	return( this->_maxUser );
+}
+
+void	Channel::setInvitation( bool invitation ){
+	this->_invitation = invitation;
 }
 
 void	Channel::setTopicName( std::string topic ){
@@ -108,6 +107,7 @@ void	Channel::removeClientChannel( int userSocket ){
 			if( *it == userSocket )
 			{
 				this->_ircOps.erase( it );
+				--it;
 				std::cout << "IrcOps socket [" << userSocket << "] erased" << std::endl;
 			}
 		}
@@ -121,12 +121,12 @@ void	Channel::removeClientChannel( int userSocket ){
 			if( *it == userSocket )
 			{
 				this->_user.erase( it );
+				--it;
 				std::cout << "User socket [" << userSocket << "] erased" << std::endl;
 			}
 		}
 	}
 }
-
 
 void		Channel::setUserInvite ( int socketInvite, int flag ){
 	if(flag == PUSH)
