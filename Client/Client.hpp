@@ -35,6 +35,7 @@ class Client
 		void    			privateMessage( std::vector<Client> *clients, Server *server, int fdClient);
 		int					checkRight( void );
 		void				invitation( Server *server, std::string invite );
+		void 				mode( Server *server );
 		void				removeCmdBuf( void );
 		void				parsHexchat( void );
 

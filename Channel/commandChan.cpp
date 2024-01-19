@@ -39,3 +39,4 @@ void	Channel::topic( Client *client, std::string topic ){
 	this->_topicName = topic;
 	send (client->getSocket(), RPL_TOPIC(nickname, this->_name, topic).c_str(), RPL_TOPIC(nickname, this->_name, topic).size(), 0);
 }
+

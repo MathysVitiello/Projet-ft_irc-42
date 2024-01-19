@@ -153,7 +153,7 @@ void	Server::removeClient( int const & index )
 }
 
 void	Server::command(int fdClient){
-	std::string	cmd[] = {"PASS", "NICK", "USER", "PRIVMSG", "JOIN", "KICK", "INVITE", "TOPIC", "MODE"};
+	std::string	cmd[] = {"PASS", "NICK", "USER", "PRIVMSG", "JOIN", "KICK", "INVITE","TOPIC", "MODE"};
 	int i;
 
 	for (i = 0; i < 10; i++){
@@ -202,7 +202,9 @@ void	Server::command(int fdClient){
 		std::cout << "TOPIC a faire" << std::endl;
 		break;
 	case MODE:
-		std::cout << "MODE a faire" << std::endl;
+		std::cout << "MODE" << std::endl;
+		this->_clients[fdClient].mode(this);
+		this->_clients[fdClient].removeCmdBuf();
 		break;
 	default:
 		send(this->_clients[fdClient].getSocket(), ERR_UNKNOWNCOMMAND(this->_clients[fdClient].getNickname()).c_str(), ERR_UNKNOWNCOMMAND(this->_clients[fdClient].getNickname()).size(), 0);
