@@ -5,6 +5,7 @@
 #include <string>
 
 enum cmdUser {
+	CAP,
 	PASS,
 	NICK,
 	USER,

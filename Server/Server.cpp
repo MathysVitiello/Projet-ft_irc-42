@@ -153,29 +153,40 @@ void	Server::removeClient( int const & index )
 }
 
 void	Server::command(int fdClient){
-	std::string	cmd[] = {"PASS", "NICK", "USER", "PRIVMSG", "JOIN", "KICK", "INVITE","TOPIC", "MODE"};
+	std::string	cmd[] = {"CAP", "PASS", "NICK", "USER", "PRIVMSG", "JOIN", "KICK", "INVITE", "TOPIC", "MODE"};
 	int i;
 
-	for (i = 0; i < 10; i++){
+	//TODO
+	//! si il ya ubn \r je cap
+
+	for (i = 0; i < 11; i++){
+		size_t j = this->_clients[fdClient].getCmdBuf()[0].find('\r');
+
 		if(this->_clients[fdClient].getCmdBuf().empty()){
 			i = -1; 
 			break;
 		}
 		if(this->_clients[fdClient].getCmdBuf()[0] == cmd[i])
 			break;
+		if(j != std::string::npos)
+			this->_clients[fdClient].capForHex(this, fdClient, &this->_clients);	
 	}
 	switch (i) {
+	case CAP:
+		std::cout << "CAP jarrive " << std::endl;
+		this->_clients[fdClient].capForHex(this, fdClient, &this->_clients);
+		break;
 	case PASS:
 		std::cout << "PASS  dans switch case " << std::endl;
-		this->_clients[fdClient].enterPwd(this);
+		this->_clients[fdClient].enterPwd(&this->_clients, this, fdClient);
 		break;
 	case NICK:
 		std::cout << "NICK  dans switch case " << std::endl;
-		this->_clients[fdClient].setNick(this);
+		this->_clients[fdClient].setNick(&this->_clients, this, fdClient);
 		break;
 	case USER:
 		std::cout << "USER   dans switch case " << std::endl;
-		this->_clients[fdClient].setName();
+		this->_clients[fdClient].setName(&this->_clients, this, fdClient);
 		this->_clients[fdClient].removeCmdBuf();
 		break;
 	case PRIVMSG:
@@ -211,7 +222,7 @@ void	Server::command(int fdClient){
 		break;
 	default:
 		send(this->_clients[fdClient].getSocket(), ERR_UNKNOWNCOMMAND(this->_clients[fdClient].getNickname()).c_str(), ERR_UNKNOWNCOMMAND(this->_clients[fdClient].getNickname()).size(), 0);
-		this->_clients[fdClient].removeCmdBuf();
+		//this->_clients[fdClient].removeCmdBuf();
 		break;
 	}
 }
