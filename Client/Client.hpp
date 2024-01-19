@@ -31,6 +31,8 @@ class Client
 		// -------------------- Functions ---------------------- //
 		void				quit(); 
 		void				join( Server *server );
+		//TODO en construction kick
+		void				kick( Server *server );
 		void				enterPwd(Server *server); 
 		void    			privateMessage( std::vector<Client> *clients, Server *server, int fdClient);
 		int					checkRight( void );
