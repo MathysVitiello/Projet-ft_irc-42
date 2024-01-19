@@ -6,10 +6,11 @@
 /*   By: mvitiell <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/01/04 11:44:21 by mvitiell          #+#    #+#             */
-/*   Updated: 2024/01/17 15:24:27 by alamizan         ###   ########.fr       */
+/*   Updated: 2024/01/19 17:15:50 by nminotte         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 #include "library.hpp"
+#include <strings.h>
 int exitFlag = 0;
 
 void	sigHandler( int signum )
@@ -97,9 +98,17 @@ int main(int argc, char **argv)
 						server.removeClient( i );
 					}
 					else{
-						buf[sizeRead - 1] = '\0';
-						server.setClients( buf, i ); //. SplitCmd( buf );
-						server.command(i);
+						if (buf[sizeRead - 1] == '\n'){
+							buf[sizeRead - 1] = '\0';
+							std::string buffer = server.bufTmp(buf, PUSH, i);
+							server.setClients( buffer, i ); //. SplitCmd( buf );
+							server.command(i);
+							server.bufTmp(buf, DEL, i);
+						}
+						else
+							server.bufTmp(buf, PUSH, i);
+						buf[sizeRead] = '\0';
+						bzero(buf, 4096);
 					}
 					if(--nbFds < 0)
 						break;

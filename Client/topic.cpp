@@ -1,8 +1,5 @@
 #include "Client.hpp"
 
-// :Wiz TOPIC #test :New topic ; L'utilisateur Wiz définit le sujet.
-// TOPIC #test :another topic ; Change le sujet du canal #test en "another topic".
-// TOPIC #test ; Vérifie le sujet de #test.
 void	Client::topic( Server *server ){
 	if ( this->_splitBuf.size() == 1 ){
 		send( this->_socket, ERR_NEEDMOREPARAMS(this->_nickname, _splitBuf[0]).c_str(), ERR_NEEDMOREPARAMS(this->_nickname, _splitBuf[0]).size(), 0);
@@ -11,7 +8,6 @@ void	Client::topic( Server *server ){
 	std::string tmp = _splitBuf[1];
 	size_t delem = tmp.find(" "); 
 	if (delem != std::string::npos){
-		std::cout << "dans la fonction :" << _splitBuf[0] << ":" << this->_splitBuf[1] << std::endl;
 		_splitBuf.pop_back();
 		_splitBuf.push_back(tmp.substr(0, delem)); // channel = _splitBuf[1]
 		_splitBuf.push_back(tmp.substr(delem)); // new topic = _splitBuf[2]
@@ -45,7 +41,6 @@ void	Client::topic( Server *server ){
 		if (*it == this->_socket)
 			break;
 	if (it == itChan->getIrcOps().end()){
-		std::cout << "dsf" << std::endl;
 		send(this->_socket, ERR_CHANOPRIVSNEEDED(_nickname, _splitBuf[1]).c_str(),
 					ERR_CHANOPRIVSNEEDED(_nickname, _splitBuf[1]).size(), 0);
 		return;

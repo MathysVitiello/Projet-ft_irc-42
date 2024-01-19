@@ -2,6 +2,7 @@
 # define CLIENT_HPP
 
 # include "../library.hpp"
+#include <string>
 
 class Server;
 class Client
@@ -21,12 +22,14 @@ class Client
 		std::string const & getNickname( void ) const;
 		bool		const & getConnect( void ) const;
 		std::vector<std::string>	const & getCmdBuf(void) const;
+		std::string					getBufTmp( void );
 
 		void				setSocket( int socket );
 		void				setName( void );
 		void 				setNick( Server *server );
 		void 				setAddr( sockaddr_in addr );
 		void				splitCmd( std::string cmdSend );
+		void				setBufTmp( std::string buf, int flag );
 
 		// -------------------- Functions ---------------------- //
 		void				quit(); 
@@ -53,6 +56,7 @@ class Client
 		bool		_checkRight;
 		std::string					_cmdTmp;
 		std::vector<std::string>	_splitBuf;  // 0: CMD 1:ARG 2:ARG ...
+		std::string				bufTmp;
 };
 
 

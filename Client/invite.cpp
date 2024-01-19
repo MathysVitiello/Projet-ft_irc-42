@@ -5,7 +5,6 @@ void	Client::invitation( Server *server ){
 	std::string tmp = _splitBuf[1];
 	size_t delem = tmp.find(" "); 
 	if (delem != std::string::npos){
-		std::cout << "dans la fonction :" << _splitBuf[0] << ":" << this->_splitBuf[1] << std::endl;
 		_splitBuf.pop_back();
 		_splitBuf.push_back(tmp.substr(0, delem)); // nick = _splitBuf[1]
 		_splitBuf.push_back(tmp.substr(delem)); // channel = _splitBuf[2]
@@ -19,7 +18,6 @@ void	Client::invitation( Server *server ){
 	// if the client or the channel doesn't exist
 	std::vector<Client>::const_iterator it = server->getClients().begin();
 	for ( ; it < server->getClients().end(); it++){
-		std::cout <<it->getNickname() << " et nick : " << _splitBuf[1] << std::endl;
 		if ( it->getNickname() == _splitBuf[1] )
 			break;
 	}

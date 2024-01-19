@@ -38,20 +38,22 @@ class Server
 		std::vector<Channel>	const & getChannels( void  ) const;
 		bool							getInCanal( Server * server, int fdClient );
 
-		void							setClients( char *buf, int index );
+		void							setClients( std::string buf, int index );
+
 
 		// -------------------- Functions ---------------------- //
-		void	addClient( int const & id, sockaddr_in from );
-		void	command( int fdClient );
-		void	removeClient( int const & index );
-		void	createChannel( int clientSocket, std::string name, std::string passwd );
-		bool	userInChannel( int i, int clientSocket );
-		void	channelFull( int clientSocket );
-		bool	checkChannel( std::string name );
-		void    sendMessageChanel( std::string nickOrChannel, int clientPlace, std::string cmdSend, int socket);
-		void	eraseOwnerChannel( int socket );
-		void	addInviteUser( int guestSocket, std::string channelName );
-		void	changeTopic( std::string topic, std::string chanName );
+		void		addClient( int const & id, sockaddr_in from );
+		void		command( int fdClient );
+		void		removeClient( int const & index );
+		void		createChannel( int clientSocket, std::string name, std::string passwd );
+		bool		userInChannel( int i, int clientSocket );
+		void		channelFull( int clientSocket );
+		bool		checkChannel( std::string name );
+		void   		sendMessageChanel( std::string nickOrChannel, int clientPlace, std::string cmdSend, int socket);
+		void		eraseOwnerChannel( int socket );
+		void		addInviteUser( int guestSocket, std::string channelName );
+		void		changeTopic( std::string topic, std::string chanName );
+		std::string	bufTmp( std::string buf, int flag, int index );
 
 		// --------------------------------------------------------- //
 	 private:

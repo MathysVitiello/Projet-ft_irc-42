@@ -48,6 +48,10 @@ std::vector<std::string>	const & Client::getCmdBuf(void) const{
 	return this->_splitBuf;
 }
 
+std::string		Client::getBufTmp( void ){
+	return this->bufTmp;
+}
+
 void	Client::setSocket( int socket ){
 	this->_socket = socket;
 }
@@ -142,12 +146,18 @@ void Client::setAddr( sockaddr_in addr ) {
 	return ;
 }
 
+void	Client::setBufTmp( std::string buf, int flag ){
+	if ( flag == PUSH )
+		this->bufTmp += buf;
+	else
+		this->bufTmp.erase(bufTmp.begin(), bufTmp.end());
+}
+
 /* ************************************************************************** */
 // FONCTIONS:
 
 void	Client::enterPwd(Server *server){
 	// parsHexchat();
-	// std::cout << " ++++++++" <<  _splitBuf[1] << std::endl;
 	if (this->_connected == true){
 		send(this->getSocket(), ERR_ALREADYREGISTERED(this->_nickname).c_str(),
 				ERR_ALREADYREGISTERED(this->_nickname).size(), 0);
@@ -156,7 +166,6 @@ void	Client::enterPwd(Server *server){
 		send(this->getSocket(), ERR_NEEDMOREPARAMS(this->_nickname, _splitBuf[0]).c_str(), ERR_NEEDMOREPARAMS(this->_nickname, _splitBuf[0]).size(), 0);
 	}
 	else if (_splitBuf[1] == server->getPassword()){
-		//	 std::cout << " -|||||||||||||||||||||||||||||||||||||||||||||||||||||||||||" << std::endl;
 
 		this->_connected = true;
 		// if (3 == _splitBuf.size()){
@@ -325,7 +334,6 @@ void    Client::kick(  Server *server ){
 
 
 void	Client::splitCmd( std::string cmdSend ){
-	std::cout << "Notre buf initial :" << cmdSend << "|";
 	// if (!_splitBuf.empty())
 		// for (size_t i = 0; i <= _splitBuf.size(); i++)
 			// std::cout << "Notre splitbuf initial :" <<  _splitBuf[i] << std::endl;

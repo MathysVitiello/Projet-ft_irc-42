@@ -98,7 +98,7 @@ bool	Server::getInCanal( Server * server, int fdClient ){
 	return false;
 }
 
-void	Server::setClients( char *buf, int index ){
+void	Server::setClients( std::string buf, int index ){
 	this->_clients[index].splitCmd( buf );
 	return;
 }
@@ -399,3 +399,8 @@ void	Server::changeTopic( std::string topic, std::string chanName ){
 		}
 	}
 }
+
+std::string	Server::bufTmp( std::string buf, int flag, int index ){
+	this->_clients[index].setBufTmp( buf, flag );
+	return this->_clients[index].getBufTmp() ;
+} 
