@@ -53,25 +53,20 @@ void	Client::setSocket( int socket ){
 }
 
 void Client::setName( std::vector<Client> *clients, Server *server, int fdClient ) {
-	// parsHexchat();
 	(void)clients;
 	(void)server;
 	(void)fdClient;
-	// re parse
 
 	size_t j = _splitBuf[1].find("USER");
-	//std::cout << "sivouple" << j << std::endl;
 	if (j != std::string::npos)
 	{
-			_splitBuf[0] = _splitBuf[1];
 			_splitBuf[1] = trimSpace(_splitBuf[1].substr(j + 5));
-			_splitBuf[1] = _splitBuf[1].substr(0, _splitBuf[1].find("\r"));
+			_splitBuf[1] = _splitBuf[1].substr(0, _splitBuf[1].find(" "));
 			//std::cout << "TROUVE" << std::endl;
 
 	}
 	std::cout << "ko:" << _splitBuf[0] << '|' << std::endl; 
 	std::cout << "ok:" << _splitBuf[1] << "|" <<std::endl; 
-
 
 	if (this->_connected){
 		if (_splitBuf[1].empty()){
@@ -106,22 +101,13 @@ void Client::setName( std::vector<Client> *clients, Server *server, int fdClient
 
 void Client::setNick( std::vector<Client> *clients, Server *server, int fdClient ) {
 
-//ok je suis la mtn
-	std::cout << "ko:" << _splitBuf[0] << std::endl; 
-	std::cout << "ok:" << _splitBuf[1] << std::endl; 
 	size_t j = _splitBuf[1].find("NICK");
-	//std::cout << "sivouple" << j << std::endl;
 	if (j != std::string::npos)
 	{
 			_splitBuf[0] = _splitBuf[1];
 			_splitBuf[1] = trimSpace(_splitBuf[1].substr(j + 5));
 			_splitBuf[1] = _splitBuf[1].substr(0, _splitBuf[1].find("\r"));
-			//std::cout << "TROUVE" << std::endl;
-
 	}
-	//std::cout << "ok:kk" << _splitBuf[1] << std::endl;
-
-
 
 	if (this->_connected){
 		if (_splitBuf[1].empty()){
@@ -138,7 +124,6 @@ void Client::setNick( std::vector<Client> *clients, Server *server, int fdClient
 		}
 		for(size_t i = 0; i <_splitBuf[1].size(); i++){
 			if (!isalpha(_splitBuf[1][0])){
-				std::cout << "dasn fonction setNick :" <<  _splitBuf[1] << std::endl;
 				send(this->getSocket(),	ERR_ERRONEUSNICKNAME(_splitBuf[1]).c_str(), 
 						ERR_ERRONEUSNICKNAME(_splitBuf[1]).size(), 0);
 				removeCmdBuf();
@@ -166,17 +151,14 @@ void Client::setNick( std::vector<Client> *clients, Server *server, int fdClient
 		}
 	}
 
-	size_t k = _splitBuf[1].find("USER");
+	size_t k = _splitBuf[0].find("\r"); // condition hexchat
 	if (k != std::string::npos)
 	{
-	//std::cout << "oll:" << _splitBuf[0] << std::endl; 
-	//std::cout << "all:" << _splitBuf[1] << std::endl; 
-
-		std::cout << "il ya plus que NOCK avec HEXCHAT" << std::endl;
+		_splitBuf[1] = _splitBuf[0].substr(_splitBuf[0].find("\r"));
+		_splitBuf[1] = _splitBuf[1].substr(_splitBuf[1].find("\r"));
+		_splitBuf[0] = "USER";
 		this[fdClient].setName(clients, server, fdClient); 
-
 	}
-	std::cout << "NC passe par ici" << std::endl;
 	removeCmdBuf();
 }
 
@@ -222,9 +204,8 @@ void	Client::enterPwd(std::vector<Client> *clients, Server *server, int fdClient
 		this->_connected = true;
 	}
 	else if ( server->getPassword() == _splitBuf[1].substr(0, server->getPassword().size())){
-		std::cout << "LA WINNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNN" << std::endl;
 		this->_connected = true;
-		this[fdClient].setNick(clients, server, fdClient); //! iciii les bg
+		this[fdClient].setNick(clients, server, fdClient);// condition pour hexchat
 	}
 	else{
 		send(this->getSocket(), ERR_PASSWDMISMATCH(this->_nickname).c_str(),
@@ -382,9 +363,6 @@ void    Client::kick(  Server *server ){
 void	Client::capForHex( Server *server, int fdClient, std::vector<Client> *clients){
 (void)clients;
 // parser enelever cap et renvoyer la string quil reste
-	std::cout << "CAPCAPcapForHexcapForHexcapForHexcapForHexcapForHexCAPCP" << std::endl;
-
-	std::cout << "size =" << _splitBuf[1].size() << std::endl;
 	//! si sixze est 7 cest que cest que cap, si cest 16 cest quil y a pass
 
 		if (_splitBuf[1].size() > 11)
@@ -393,7 +371,6 @@ void	Client::capForHex( Server *server, int fdClient, std::vector<Client> *clien
 			_splitBuf[1] = _splitBuf[1].substr(13);
 
 			size_t j = _splitBuf[1].find(" ");
-			std::cout << "ke suis la ???????????????" << j <<  std::endl;
 			if (j != std::string::npos){
 					this->_splitBuf.push_back(_splitBuf[1].substr(j + 4));
 					_splitBuf[1].substr(j);
