@@ -2,32 +2,64 @@
 
 void	Client::enterPwd(std::vector<Client> *clients, Server *server, int fdClient ){
 	
-	if (this->_splitBuf.size() != 2){
+
+    std::cout << _splitBuf[1] << std::endl;
+
+    //! le pb, crasg quand un user nc est deja co
+
+	if (this->_connected){
+		send(this->getSocket(), ERR_ALREADYREGISTERED(this->_nickname).c_str(),
+				ERR_ALREADYREGISTERED(this->_nickname).size(), 0);
+        removeCmdBuf();
+		return;
+	}
+	else if (this->_splitBuf.size() != 2){
+        std::cout << "hey" << std::endl;
+
 		send(this->getSocket(), ERR_NEEDMOREPARAMS(this->_nickname, _splitBuf[0]).c_str(), ERR_NEEDMOREPARAMS(this->_nickname, _splitBuf[0]).size(), 0);
+    	removeCmdBuf();
 		return;
 	}
 	size_t j = _splitBuf[1].find(" ");
 	if (j != std::string::npos)
 			_splitBuf[1] = trimSpace(_splitBuf[1].substr(j));
 
-	if (this->_connected == true){
-		send(this->getSocket(), ERR_ALREADYREGISTERED(this->_nickname).c_str(),
-				ERR_ALREADYREGISTERED(this->_nickname).size(), 0);
-	}
-	//TODO faire un ou jusqua prochian \r ou \n pas sur
-	else if (_splitBuf[1] == server->getPassword()){
-		this->_connected = true;
-	}
-	else if ( server->getPassword() == _splitBuf[1].substr(0, server->getPassword().size())){
-		this->_connected = true;
+    std::cout << "||" << _splitBuf[1] << "||" << std::endl;
 
+
+	if (_splitBuf[1] == server->getPassword()){
+        std::cout << "hello" << std::endl;
+
+		this->_connected = true;
+	}
+	else if ( server->getPassword() == _splitBuf[1].substr(0, server->getPassword().size()) && _splitBuf[1][server->getPassword().size() + 1] == '\n' ){
+
+        // && _splitBuf[1][server->getPassword().size()] ==
+        //std::cout << _splitBuf[1][server->getPassword().size()] << "O" << std::endl; 
+        std::cout << "ici total bon" << std::endl;
+		this->_connected = true;
+        std::cout << "ici total bon ?" << std::endl;
+        //! ici peut etre jenvoie pas la bonne chose 
 		//if there is NICK after, for hexchat
 		if (_splitBuf[1].size() != server->getPassword().size() + 1)
-			this[fdClient].setNick(clients, server, fdClient);
+			this->setNick(clients, server, fdClient);
 	}
 	else{
+        std::cout << "senddd" << std::endl;
+
 		send(this->getSocket(), ERR_PASSWDMISMATCH(this->_nickname).c_str(),
 				ERR_PASSWDMISMATCH(this->_nickname).size(), 0);
 	}
+
 	removeCmdBuf();
 }
+
+
+/*
+
+chose faites : 
+
+condition \n l 31 ajoute, ne peut plus faire PASS ppp
+
+
+*/

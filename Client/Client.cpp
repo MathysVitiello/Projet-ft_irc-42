@@ -79,11 +79,20 @@ void	Client::setBufTmp( std::string buf, int flag ){
 
 void	Client::capForHex( Server *server, int fdClient, std::vector<Client> *clients){
 
+(void)server;
+(void)fdClient;
+(void)clients;
+	std::cout << "in capForHex" << std::endl;
+
 		if (_splitBuf[1].size() > 11)
 		{
 			_splitBuf[0] = "PASS";
 			_splitBuf[1] = _splitBuf[1].substr(12);
-			this[fdClient].enterPwd(clients, server, fdClient);
+		
+//! peut etre ici, mauvais this envoye !
+		    std::cout << "avamnt le boom" << _splitBuf[1] << std::endl;
+			// this->enterPwd(clients, server, fdClient);
+
 		} else {
 			//only CAP line in hexchat
 			_splitBuf.clear();
