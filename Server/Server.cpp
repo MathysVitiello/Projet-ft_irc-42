@@ -197,8 +197,10 @@ void	Server::command(int fdClient){
 		break;
 	case JOIN:
         std::cout << "JOIN  dans switch case  " << std::endl;
-        if (this->_clients[fdClient].checkRight() == true)
+        if (this->_clients[fdClient].checkRight() == true){
+			std::cout << "ici" << std::endl;
 			this->_clients[fdClient].join(this);
+		}
 		this->_clients[fdClient].removeCmdBuf();
         break;
 	case KICK:
