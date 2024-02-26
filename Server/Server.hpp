@@ -2,7 +2,6 @@
 # define SERVER_HPP
 
 # include "../library.hpp"
-#include <string>
 
 enum cmdUser {
 	CAP,

@@ -2,7 +2,6 @@
 # define CLIENT_HPP
 
 # include "../library.hpp"
-#include <string>
 
 class Server;
 class Client

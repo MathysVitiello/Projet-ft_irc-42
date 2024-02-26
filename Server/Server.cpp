@@ -9,7 +9,7 @@ Server::Server( unsigned int const & port, std::string const & password  ): _por
 	if( this->_socket == -1 )
 		throw std::runtime_error( "Don't opening socket." );
 
-	this->_address.sin_addr.s_addr = INADDR_ANY;// toutes les sources acceptees.
+	this->_address.sin_addr.s_addr = INADDR_ANY;// accepeted sources
 	this->_address.sin_port = htons( port );	// traduit le port en reseau.
 	this->_address.sin_family = AF_INET;		// socket TCP IPv4.
 										
@@ -42,12 +42,6 @@ Server::~Server( void )
 			close( socket );
 		}
 	}
-// 
-	// this->_channels.erase( this->_channels.begin(), this->_channels.end() );
-	// this->_channels.clear();
-// 
-	// this->_clients.erase( this->_clients.begin(), this->_clients.end() );
-	// this->_clients.clear();
 	return;
 }
 
@@ -125,12 +119,12 @@ void	Server::eraseOwnerChannel( int socket )
 	this->_channels.erase( this->_channels.begin() + i );
 }
 
+// Deletes clients from all channels
 void	Server::removeClient( int const & index )
 {
 	int socketClient = this->_clients[index].getSocket();
 	std::string nick = this->_clients[index].getNickname();
 
-	// Supprime le client des differents channels:
 	std::vector<Channel>::iterator it;
 	if (  !this->_channels.empty() )
 	{
@@ -148,17 +142,14 @@ void	Server::removeClient( int const & index )
 			}
 		}
 	}
-	// Ferme le socket du client et l'efface du tableau de client:
 	close( socketClient );
 	this->_clients.erase( this->_clients.begin() + index );
 }
 
 void	Server::command(int fdClient){
+
 	std::string	cmd[] = {"CAP", "PASS", "NICK", "USER", "PRIVMSG", "JOIN", "KICK", "INVITE", "TOPIC", "MODE"};
 	int i;
-
-	//TODO
-	//! si il ya ubn \r je cap
 
 	for (i = 0; i < 11; i++){
 		size_t j = this->_clients[fdClient].getCmdBuf()[0].find('\r');
@@ -232,12 +223,13 @@ void	Server::command(int fdClient){
 	}
 }
 
-// Verifie si le channel exsite:
+// Verify if channel exists
 bool Server::checkChannel( std::string name ){
 	for(unsigned int i = 0; i  < this->_channels.size(); i++ )
 	{
 		if( this->getChannels()[i].getName() == name )
 		{
+			//! stdError a faire, et english 
 			std::cout << "le canal [" << name << "] existe deja" << std::endl;
 			return( true);
 		}
@@ -245,7 +237,7 @@ bool Server::checkChannel( std::string name ){
 	return( false );
 }
 
-// Verifie si le client est dans le channel:
+// Verify if client is in the channel
 bool	Server::userInChannel( int i, int clientSocket )
 {
 	std::vector<int>::const_iterator ite = this->getChannels()[i].getUser().begin();
@@ -261,7 +253,7 @@ bool	Server::userInChannel( int i, int clientSocket )
 	return( true );
 }
 
-// si le canal est plein:
+// if channel is full
 void	Server::channelFull( int clientSocket )
 {
 	std::vector<Client>::iterator it;
@@ -288,7 +280,7 @@ void	Server::createChannel( int clientSocket, std::string name, std::string pass
 				if( !this->userInChannel( i, clientSocket ) )
 					return;
 
-				// si le client n est pas dans le canal:
+				// if client is not in channel
 				if( this->_channels[i].addClientChannel(clientSocket) == true )
 				{
 					char bufff[4096] = "client ajoute dans le canal\r\n";
@@ -310,7 +302,7 @@ void	Server::createChannel( int clientSocket, std::string name, std::string pass
 
 void	Server::channelInvit( Client *user, int i )
 {
-	// Passe en mode invite;
+	// invite mode
 	if( user->getCmdBuf()[1] == "+i" )	
 	{
 		if( this->_channels[i].getInvitation() == false )
@@ -341,7 +333,7 @@ void	Server::channelInvit( Client *user, int i )
 	}
 }
 
-
+//!EN TRAVAUX
 void    Server::sendMessageChanel( std::string nickOrChannel, int clientPlace, std::string cmdSend, int socket)
 {
 	int nbChannel = 0;
@@ -351,6 +343,7 @@ void    Server::sendMessageChanel( std::string nickOrChannel, int clientPlace, s
 		if (this->getChannels()[i].getName() == nickOrChannel)
 		{
 			nbChannel = i;
+			//!ERROR CODE
 			std::cout << this->getChannels()[i].getName() << " est le channel" << std::endl;
 		}
 	}
@@ -362,10 +355,10 @@ void    Server::sendMessageChanel( std::string nickOrChannel, int clientPlace, s
 			clientInChannel = true;
 	}
 	if (clientInChannel == false){
+			//!ERROR CODE
 		std::cout << "le client nest pas dans le channel dans lequel il veut PRIVMSG" << std::endl;
 		return;
 	}
-
 
 	if (this->getChannels()[nbChannel].getUser().size() > 1)
 	{

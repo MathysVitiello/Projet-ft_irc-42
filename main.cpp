@@ -10,7 +10,7 @@
 /*                                                                            */
 /* ************************************************************************** */
 #include "library.hpp"
-#include <strings.h>
+
 int exitFlag = 0;
 
 void	sigHandler( int signum )

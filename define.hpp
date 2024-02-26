@@ -24,7 +24,7 @@
 # define ERR_BANNEDFROMCHAN(nick, channel)			("474 : "+nick+" "+channel+" :Cannot join channel (+b)\r\n")
 # define ERR_CHANNELISFULL(nick, channel)			("471 : "+nick+" "+channel+" :Cannot join channel (+l)\r\n")
 # define ERR_INVITEONLYCHAN(nick, channel)			("473 : "+nick+" "+channel+" :Cannot join channel (+i)\r\n")
-# define ERR_BADCHANMASK(channel)				("476 : "+channel+" :Bad Channel Mask\r\n" )
+# define ERR_BADCHANMASK(channel)				    ("476 : "+channel+" :Bad Channel Mask\r\n" )
 
 
 # define RPL_TOPIC(nick, channel, topic)	("332 : "+nick+" "+channel+" :"+topic+"\r\n")
