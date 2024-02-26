@@ -4,7 +4,7 @@
 # define ERR_NOMOREFDFREE						"421 :Too many connections, try again later\r\n"
 /* PASS message  */
 
-# define ERR_NEEDMOREPARAMS(nick, command)			("461 : " +nick+ " :" +command+ " :Not enough parameters\r\n")
+# define ERR_NEEDMOREPARAMS(nick, command)			(": 461 " +nick+ " :" +command+ " :Not enough parameters\r\n")
 # define ERR_ALREADYREGISTERED(nick)					("462 : "+nick+" :You may not reregister\r\n")
 # define ERR_PASSWDMISMATCH(nick)					("464 : "+nick+" :Password incorrect\r\n")
 

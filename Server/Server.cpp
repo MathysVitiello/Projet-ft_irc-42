@@ -227,7 +227,7 @@ void	Server::command(int fdClient){
 		break;
 	default:
 		send(this->_clients[fdClient].getSocket(), ERR_UNKNOWNCOMMAND(this->_clients[fdClient].getNickname()).c_str(), ERR_UNKNOWNCOMMAND(this->_clients[fdClient].getNickname()).size(), 0);
-		//this->_clients[fdClient].removeCmdBuf();
+		this->_clients[fdClient].removeCmdBuf();
 		break;
 	}
 }
