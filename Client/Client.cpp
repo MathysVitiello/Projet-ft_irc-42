@@ -74,8 +74,8 @@ void Client::setName( std::vector<Client> *clients, Server *server, int fdClient
 
 	if (this->_connected){
 		if (_splitBuf[1].empty()){
-			send(this->getSocket(), ERR_NEEDMOREPARAMS(this->_nickname, _splitBuf[0]).c_str(),
-					ERR_NEEDMOREPARAMS(this->_nickname, _splitBuf[0]).size(), 0);
+			send(this->getSocket(), ERR_NEEDMOREPARAMS(this->_nickname, "USER").c_str(),
+					ERR_NEEDMOREPARAMS(this->_nickname, "USER").size(), 0);
 			return;
 		}
 		else if (this->_name.empty()){
@@ -191,16 +191,9 @@ void	Client::setBufTmp( std::string buf, int flag ){
 
 void	Client::enterPwd(std::vector<Client> *clients, Server *server, int fdClient ){
 
-	//! ok parser, je recois sois : PASS pp\n
-	//!						 sois:  PASS pp\r\n BLABLA
-	//std::cout << " -------- dans PASS :" <<  _splitBuf[1] << "." <<std::endl;
 	size_t j = _splitBuf[1].find(" ");
-	//std::cout << "sivouple" << j << std::endl;
 	if (j != std::string::npos)
 			_splitBuf[1] = trimSpace(_splitBuf[1].substr(j));
-	//std::cout << " ++++++++ dans PASS :" <<  _splitBuf[1] << "." <<std::endl;
-
-
 
 	if (this->_connected == true){
 		send(this->getSocket(), ERR_ALREADYREGISTERED(this->_nickname).c_str(),
@@ -215,7 +208,10 @@ void	Client::enterPwd(std::vector<Client> *clients, Server *server, int fdClient
 	}
 	else if ( server->getPassword() == _splitBuf[1].substr(0, server->getPassword().size())){
 		this->_connected = true;
-		this[fdClient].setNick(clients, server, fdClient);// condition pour hexchat
+
+		//if there is NICK after, for hexchat
+		if (_splitBuf[1].size() != server->getPassword().size() + 1)
+			this[fdClient].setNick(clients, server, fdClient);
 	}
 	else{
 		send(this->getSocket(), ERR_PASSWDMISMATCH(this->_nickname).c_str(),
@@ -342,30 +338,15 @@ void    Client::kick(  Server *server ){
 }
 
 void	Client::capForHex( Server *server, int fdClient, std::vector<Client> *clients){
-(void)clients;
-// parser enelever cap et renvoyer la string quil reste
-	//! si sixze est 7 cest que cest que cap, si cest 16 cest quil y a pass
 
 		if (_splitBuf[1].size() > 11)
 		{
 			_splitBuf[0] = "PASS";
-			_splitBuf[1] = _splitBuf[1].substr(13);
-
-			size_t j = _splitBuf[1].find(" ");
-			if (j != std::string::npos){
-					this->_splitBuf.push_back(_splitBuf[1].substr(j + 4));
-					_splitBuf[1].substr(j);
-					_splitBuf[1] = trimSpace(_splitBuf[1]);
-					this->_splitBuf.push_back(_splitBuf[1]);
-
-			}
-			else
-				this->_splitBuf.push_back(_splitBuf[1]);
+			_splitBuf[1] = _splitBuf[1].substr(12);
 			this[fdClient].enterPwd(clients, server, fdClient);
-
 		} else {
 
-			std::cout << "il ya que CAP donc je fais rien" << std::endl;
+			//only CAP line in hexchat
 			_splitBuf.clear();
 		}
 	}

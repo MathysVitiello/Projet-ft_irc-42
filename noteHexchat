@@ -1,0 +1,30 @@
+otre buf initial :CAP LS 302
+CAP jarrive 
+il ya que CAP donc je fais rien
+
+------
+Notre buf initial :PASS pp
+NICK MATHYS
+USER MATSER 0 * :realname
+PASS  dans switch case 
+ko:USER|
+ok:MATSER|
+
+FONCTIONNE, FONCTIONNE
+
+
+
+
+
+Notre buf initial :CAP LS 302
+PASS pp
+CAP jarrive 
+
+--------------------------------------------------------------------------------------
+Notre buf initial :NICK MATHYS
+USER MATSER 0 * :realname
+NICK  dans switch case 
+ko:USER|
+ok:MATSER|
+
+* 461 : * :PASS :Not enough parameters x 2
