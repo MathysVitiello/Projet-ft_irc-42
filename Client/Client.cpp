@@ -194,6 +194,10 @@ void	Client::enterPwd(std::vector<Client> *clients, Server *server, int fdClient
 	//! ok parser, je recois sois : PASS pp\n
 	//!						 sois:  PASS pp\r\n BLABLA
 	//std::cout << " -------- dans PASS :" <<  _splitBuf[1] << "." <<std::endl;
+	if (this->_splitBuf.size() != 2){
+		send(this->getSocket(), ERR_NEEDMOREPARAMS(this->_nickname, _splitBuf[0]).c_str(), ERR_NEEDMOREPARAMS(this->_nickname, _splitBuf[0]).size(), 0);
+		return;
+	}
 	size_t j = _splitBuf[1].find(" ");
 	//std::cout << "sivouple" << j << std::endl;
 	if (j != std::string::npos)
@@ -206,9 +210,9 @@ void	Client::enterPwd(std::vector<Client> *clients, Server *server, int fdClient
 		send(this->getSocket(), ERR_ALREADYREGISTERED(this->_nickname).c_str(),
 				ERR_ALREADYREGISTERED(this->_nickname).size(), 0);
 	}
-	else if (this->_splitBuf.size() != 2){
-		send(this->getSocket(), ERR_NEEDMOREPARAMS(this->_nickname, _splitBuf[0]).c_str(), ERR_NEEDMOREPARAMS(this->_nickname, _splitBuf[0]).size(), 0);
-	}
+	// else if (this->_splitBuf.size() != 2){
+		// send(this->getSocket(), ERR_NEEDMOREPARAMS(this->_nickname, _splitBuf[0]).c_str(), ERR_NEEDMOREPARAMS(this->_nickname, _splitBuf[0]).size(), 0);
+	// }
 	//TODO faire un ou jusqua prochian \r ou \n pas sur
 	else if (_splitBuf[1] == server->getPassword()){
 		this->_connected = true;
