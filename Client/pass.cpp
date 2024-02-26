@@ -4,6 +4,7 @@ void	Client::enterPwd(std::vector<Client> *clients, Server *server, int fdClient
 	
 	if (this->_splitBuf.size() != 2){
 		send(this->getSocket(), ERR_NEEDMOREPARAMS(this->_nickname, _splitBuf[0]).c_str(), ERR_NEEDMOREPARAMS(this->_nickname, _splitBuf[0]).size(), 0);
+		removeCmdBuf();
 		return;
 	}
 	size_t j = _splitBuf[1].find(" ");

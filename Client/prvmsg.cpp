@@ -32,7 +32,7 @@ void    Client::privateMessage( std::vector<Client> *clients, Server *server, in
 				server->sendMessageChanel( nickOrChannel, clientPlace, _splitBuf[1].substr(_splitBuf[1].find(" ")), this->getSocket());
 				return;
 			}
-		send(this->getSocket(), ERR_NOSUCHSERVER(nickOrChannel).c_str(), ERR_NOSUCHSERVER(nickOrChannel).size(), 0);
+		// send(this->getSocket(), ERR_NOSUCHSERVER(nickOrChannel).c_str(), ERR_NOSUCHSERVER(nickOrChannel).size(), 0);
 	} else {
 		send(this->getSocket(), ERR_NORECIPIENT(this->getNickname(), "PRIVMSG").c_str(), 
 				ERR_NORECIPIENT(this->getNickname(), "PRIVMSG").size(), 0);

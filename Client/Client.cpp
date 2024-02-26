@@ -57,7 +57,7 @@ void	Client::setSocket( int socket ){
 }
 
 int	Client::checkRight( void ) {
-	if (this->_connected == true && this->getName() != "" && this->getNickname() != "")
+	if (this->_connected == true && this->getName() != "" && this->getNickname() != "*")
 		return true;
 	return false;
 }

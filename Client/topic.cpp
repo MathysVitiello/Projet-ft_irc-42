@@ -19,7 +19,7 @@ void	Client::topic( Server *server ){
 		if ( itChan->getName() == _splitBuf[1] )
 			break;
 	if ( itChan == server->getChannels().end() ){
-		send(this->_socket, ERR_NOSUCHNICK(this->_nickname, _splitBuf[1]).c_str(), ERR_NOSUCHNICK(this->_nickname, _splitBuf[1]).size(), 0);
+		send(this->_socket, ERR_NOSUCHCHANNEL(this->_nickname, _splitBuf[1]).c_str(), ERR_NOSUCHCHANNEL(this->_nickname, _splitBuf[1]).size(), 0);
 		return ;
 	}
 
