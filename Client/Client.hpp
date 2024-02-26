@@ -25,8 +25,8 @@ class Client
 		std::string					getBufTmp( void );
 
 		void				setSocket( int socket );
-		void				setName( void );
-		void 				setNick( Server *server );
+		void				setName( std::vector<Client> *clients, Server *server, int fdClient );
+		void 				setNick( std::vector<Client> *clients, Server *server, int fdClient );
 		void 				setAddr( sockaddr_in addr );
 		void				splitCmd( std::string cmdSend );
 		void				setBufTmp( std::string buf, int flag );
@@ -34,9 +34,11 @@ class Client
 		// -------------------- Functions ---------------------- //
 		void				quit(); 
 		void				join( Server *server );
-		//TODO en construction kick
+		//TODO en construction kick capForHex
 		void				kick( Server *server );
-		void				enterPwd(Server *server); 
+		void    			capForHex( Server *server, int fdClient, std::vector<Client> *clients);
+
+		void				enterPwd(std::vector<Client> *clients, Server *server, int fdClient); 
 		void    			privateMessage( std::vector<Client> *clients, Server *server, int fdClient);
 		int					checkRight( void );
 		void				invitation( Server *server );
