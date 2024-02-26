@@ -388,10 +388,10 @@ void	Client::splitCmd( std::string cmdSend ){
 	else
 		this->_splitBuf.push_back(cmdSend);
 
-	 std::cout << "renvoie  :"  << std::endl;
-	 std::cout << _splitBuf[0] << std::endl;
-	 std::cout << _splitBuf[1] << std::endl;
-	 std::cout << "____________--" << std::endl;
+	 // std::cout << "renvoie  :"  << std::endl;
+	 // std::cout << _splitBuf[0] << std::endl;
+	 // std::cout << _splitBuf[1] << std::endl;
+	 // std::cout << "____________--" << std::endl;
 }
 
 void	Client::removeCmdBuf(){
