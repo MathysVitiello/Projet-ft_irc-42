@@ -16,11 +16,11 @@ class Client
 		// ----------------- Operator overload ----------------- //
 
 		// ------------------- Accessors ----------------------- //
-		int			const & getSocket( void ) const;
-		sockaddr_in const & getAddr( void ) const;
-		std::string const & getName( void ) const;
-		std::string const & getNickname( void ) const;
-		bool		const & getConnect( void ) const;
+		int							const & getSocket( void ) const;
+		sockaddr_in 				const & getAddr( void ) const;
+		std::string 				const & getName( void ) const;
+		std::string 				const & getNickname( void ) const;
+		bool						const & getConnect( void ) const;
 		std::vector<std::string>	const & getCmdBuf(void) const;
 		std::string					getBufTmp( void );
 
@@ -42,6 +42,8 @@ class Client
 		void				invitation( Server *server );
 	
 		void 				mode( Server *server );
+		std::string 		splitBuf( void );
+
 		void				removeCmdBuf( void );
 		void				parsHexchat( void );
 		void				topic( Server *server );

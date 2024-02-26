@@ -264,35 +264,6 @@ void	Client::join( Server *server )
 	//! gerer hex cat si il a \r\n
 }
 
-// MODE #Finnish +im ; Rend le canal #Finnish modéré et 'uniquement sur invitation'.
-// MODE #Finnish +o Kilroy ; Donne le privilège de 'chanop' à Kilroy sur le canal #Finnish.
-// MODE #Finnish +v Wiz ; Autorise WiZ à parler sur #Finnish.
-
-
-// 482 ERR_CHANOPRIVSNEEDED(nick, channel)	
-// Paramètres : <chan>
-// Réponse à : MODE, TOPIC, INVITE, KICK
-// Cette erreur est renvoyée quand vous tentez d'effectuer une opération 
-// d'administration sur un chan où vous n'êtes pas op.
-void Client::mode( Server *server )
-{
-	int flag = 0;
-	//1- Verifier si le client est ircops:
-	// std::vector<Channel>::const_iterator ite = server->getChannels().begin();
-	// for (; ite != server->getChannels().end(); ite++)
-	// {
-	// }
-		// if( *ite == this->_socket )
-			// flag = 1;
-	(void)server;
-	if( flag == 0 )
-		std::cout << "le client ne peux pas mode" << std::endl;
-	std::vector<std::string>::iterator it = this->_splitBuf.begin();
-	for( ; it != this->_splitBuf.end(); it++ )
-		std::cout << *it << std::endl;
-
-}
-
 void    Client::kick(  Server *server ){
 
 

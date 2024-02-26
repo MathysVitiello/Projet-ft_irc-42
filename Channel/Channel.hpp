@@ -23,17 +23,20 @@ class Channel{
 		std::vector<int>		const & getUser ( void ) const;
 		bool					const & getTopic ( void ) const;
 		std::string				const & getTopicName( void ) const;
+		bool					const & getInvitation ( void ) const;
 		std::vector<int>		const & getUserInvite ( void ) const;
 		int						const & getMaxUser( void ) const;
 						
 		// void				setUSER( int index );
 		void			setTopicName( std::string topic );
 		void			setTopic( bool topic );
+		void			setInvitation( bool invitation );
 		void			setUserInvite ( int socketInvite, int flag );
 		
 		// -------------------- Functions ---------------------- //
 		void	removeClientChannel( int index );
 		bool	addClientChannel( int clientSocket );
+
 
 	// --------------------------------------------------------- //
 	 private:
@@ -43,12 +46,12 @@ class Channel{
 		std::vector<int>	_ircOps; //Operator
 		std::vector<int>	_user;								
 		std::string			_topicName;
+		bool				_invitation;
 		std::vector<int>	_userInvitation;
 		int					_maxUser;
 	
 				/* MODE  Active/Unactive */
 		// bool						_pwd;
-		// bool						_invitation;
 		bool						_topic;
 		// bool						_privilege;
 };

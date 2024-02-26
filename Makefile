@@ -17,9 +17,10 @@ SRC =	main.cpp \
 		Client/Client.cpp \
 		Client/invite.cpp \
 		Client/topic.cpp \
+		Client/mode.cpp \
 		Server/Server.cpp \
 		Channel/Channel.cpp \
-		
+		#Client/command.cpp \#
 
 CFLAGS = -Wall -Wextra -Werror -g -std=c++98
 
