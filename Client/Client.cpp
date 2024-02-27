@@ -79,16 +79,23 @@ void	Client::setBufTmp( std::string buf, int flag ){
 
 void	Client::capForHex( Server *server, int fdClient, std::vector<Client> *clients){
 
-		if (_splitBuf[1].size() > 11)
+		//parsing depending on what hexchat sends
+		if (_splitBuf[1].find("PASS ") == 0)
 		{
 			_splitBuf[0] = "PASS";
-			_splitBuf[1] = _splitBuf[1].substr(12);
-			this[fdClient].enterPwd(clients, server, fdClient);
+			this->enterPwd(clients, server, fdClient);
+		}
+		else if (_splitBuf[1].size() > 12)
+		{
+			_splitBuf[0] = "PASS";
+			_splitBuf[1] = _splitBuf[1].substr(_splitBuf[1].find("\n"));		
+			this->enterPwd(clients, server, fdClient);
+
 		} else {
 			//only CAP line in hexchat
 			_splitBuf.clear();
 		}
-		}
+}
 
 void	Client::splitCmd( std::string cmdSend ){
 	if (cmdSend.find("CAP") != std::string::npos ){

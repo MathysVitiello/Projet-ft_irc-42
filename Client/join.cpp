@@ -16,8 +16,6 @@ void	Client::join( Server *server )
             if (_splitBuf[1][0] != '#')
                 return;
             server->createChannel(this->getSocket(), _splitBuf[1], "");
-			std::cout << "sans un password :"  << _splitBuf[1] << std::endl;
-            return;
         }  else {
             //find password
             std::string chanel = _splitBuf[1].substr(0, _splitBuf[1].find(' '));           
@@ -36,5 +34,7 @@ void	Client::join( Server *server )
             server->createChannel(this->getSocket(), chanel, _splitBuf[1]);
         }
     }
-	//! gerer hex cat si il a \r\n
 }
+
+//tout ceux de channel doivenet recevoir un messsage, qqn c'est co
+//001 au mauvais endroit

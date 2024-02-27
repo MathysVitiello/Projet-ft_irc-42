@@ -168,6 +168,7 @@ void	Server::command(int fdClient){
 	case CAP:
 		std::cout << "CAP jarrive " << std::endl;
 		this->_clients[fdClient].capForHex(this, fdClient, &this->_clients);
+		//this->_clients[fdClient].enterPwd(&this->_clients, this, fdClient);
 		break;
 	case PASS:
 		std::cout << "PASS  dans switch case " << std::endl;
@@ -191,7 +192,6 @@ void	Server::command(int fdClient){
 	case JOIN:
         std::cout << "JOIN  dans switch case  " << std::endl;
         if (this->_clients[fdClient].checkRight() == true){
-			std::cout << "ici" << std::endl;
 			this->_clients[fdClient].join(this);
 		}
 		this->_clients[fdClient].removeCmdBuf();
@@ -284,8 +284,34 @@ void	Server::createChannel( int clientSocket, std::string name, std::string pass
 				// if client is not in channel
 				if( this->_channels[i].addClientChannel(clientSocket) == true )
 				{
-					char bufff[4096] = "client ajoute dans le canal\r\n";
-					send(clientSocket, bufff, strlen(bufff), 0);
+					send(clientSocket, "Client added in Channel\r\n", 
+						strlen("Client added in Channel\r\n"), 0);
+
+
+					//! send pour les autres du channel sauf lui
+					int nbChannel = 0;
+					// check si le channel existe
+					for( size_t i = 0; i < this->getChannels().size(); i++ ){
+
+						if (this->getChannels()[i].getName() == name)
+						{
+							nbChannel = i;
+							//!ERROR CODE
+							std::cout << this->getChannels()[i].getName() << " est le channel" << std::endl;
+						}
+					}
+
+					if (this->getChannels()[nbChannel].getUser().size() > 1)
+					{
+						for( size_t i = 0; i < this->getChannels()[nbChannel].getUser().size(); i++ ){
+
+							if (clientSocket != this->getChannels()[nbChannel].getUser()[i])
+							{
+								send(this->getClients()[i].getSocket(), "new player in your channel", 26, 0);
+								send(this->getClients()[i].getSocket(), "\n", 1, 0);
+							}
+						}
+					}
 				}
 				else
 					this->channelFull( clientSocket );
@@ -294,6 +320,7 @@ void	Server::createChannel( int clientSocket, std::string name, std::string pass
 	}
 	else	
 	{
+		send(clientSocket, CHANNELMADE(name).c_str(), CHANNELMADE(name).size(), 0);
 		std::cout << "Ajout du channel [" << name << "]" << std::endl;
 		Channel channel( clientSocket, name, passwd );
 		this->_channels.push_back( channel );
