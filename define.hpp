@@ -17,6 +17,7 @@
                                       
 /*	JOIN message */                   
                                       
+# define CHANNELMADE(channel)			("001 : "+channel+", Channel created\r\n") //homemade
 
 # define ERR_NOSUCHCHANNEL(nick, channel)			("403 : "+nick+" "+channel+" :No such channel\r\n")
 # define ERR_TOOMANYCHANNELS(nick, channel)			("405 : "+nick+" "+channel+" :You have joined too many channels\r\n")
