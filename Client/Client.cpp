@@ -88,15 +88,16 @@ void	Client::capForHex( Server *server, int fdClient, std::vector<Client> *clien
 			//only CAP line in hexchat
 			_splitBuf.clear();
 		}
-	}
+		}
 
-// command stock in 0, full line in 1
 void	Client::splitCmd( std::string cmdSend ){
-
+	if (cmdSend.find("CAP") != std::string::npos ){
+		cmdSend.erase(0, 12);
+	}
 	size_t j = cmdSend.find(" ");
 	if (j != std::string::npos){
 		this->_splitBuf.push_back(cmdSend.substr(0, j));
-		cmdSend.substr(j);
+		cmdSend.erase(cmdSend.begin() , cmdSend.begin() + j);
 		cmdSend = trimSpace(cmdSend);
 		this->_splitBuf.push_back(cmdSend);
 	}

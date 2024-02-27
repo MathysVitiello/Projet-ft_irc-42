@@ -8,10 +8,6 @@ void	Client::join( Server *server )
             ERR_NEEDMOREPARAMS(this->getName(), "JOIN").size(), 0);
         return;
     }
-
-	_splitBuf[1] = _splitBuf[1].substr(4); 
-	_splitBuf[1] = trimSpace(_splitBuf[1]);
-    
 	if (_splitBuf[1][0] == '#' || _splitBuf[1][0] == '&')
     {
         if (_splitBuf[1].size() <= _splitBuf[1].find(' '))

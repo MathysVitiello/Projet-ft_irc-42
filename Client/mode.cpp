@@ -76,9 +76,8 @@ std::string	Client::splitBuf( void )
 	size_t		lenName;
 
 	// On stocke le nom du channel:
-	this->_splitBuf.erase(this->_splitBuf.begin());
-	lenName = this->_splitBuf[0].find(" ");
-	name = this->_splitBuf[0].substr(0, lenName);
+	lenName = this->getBufTmp().find(" ");
+	name = this->_splitBuf[0].substr(5, lenName);
 
 	// on stocke le tout dans splitBuf;
 	std::string tmp = _splitBuf[0];
@@ -97,6 +96,10 @@ void Client::mode( Server *server )
 {
 	std::string name;
 
+	std::cout << "ligne dans mode: " << this->getBufTmp() << std::endl;
+	std::cout << "ligne dans bufTmp: " << this->bufTmp << std::endl;
+	std::cout << "ligne dans splitBuff[0]: " << this->_splitBuf[0] << std::endl;
+	std::cout << "ligne dans splitBuff[1]: " << this->_splitBuf[1] << std::endl;
 	// On stocke le nom du channel et les cmd spliter:
 	name = this->splitBuf();
 
@@ -122,5 +125,6 @@ void Client::mode( Server *server )
 	server->channelInvit( this, i);
 
 }
+
 
 

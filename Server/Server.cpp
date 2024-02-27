@@ -163,6 +163,7 @@ void	Server::command(int fdClient){
 		if(j != std::string::npos)
 			this->_clients[fdClient].capForHex(this, fdClient, &this->_clients);	
 	}
+
 	switch (i) {
 	case CAP:
 		std::cout << "CAP jarrive " << std::endl;
