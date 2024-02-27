@@ -37,8 +37,8 @@ void	Client::join( Server *server )
 			}
             server->createChannel(this->getSocket(), chanel, _splitBuf[1]);
         }
-        send(this->getSocket(), CHANNELMADE(_splitBuf[1]).c_str(),
-            CHANNELMADE(_splitBuf[1]).size(), 0);
     }
-	//! gerer hex cat si il a \r\n
 }
+
+//tout ceux de channel doivenet recevoir un messsage, qqn c'est co
+//001 au mauvais endroit
