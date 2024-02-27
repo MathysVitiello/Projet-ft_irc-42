@@ -167,7 +167,7 @@ void	Server::command(int fdClient){
 	case CAP:
 		std::cout << "CAP jarrive " << std::endl;
 		this->_clients[fdClient].capForHex(this, fdClient, &this->_clients);
-		this->_clients[fdClient].enterPwd(&this->_clients, this, fdClient);
+		//this->_clients[fdClient].enterPwd(&this->_clients, this, fdClient);
 		break;
 	case PASS:
 		std::cout << "PASS  dans switch case " << std::endl;
