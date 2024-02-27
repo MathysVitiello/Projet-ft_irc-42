@@ -2,10 +2,22 @@
 
 void    Client::kick(  Server *server ){
 
-
-	std::cout << _splitBuf[0] << std::endl;
-	std::cout << _splitBuf[1] << std::endl;
-
+	if ( this->_splitBuf.size() == 1 ){
+		send( this->_socket, ERR_NEEDMOREPARAMS(this->_nickname, _splitBuf[0]).c_str(), ERR_NEEDMOREPARAMS(this->_nickname, _splitBuf[0]).size(), 0);
+		return;
+	}
+	std::string tmp = _splitBuf[1];
+	size_t delem = tmp.find(" "); 
+	if (delem != std::string::npos){
+		_splitBuf.pop_back();
+		_splitBuf.push_back(tmp.substr(0, delem)); // channel = _splitBuf[1]
+		_splitBuf.push_back(tmp.substr(delem)); // user = _splitBuf[2]
+		_splitBuf[2] = trimSpace(_splitBuf[2]);
+	}
+	if ( this->_splitBuf.size() == 2 ){
+		send( this->_socket, ERR_NEEDMOREPARAMS(this->_nickname, _splitBuf[0]).c_str(), ERR_NEEDMOREPARAMS(this->_nickname, _splitBuf[0]).size(), 0);
+		return;
+	}
 	// check si cest un channel
 	if (_splitBuf[1][0] == '#' || _splitBuf[1][0] == '&')
 	{
