@@ -173,10 +173,13 @@ void	Server::command(int fdClient){
 	case PASS:
 		std::cout << "PASS  dans switch case " << std::endl;
 		this->_clients[fdClient].enterPwd(&this->_clients, this, fdClient);
+		this->_clients[fdClient].removeCmdBuf();
+		// ajout ici de remove, jai enlever dans la fiinction pour une raison
 		break;
 	case NICK:
 		std::cout << "NICK  dans switch case " << std::endl;
 		this->_clients[fdClient].setNick(&this->_clients, this, fdClient);
+		//this->_clients[fdClient].removeCmdBuf();
 		break;
 	case USER:
 		std::cout << "USER   dans switch case " << std::endl;

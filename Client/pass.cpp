@@ -1,7 +1,7 @@
 #include "Client.hpp"
 
 void	Client::enterPwd(std::vector<Client> *clients, Server *server, int fdClient ){
-		
+
     if (this->_connected){
 		send(this->getSocket(), ERR_ALREADYREGISTERED(this->_nickname).c_str(),
 				ERR_ALREADYREGISTERED(this->_nickname).size(), 0);
@@ -27,9 +27,11 @@ void	Client::enterPwd(std::vector<Client> *clients, Server *server, int fdClient
 		if (_splitBuf[1].size() != server->getPassword().size() + 1)
 			this->setNick(clients, server, fdClient);
 	}
+	else if(bufTmp.find("CAP ") == 0){
+		this->capForHex(server, fdClient, clients);
+	}
 	else{
 		send(this->getSocket(), ERR_PASSWDMISMATCH(this->_nickname).c_str(),
-				ERR_PASSWDMISMATCH(this->_nickname).size(), 0);
+			ERR_PASSWDMISMATCH(this->_nickname).size(), 0);
 	}
-	removeCmdBuf();
 }

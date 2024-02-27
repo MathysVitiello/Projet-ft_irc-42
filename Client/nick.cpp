@@ -60,5 +60,4 @@ void Client::setNick( std::vector<Client> *clients, Server *server, int fdClient
 		_splitBuf[0] = "USER";
 		this->setName(clients, server, fdClient); 
 	}
-	removeCmdBuf();
 }

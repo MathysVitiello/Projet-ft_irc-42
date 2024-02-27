@@ -77,22 +77,39 @@ void	Client::setBufTmp( std::string buf, int flag ){
 /* ************************************************************************** */
 // FONCTIONS:
 
+//parsing depending on hexchat
 void	Client::capForHex( Server *server, int fdClient, std::vector<Client> *clients){
 
-		//parsing depending on what hexchat sends
-		if (_splitBuf[1].find("PASS ") == 0)
+		if (bufTmp.find("CAP ") == 0)
 		{
-			_splitBuf[0] = "PASS";
-			this->enterPwd(clients, server, fdClient);
-		}
-		else if (_splitBuf[1].size() > 12)
-		{
-			_splitBuf[0] = "PASS";
-			_splitBuf[1] = _splitBuf[1].substr(_splitBuf[1].find("\n"));		
-			this->enterPwd(clients, server, fdClient);
+			bufTmp = bufTmp.substr(bufTmp.find("PASS") + 4);
+			bufTmp = trimSpace(bufTmp);
+			_splitBuf[1] = bufTmp.substr(0, server->getPassword().size());
 
-		} else {
-			//only CAP line in hexchat
+
+
+			bufTmp = bufTmp.substr(bufTmp.find("NICK"));
+
+			this->enterPwd(clients, server, fdClient);
+		} 
+		if (bufTmp.find("NICK ") == 0){
+
+			_splitBuf[0] = "NICK";
+			bufTmp = bufTmp.substr(bufTmp.find("NICK") + 4);
+			bufTmp = trimSpace(bufTmp);
+			std::cout  << bufTmp << std::endl;
+			_splitBuf[1] = bufTmp.substr(0, bufTmp.find("\r"));
+			bufTmp = bufTmp.substr(bufTmp.find("USER"));
+			this->setNick(clients, server, fdClient);
+		}
+		if (bufTmp.find("USER ") == 0){
+		
+			_splitBuf[0] = "USER";
+			bufTmp = bufTmp.substr(bufTmp.find("USER") + 4);
+			bufTmp = trimSpace(bufTmp);
+			_splitBuf[1] = bufTmp.substr(0, bufTmp.find(" "));
+			this->setName(clients, server, fdClient);
+
 			_splitBuf.clear();
 		}
 }
