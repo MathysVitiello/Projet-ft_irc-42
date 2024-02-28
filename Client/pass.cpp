@@ -5,12 +5,10 @@ void	Client::enterPwd(std::vector<Client> *clients, Server *server, int fdClient
     if (this->_connected){
 		send(this->getSocket(), ERR_ALREADYREGISTERED(this->_nickname).c_str(),
 				ERR_ALREADYREGISTERED(this->_nickname).size(), 0);
-        removeCmdBuf();
 		return;
 	}
 	else if (this->_splitBuf.size() != 2){
 		send(this->getSocket(), ERR_NEEDMOREPARAMS(this->_nickname, _splitBuf[0]).c_str(), ERR_NEEDMOREPARAMS(this->_nickname, _splitBuf[0]).size(), 0);
-    	removeCmdBuf();
 		return;
 	}
 	size_t j = _splitBuf[1].find(" ");
@@ -31,5 +29,4 @@ void	Client::enterPwd(std::vector<Client> *clients, Server *server, int fdClient
 		send(this->getSocket(), ERR_PASSWDMISMATCH(this->_nickname).c_str(),
 				ERR_PASSWDMISMATCH(this->_nickname).size(), 0);
 	}
-	removeCmdBuf();
 }

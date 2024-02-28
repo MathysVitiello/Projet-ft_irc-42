@@ -20,6 +20,7 @@ class Client
 		std::string 				const & getName( void ) const;
 		std::string 				const & getNickname( void ) const;
 		bool						const & getConnect( void ) const;
+		bool						const & getConnectServer( void ) const;
 		std::vector<std::string>	const & getCmdBuf(void) const;
 		std::string					getBufTmp( void );
 
@@ -39,7 +40,7 @@ class Client
 
 		void				enterPwd(std::vector<Client> *clients, Server *server, int fdClient); 
 		void    			privateMessage( std::vector<Client> *clients, Server *server, int fdClient);
-		int					checkRight( void );
+		void				checkRight( void );
 		void				invitation( Server *server );
 	
 		void 				mode( Server *server );

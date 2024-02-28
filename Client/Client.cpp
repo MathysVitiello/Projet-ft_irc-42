@@ -1,4 +1,6 @@
 #include "Client.hpp"
+#include <iostream>
+#include <vector>
 
 /* ************************************************************************** */
 // CONSTRUCTOR / DESTRUCTOR:
@@ -44,6 +46,10 @@ bool	const & Client::getConnect( void ) const{
 	return( this->_connected );
 }
 
+bool	const & Client::getConnectServer( void ) const{
+	return( this->_checkRight );
+}
+
 std::vector<std::string>	const & Client::getCmdBuf(void) const{
 	return this->_splitBuf;
 }
@@ -56,10 +62,12 @@ void	Client::setSocket( int socket ){
 	this->_socket = socket;
 }
 
-int	Client::checkRight( void ) {
-	if (this->_connected == true && this->getName() != "" && this->getNickname() != "*")
-		return true;
-	return false;
+void	Client::checkRight( void ) {
+	if (this->_connected == true && this->getName() != "" && this->getNickname() != "*" && this->_checkRight == false){
+		send(this->getSocket(),	RPL_WELCOME(this->_nickname, this->_name).c_str(),
+				RPL_WELCOME(this->_nickname, this->_name).size(), 0);
+		this->_checkRight = true;
+	}
 }
 
 void Client::setAddr( sockaddr_in addr ) {
@@ -108,14 +116,15 @@ void	Client::splitCmd( std::string cmdSend ){
 		cmdSend = trimSpace(cmdSend);
 		this->_splitBuf.push_back(cmdSend);
 	}
-	else
+	else{
 		this->_splitBuf.push_back(cmdSend);
+
+	}
 }
 
 void	Client::removeCmdBuf(){
-
  	this->_splitBuf.erase(this->_splitBuf.begin(), this->_splitBuf.end());
-	this->_splitBuf.clear();
+	_splitBuf.clear();
 }
 
 void	Client::parsHexchat( void ){

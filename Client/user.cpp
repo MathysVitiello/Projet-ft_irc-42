@@ -14,7 +14,7 @@ void Client::setName( std::vector<Client> *clients, Server *server, int fdClient
 	}
 
 	if (this->_connected){
-		if (_splitBuf[1].empty()){
+		if (this->_splitBuf.size() == 1){
 			send(this->getSocket(), ERR_NEEDMOREPARAMS(this->_nickname, "USER").c_str(),
 					ERR_NEEDMOREPARAMS(this->_nickname, "USER").size(), 0);
 			return;
@@ -33,8 +33,10 @@ void Client::setName( std::vector<Client> *clients, Server *server, int fdClient
 			this->_name = _splitBuf[1];
 			return;
 		}
-		send(this->getSocket(), ERR_ALREADYREGISTERED(this->_name).c_str(),
-				ERR_ALREADYREGISTERED(this->_name).size(), 0);
+		send(this->getSocket(), ERR_ALREADYREGISTERED(this->_nickname).c_str(),
+				ERR_ALREADYREGISTERED(this->_nickname).size(), 0);
 	}
+	if (this->_checkRight == false)
+		this->checkRight();
 	return ;
 }
