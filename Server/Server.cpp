@@ -299,41 +299,6 @@ void	Server::createChannel( int clientSocket, std::string name, std::string pass
 	}
 }
 
-
-void	Server::channelInvit( Client *user, int i )
-{
-	// invite mode
-	
-	if( user->getCmdBuf()[1] == "+i" )	
-	{
-		if( this->_channels[i].getInvitation() == false )
-		{
-			this->_channels[i].setInvitation( true );
-			std::cout << "le canal passe en mode invit" << std::endl;
-			return;
-		}
-		else
-		{
-			// le channel est deaj sur le mode invitation
-			std::cout << "le canal est deja en mode invit" << std::endl;
-		}
-	}
-	//enleve le mode invit
-	else if( user->getCmdBuf()[1] == "-i" )	
-	{
-		if( this->_channels[i].getInvitation() == true )
-		{
-			this->_channels[i].setInvitation( false );
-			std::cout << "le canal s enleve du mode invit" << std::endl;
-		}
-		else
-		{
-			std::cout << "le canal est deja enlever du mode invit" << std::endl;
-			// le channel est deja PAS sur le mode invitation
-		}
-	}
-}
-
 //!EN TRAVAUX
 void    Server::sendMessageChanel( std::string nickOrChannel, int clientPlace, std::string cmdSend, int socket)
 {
@@ -410,7 +375,7 @@ std::ostream & operator<<( std::ostream & o, Server const & src )
 		std::cout << "- Channel: " << itChannel->getName() << std::endl;
 		std::cout << "- password: " << itChannel->getPasswd() << std::endl;
 		std::cout << "- socket owner: " << itChannel->getOwner() << std::endl;
-		std::cout << "- topic name: " << itChannel->getOwner() << std::endl;
+		std::cout << "- topic name: " << itChannel->getTopicName() << std::endl;
 		std::cout << "- invation: " << itChannel->getInvitation() << std::endl;
 		std::cout << "- max user:" << itChannel->getMaxUser() << std::endl;
 		for( unsigned i = 0; i < itChannel->getIrcOps().size(); i++ )

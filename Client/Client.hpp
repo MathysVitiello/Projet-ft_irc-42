@@ -59,7 +59,7 @@ class Client
 		bool		_checkRight;
 		std::string					_cmdTmp;
 		std::vector<std::string>	_splitBuf;  // 0: CMD 1:ARG 2:ARG ...
-		std::string				bufTmp;
+		std::string					bufTmp;
 };
 
 

@@ -54,7 +54,8 @@ class Server
 		void		addInviteUser( int guestSocket, std::string channelName );
 		void		changeTopic( std::string topic, std::string chanName );
 		std::string	bufTmp( std::string buf, int flag, int index );
-		void	channelInvit( Client *user, int i );
+
+		void		modeInvit( Client *user, int i );
 
 		// --------------------------------------------------------- //
 	 private:

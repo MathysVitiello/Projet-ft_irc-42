@@ -55,7 +55,8 @@
 # define RPL_AWAY(nick, message)					("301 : "+nick+" :"+message+"\r\n")//? DONE
 
 /*	MODES		*/     
-# define ERR_UMODUUNKNOWNFLAG(server, nick)		("501 : "+server+" "+nick+" :Unknown MODE flag\r\n" )
+# define ERR_UMODUUNKNOWNFLAG(server, nick)			("501 : "+server+" "+nick+" :Unknown MODE flag\r\n" )
+# define ERR_MODE(server, channel, nick)	("502 : "+server+" "+nick+": "+channel+" :Cannot change mode \r\n" )
                          
 /*	KILL message	*/                
                                      

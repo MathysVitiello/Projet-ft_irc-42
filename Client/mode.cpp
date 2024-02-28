@@ -25,7 +25,6 @@ std::string	Client::splitBuf( void )
 	std::string name;
 	size_t		lenName;
 
-	// On stocke le nom du channel:
 	this->_splitBuf.erase(this->_splitBuf.begin());
 	lenName = this->_splitBuf[0].find(" ");
 	name = this->_splitBuf[0];
@@ -45,8 +44,7 @@ std::string	Client::splitBuf( void )
 // Verifie le nombre de parametre: ERR_NEEDMOREPARAMS              
 static bool numberParam( Client *user )
 {
-	std::cout << "size: " << user->getCmdBuf().size() << std::endl;
-	if( user->getCmdBuf().size() > 2 )
+	if( user->getCmdBuf().size() >= 2 )
 		return( true );
 
 	std::string mode = "MODE";
@@ -84,7 +82,6 @@ static bool checkIrcOps( Server *server, std::string nameChan, Client *user)
 				if( *itOps == user->getSocket() )
 					return( true );
 		}
-
 	}
 	std::string nick = user->getNickname();
 	send(user->getSocket(),ERR_CHANOPRIVSNEEDED(nick, nameChan).c_str(),
@@ -92,20 +89,10 @@ static bool checkIrcOps( Server *server, std::string nameChan, Client *user)
 	return( false );
 }
 
-
-bool	checkMode( Server *server, Client *user, int i )
+static void	checkMode( Server *server, Client *user, int i )
 {
-
-	// Verification de l operateur:
-	// if ( + )
-	// 		ftPLUS();
-	// else if ( - )
-	// 		ft_MOINS();
-
-
-
 	if ( user->getCmdBuf()[1] == "+i" || user->getCmdBuf()[1] == "-i" )
-		server->channelInvit( user, i);
+		server->modeInvit( user, i );
 	// if ( user->getCmdBuf()[2] != "+t" || user->getCmdBuf()[2] != "-t" )
 		// modeTopic();
 	// if ( user->getCmdBuf()[2] != "+o" || user->getCmdBuf()[2] != "-o" )
@@ -118,10 +105,7 @@ bool	checkMode( Server *server, Client *user, int i )
 		std::string server = "irc";
 		send(user->getSocket(),ERR_UMODUUNKNOWNFLAG(server, nick).c_str(),
 			ERR_UMODUUNKNOWNFLAG(server, nick).size(), 0);
-		return( false );
 	}
-
-	return( true );
 }
 
 void Client::mode( Server *server )
@@ -131,9 +115,7 @@ void Client::mode( Server *server )
 		return ;
 
 	this->splitBuf();
-	std::cout << "chanell name s: " << this->getCmdBuf()[0] << std::endl;
-	std::cout << "splitBuf[1]: " << this->getCmdBuf()[1] << std::endl;
-
+	
 	//2- Verifier si le channel existe:
 	if( checkChannelExist( server, this->getCmdBuf()[0], this ) == false )
 		return;
@@ -150,9 +132,5 @@ void Client::mode( Server *server )
 			break;
 
 	// Verifie les prefixes:
-	if ( checkMode( server, this, i ) == false )
-		return;
+	checkMode( server, this, i );
 }
-
-
-
