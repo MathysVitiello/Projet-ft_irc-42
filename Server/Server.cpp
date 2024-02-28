@@ -179,7 +179,7 @@ void	Server::command(int fdClient){
 	case NICK:
 		std::cout << "NICK  dans switch case " << std::endl;
 		this->_clients[fdClient].setNick(&this->_clients, this, fdClient);
-		//this->_clients[fdClient].removeCmdBuf();
+		this->_clients[fdClient].removeCmdBuf();
 		break;
 	case USER:
 		std::cout << "USER   dans switch case " << std::endl;
