@@ -22,7 +22,7 @@ void Client::setName( std::vector<Client> *clients, Server *server, int fdClient
 		else if (this->_name.empty()){
 			for(size_t i = 0; i < _splitBuf[1].size(); i++){
 				if (!isalnum(_splitBuf[1][i]) && _splitBuf[1][i] != '-' && _splitBuf[1][i] != '[' && _splitBuf[1][i] != ']' 
-						&& _splitBuf[1][i] != '\\' &&  _splitBuf[1][i] != '^' && _splitBuf[1][i] != '_' 
+						&& _splitBuf[1][i] != '\\' &&  _splitBuf[1][i] != '^'
 						&& _splitBuf[1][i] != '{' && _splitBuf[1][i] != '|' && _splitBuf[1][i] != '}'){
 					send(this->getSocket(),	ERR_ERRONEUSNICKNAME(_splitBuf[1]).c_str(), 
 							ERR_ERRONEUSNICKNAME(_splitBuf[1]).size(), 0);

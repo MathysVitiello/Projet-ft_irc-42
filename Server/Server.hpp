@@ -56,6 +56,7 @@ class Server
 		std::string	bufTmp( std::string buf, int flag, int index );
 
 		void		modeInvit( Client *user, int i );
+		void		modeTopic( Client *user, int nChannel );
 
 		// --------------------------------------------------------- //
 	 private:

@@ -31,3 +31,8 @@ void	Server::modeInvit( Client *user, int i )
 					ERR_MODE(server, channel, nick).size(), 0);
 	}
 }
+
+void	Server::modeTopic( Client *user, int nChannel )
+{
+
+}
