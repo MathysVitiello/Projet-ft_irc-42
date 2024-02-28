@@ -93,11 +93,11 @@ static void	checkMode( Server *server, Client *user, int i )
 {
 	if ( user->getCmdBuf()[1] == "+i" || user->getCmdBuf()[1] == "-i" )
 		server->modeInvit( user, i );
-	if ( user->getCmdBuf()[2] != "+t" || user->getCmdBuf()[2] != "-t" )
+	else if ( user->getCmdBuf()[1] == "+t" || user->getCmdBuf()[1] == "-t" )
 		server->modeTopic( user ,i );
-	// if ( user->getCmdBuf()[2] != "+o" || user->getCmdBuf()[2] != "-o" )
+	// if ( user->getCmdBuf()[1] == "+o" || user->getCmdBuf()[1] == "-o" )
 		// modePrivilege();
-	// if ( user->getCmdBuf()[2] != "+k" || user->getCmdBuf()[2] != "-k" )
+	// if ( user->getCmdBuf()[1] == "+k" || user->getCmdBuf()[1] == "-k" )
 		// modePswd();
 	else
 	{
