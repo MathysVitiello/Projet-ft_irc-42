@@ -172,13 +172,11 @@ void	Server::command(int fdClient){
 	case PASS:
 		std::cout << "PASS  dans switch case " << std::endl;
 		this->_clients[fdClient].enterPwd(&this->_clients, this, fdClient);
-		this->_clients[fdClient].removeCmdBuf();
 		// ajout ici de remove, jai enlever dans la fiinction pour une raison
 		break;
 	case NICK:
 		std::cout << "NICK  dans switch case " << this->_clients[fdClient].getCmdBuf()[1] << std::endl;
 		this->_clients[fdClient].setNick(&this->_clients, this, fdClient);
-		this->_clients[fdClient].removeCmdBuf();
 		break;
 	case USER:
 		std::cout << "USER   dans switch case " << std::endl;
@@ -220,7 +218,7 @@ void	Server::command(int fdClient){
 		send(this->_clients[fdClient].getSocket(), ERR_UNKNOWNCOMMAND(this->_clients[fdClient].getNickname()).c_str(), ERR_UNKNOWNCOMMAND(this->_clients[fdClient].getNickname()).size(), 0);
 		break;
 	}
-		this->_clients[fdClient].removeCmdBuf();
+	this->_clients[fdClient].removeCmdBuf();
 }
 
 // Verify if channel exists
