@@ -20,6 +20,27 @@ RPL_UMODEIS
 ERR_UMODEUNKNOWNFLAG
 
 */
+std::string	Client::splitBuf( void )
+{
+	std::string name;
+	size_t		lenName;
+
+	this->_splitBuf.erase(this->_splitBuf.begin());
+	lenName = this->_splitBuf[0].find(" ");
+	name = this->_splitBuf[0];
+
+	std::string tmp = _splitBuf[0];
+	this->_splitBuf.pop_back();
+	size_t delem = tmp.find(" "); 
+	while (delem != std::string::npos){
+		_splitBuf.push_back(tmp.substr(0, delem)); // nick = _splitBuf[1]
+		tmp.erase( 0, delem + 1);
+		delem = tmp.find(" "); 
+	}
+	_splitBuf.push_back(tmp.substr(0, tmp.size()));
+	return (name);
+}
+
 // Verifie le nombre de parametre: ERR_NEEDMOREPARAMS              
 static bool numberParam( Client *user )
 {
@@ -61,7 +82,6 @@ static bool checkIrcOps( Server *server, std::string nameChan, Client *user)
 				if( *itOps == user->getSocket() )
 					return( true );
 		}
-
 	}
 	std::string nick = user->getNickname();
 	send(user->getSocket(),ERR_CHANOPRIVSNEEDED(nick, nameChan).c_str(),
@@ -69,62 +89,48 @@ static bool checkIrcOps( Server *server, std::string nameChan, Client *user)
 	return( false );
 }
 
-
-std::string	Client::splitBuf( void )
+static void	checkMode( Server *server, Client *user, int i )
 {
-	std::string name;
-	size_t		lenName;
-
-	// On stocke le nom du channel:
-	lenName = this->getBufTmp().find(" ");
-	name = this->_splitBuf[0].substr(5, lenName);
-
-	// on stocke le tout dans splitBuf;
-	std::string tmp = _splitBuf[0];
-	this->_splitBuf.pop_back();
-	size_t delem = tmp.find(" "); 
-	while (delem != std::string::npos){
-		_splitBuf.push_back(tmp.substr(0, delem)); // nick = _splitBuf[1]
-		tmp.erase( 0, delem + 1);
-		delem = tmp.find(" "); 
+	if ( user->getCmdBuf()[1] == "+i" || user->getCmdBuf()[1] == "-i" )
+		server->modeInvit( user, i );
+	// if ( user->getCmdBuf()[2] != "+t" || user->getCmdBuf()[2] != "-t" )
+		// modeTopic();
+	// if ( user->getCmdBuf()[2] != "+o" || user->getCmdBuf()[2] != "-o" )
+		// modePrivilege();
+	// if ( user->getCmdBuf()[2] != "+k" || user->getCmdBuf()[2] != "-k" )
+		// modePswd();
+	else
+	{
+		std::string nick = user->getNickname();
+		std::string server = "irc";
+		send(user->getSocket(),ERR_UMODUUNKNOWNFLAG(server, nick).c_str(),
+			ERR_UMODUUNKNOWNFLAG(server, nick).size(), 0);
 	}
-	_splitBuf.push_back(tmp.substr(0, tmp.size()));
-	return (name);
 }
 
 void Client::mode( Server *server )
 {
-	std::string name;
-
-	std::cout << "ligne dans mode: " << this->getBufTmp() << std::endl;
-	std::cout << "ligne dans bufTmp: " << this->bufTmp << std::endl;
-	std::cout << "ligne dans splitBuff[0]: " << this->_splitBuf[0] << std::endl;
-	std::cout << "ligne dans splitBuff[1]: " << this->_splitBuf[1] << std::endl;
-	// On stocke le nom du channel et les cmd spliter:
-	name = this->splitBuf();
-
 	//1- Verifier si le nombre de parametre:
 	if ( numberParam( this ) == false )
 		return ;
 
+	this->splitBuf();
+	
 	//2- Verifier si le channel existe:
-	if( checkChannelExist( server, name, this ) == false )
+	if( checkChannelExist( server, this->getCmdBuf()[0], this ) == false )
 		return;
 
 	//3- Verifier si le client est ircops du channel:
-	if( checkIrcOps( server, name, this ) == false )
+	if( checkIrcOps( server, this->getCmdBuf()[0], this ) == false )
 		return;
 
-	// Verifie les prefixes:
-	// definit le canal sur invitation ou non
+	// recupere l index du canal dans le tableau:
 	int i = 0;
 	std::vector<Channel>::const_iterator itChan = server->getChannels().begin();
 	for (; itChan != server->getChannels().end(); itChan++, i++)
 		if( itChan->getName() == this->getCmdBuf()[0] )
 			break;
-	server->channelInvit( this, i);
 
+	// Verifie les prefixes:
+	checkMode( server, this, i );
 }
-
-
-

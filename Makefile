@@ -6,7 +6,7 @@
 #    By: mvitiell <marvin@42.fr>                    +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2024/01/04 11:45:22 by mvitiell          #+#    #+#              #
-#    Updated: 2024/01/19 14:56:09 by nminotte         ###   ########.fr        #
+#    Updated: 2024/02/28 14:16:38 by alamizan         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -25,7 +25,8 @@ SRC =	main.cpp \
 		Client/prvmsg.cpp \
 		Client/mode.cpp \
 		Server/Server.cpp \
-		Channel/Channel.cpp \
+		Server/ServerMode.cpp \
+		Channel/Channel.cpp 
 
 CFLAGS = -Wall -Wextra -Werror -g -std=c++98
 

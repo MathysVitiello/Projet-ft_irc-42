@@ -58,10 +58,17 @@
 # define ERR_NOPRIVILEGES(nick)					(": 481 : "+nick+" :Permission Denied- You're not an IRC operator\r\n")
 # define RPL_CHANNELMODEIS(nick, channel, mode)				(": 324 : "+nick+" "+channel+" +"+mode+"\r\n")
 # define ERR_NOPRIVS(nick)					(": 723 : "+nick+" <priv> :Insufficient oper privileges.\r\n")
+
+/*	MODES		*/     
+# define ERR_UMODUUNKNOWNFLAG(server, nick)			(": 501 : "+server+" "+nick+" :Unknown MODE flag\r\n" )
+# define ERR_MODE(server, channel, nick)	(": 502 : "+server+" "+nick+": "+channel+" :Cannot change mode \r\n" )
+                         
+/*	KILL message	*/                
+                                     
                                       
 /*	NUMERICS	*/                    
                                       
-# define RPL_WELCOME(nick, user)					("001 : "+nick+" :Welcome to the IRC Network, "+nick+" !"+user+"@<host>]\r\n")
+# define RPL_WELCOME(nick, user)					(": 001 : "+nick+" :Welcome to the IRC Network, "+nick+" !"+user+"@<host>]\r\n")
 
 # define ERR_UNKNOWNCOMMAND(nick)			 (": 421 "+nick+" :Unknown command\r\n")
 

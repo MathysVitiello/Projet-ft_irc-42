@@ -31,12 +31,12 @@ void Client::setName( std::vector<Client> *clients, Server *server, int fdClient
 				}
 			}
 			this->_name = _splitBuf[1];
+			if (this->_checkRight == false)
+				this->checkRight();
 			return;
 		}
 		send(this->getSocket(), ERR_ALREADYREGISTERED(this->_nickname).c_str(),
 				ERR_ALREADYREGISTERED(this->_nickname).size(), 0);
 	}
-	if (this->_checkRight == false)
-		this->checkRight();
 	return ;
 }

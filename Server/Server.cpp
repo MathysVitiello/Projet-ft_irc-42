@@ -1,5 +1,4 @@
 #include "Server.hpp"
-#include <string>
 /* ************************************************************************** */
 // CONSTRUCTOR / DESTRUCTOR:
 Server::Server( unsigned int const & port, std::string const & password  ): _port(port),
@@ -324,40 +323,6 @@ void	Server::createChannel( int clientSocket, std::string name, std::string pass
 		std::cout << "Ajout du channel [" << name << "]" << std::endl;
 		Channel channel( clientSocket, name, passwd );
 		this->_channels.push_back( channel );
-	}
-}
-
-
-void	Server::channelInvit( Client *user, int i )
-{
-	// invite mode
-	if( user->getCmdBuf()[1] == "+i" )	
-	{
-		if( this->_channels[i].getInvitation() == false )
-		{
-			this->_channels[i].setInvitation( true );
-			std::cout << "le canal passe en mode invit" << std::endl;
-			return;
-		}
-		else
-		{
-			// le channel est deaj sur le mode invitation
-			std::cout << "le canal est deja en mode invit" << std::endl;
-		}
-	}
-	//enleve le mode invit
-	else if( user->getCmdBuf()[1] == "-i" )	
-	{
-		if( this->_channels[i].getInvitation() == true )
-		{
-			this->_channels[i].setInvitation( false );
-			std::cout << "le canal s enleve du mode invit" << std::endl;
-		}
-		else
-		{
-			std::cout << "le canal est deja enlever du mode invit" << std::endl;
-			// le channel est deja PAS sur le mode invitation
-		}
 	}
 }
 
