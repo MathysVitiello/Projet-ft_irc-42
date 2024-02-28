@@ -34,5 +34,6 @@ void	Server::modeInvit( Client *user, int i )
 
 void	Server::modeTopic( Client *user, int nChannel )
 {
-
+	(void)user;
+	(void)nChannel;
 }
