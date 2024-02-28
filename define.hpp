@@ -53,7 +53,10 @@
 # define ERR_NOTEXTTOSEND(nick)					("412 : "+nick+" :No text to send\r\n")//? DONE
 
 # define RPL_AWAY(nick, message)					("301 : "+nick+" :"+message+"\r\n")//? DONE
-                                      
+
+/*	MODES		*/     
+# define ERR_UMODUUNKNOWNFLAG(server, nick)		("501 : "+server+" "+nick+" :Unknown MODE flag\r\n" )
+                         
 /*	KILL message	*/                
                                      
 # define ERR_NOPRIVILEGES(nick)					("481 : "+nick+" :Permission Denied- You're not an IRC operator\r\n")
@@ -64,5 +67,4 @@
 # define RPL_WELCOME(nick)					("001 : "+nick+" :Welcome to the IRC Network, "+nick+" !<user>@<host>]\r\n")
 
 # define ERR_UNKNOWNCOMMAND(nick)			 ("421 "+nick+" :Unknown command\r\n")
-
 #endif

@@ -1,5 +1,4 @@
 #include "Server.hpp"
-#include <string>
 /* ************************************************************************** */
 // CONSTRUCTOR / DESTRUCTOR:
 Server::Server( unsigned int const & port, std::string const & password  ): _port(port),
@@ -304,6 +303,7 @@ void	Server::createChannel( int clientSocket, std::string name, std::string pass
 void	Server::channelInvit( Client *user, int i )
 {
 	// invite mode
+	
 	if( user->getCmdBuf()[1] == "+i" )	
 	{
 		if( this->_channels[i].getInvitation() == false )
