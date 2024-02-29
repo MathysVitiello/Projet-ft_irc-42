@@ -58,7 +58,7 @@ void    Client::kick(  Server *server ){
 
 								std::cout << "le man EST VIVANT ET dans le channel" << std::endl;
 								//todo donner le message en parametres
-								server->kickUser( socketMan, itChan->getName());
+								server->kickUser( socketMan, itChan->getName(), _splitBuf[2]);
 
 							}
 						}

@@ -61,7 +61,7 @@ class Server
 		void		modeTopic( Client *user, int nChannel );
 
 		//todo fucntion mathys pour kick
-		void		kickUser( int socketToKick, std::string channelName );
+		void		kickUser( int socketToKick, std::string channelName, std::string message );
 		// --------------------------------------------------------- //
 	 private:
 		Server( void );

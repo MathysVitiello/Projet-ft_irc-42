@@ -145,8 +145,7 @@ void	Server::removeClient( int const & index )
 	this->_clients.erase( this->_clients.begin() + index );
 }
 
-void	Server::kickUser( int socketToKick, std::string channelName){
-
+void	Server::kickUser( int socketToKick, std::string channelName, std::string message){
 
 		std::vector<Channel>::iterator itChan;
 		for(itChan = this->_channels.begin(); itChan != this->_channels.end(); itChan++)
@@ -154,8 +153,10 @@ void	Server::kickUser( int socketToKick, std::string channelName){
 			if ( itChan->getName() == channelName )
 			{
 				itChan->removeClientChannel( socketToKick );
-				//! affciiher le message qui va avec
-
+				if (message.size() != 0)
+					send(socketToKick, KICK_MESSAGE(channelName, message).c_str(), KICK_MESSAGE(channelName, message).size(), 0);
+				else
+					send(socketToKick, KICK_NOMESSAGE(channelName).c_str(), KICK_NOMESSAGE(channelName).size(), 0);
 			}
 		}
 }

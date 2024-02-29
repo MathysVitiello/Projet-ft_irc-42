@@ -29,15 +29,20 @@
 
 
 # define RPL_TOPIC(nick, channel, topic)	(": 332 : "+nick+" "+channel+" :"+topic+"\r\n")
-# define RPL_NAMREPLY(nick, channel)			(": 353 : "+nick+" <symbol> "+channel+" :[prefix]<nick>{ [prefix]<nick>}\r\n")
-# define RPL_ENDOFNAMES(nick, channel)			(": 366 : "+nick+" "+channel+" :End of /NAMES list\r\n")
-                                      
+# define RPL_NAMREPLY(nick, channel)		(": 353 : "+nick+" <symbol> "+channel+" :[prefix]<nick>{ [prefix]<nick>}\r\n")
+# define RPL_ENDOFNAMES(nick, channel)		(": 366 : "+nick+" "+channel+" :End of /NAMES list\r\n")
+
+/*	KICK message	*/                
+# define KICK_NOMESSAGE(channel)	    (": 002 : "+channel+" : you have been kicked out the channel for no reason\r\n") //?homemade
+# define KICK_MESSAGE(channel, message)		(": 003 : "+channel+" : you have been kicked for a reason : "+message+"\r\n") //?homemade
+
+
 /*	TOPIC message	*/                
  
 # define RPL_NOTOPIC(nick, channel)	(": 331 : "+nick+" "+channel+" : There is no topic yet\r\n")                                     
 # define ERR_NOTONCHANNEL(nick, channel)			(": 442 : "+nick+" "+channel+" :You're not on that channel\r\n")
 # define ERR_CHANOPRIVSNEEDED(nick, channel)			(": 482 : "+nick+" "+channel+" :You're not channel operator\r\n")
-                                     
+                                  
 /* INVITE message	*/               
 
 # define RPL_INVITING(nick, guest, channel)			(": 341 : "+nick+" invited "+guest+" to the channel "+channel+"\r\n")
