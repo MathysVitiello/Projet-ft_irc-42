@@ -23,10 +23,10 @@ ERR_UMODEUNKNOWNFLAG
 std::string	Client::splitBuf( void )
 {
 	std::string name;
-	size_t		lenName;
+	//size_t		lenName;
 
 	this->_splitBuf.erase(this->_splitBuf.begin());
-	lenName = this->_splitBuf[0].find(" ");
+	//lenName = this->_splitBuf[0].find(" ");
 	name = this->_splitBuf[0];
 
 	std::string tmp = _splitBuf[0];

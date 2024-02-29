@@ -41,6 +41,8 @@ class Server
 		void							setClients( std::string buf, int index );
 
 
+			
+
 		// -------------------- Functions ---------------------- //
 		void		addClient( int const & id, sockaddr_in from );
 		void		command( int fdClient );
@@ -58,6 +60,8 @@ class Server
 		void		modeInvit( Client *user, int i );
 		void		modeTopic( Client *user, int nChannel );
 
+		//todo fucntion mathys pour kick
+		void		kickUser( int socketToKick, std::string channelName );
 		// --------------------------------------------------------- //
 	 private:
 		Server( void );

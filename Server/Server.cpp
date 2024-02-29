@@ -145,6 +145,24 @@ void	Server::removeClient( int const & index )
 	this->_clients.erase( this->_clients.begin() + index );
 }
 
+void	Server::kickUser( int socketToKick, std::string channelName){
+
+
+		std::vector<Channel>::iterator itChan;
+		for(itChan = this->_channels.begin(); itChan != this->_channels.end(); itChan++)
+		{
+			if ( itChan->getName() == channelName )
+			{
+				itChan->removeClientChannel( socketToKick );
+				//! affciiher le message qui va avec
+
+			}
+		}
+}
+
+
+
+
 void	Server::command(int fdClient){
 
 	std::string	cmd[] = {"CAP", "PASS", "NICK", "USER", "PRIVMSG", "JOIN", "KICK", "INVITE", "TOPIC", "MODE"};
