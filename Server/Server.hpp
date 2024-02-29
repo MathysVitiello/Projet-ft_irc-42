@@ -52,7 +52,7 @@ class Server
 		void   		sendMessageChanel( std::string nickOrChannel, int clientPlace, std::string cmdSend, int socket);
 		void		eraseOwnerChannel( int socket );
 		void		addInviteUser( int guestSocket, std::string channelName );
-		void		changeTopic( std::string topic, std::string chanName );
+		void		changeTopic( std::string topic, std::string chanName, int idClient );
 		std::string	bufTmp( std::string buf, int flag, int index );
 
 		void		modeInvit( Client *user, int i );

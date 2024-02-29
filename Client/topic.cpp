@@ -51,7 +51,7 @@ void	Client::topic( Server *server ){
 			   return ; 
 		   }
 	}
-	server->changeTopic( _splitBuf[2], _splitBuf[1]);
+	server->changeTopic( _splitBuf[2], _splitBuf[1], this->_socket );
 	send (this->_socket, RPL_TOPIC(_nickname, _splitBuf[1], _splitBuf[2]).c_str(), RPL_TOPIC(_nickname, _splitBuf[1], _splitBuf[2]).size(), 0);
 }
 

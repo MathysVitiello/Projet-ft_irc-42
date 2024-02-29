@@ -8,7 +8,8 @@ Channel::Channel( int userSocket, std::string name, std::string mdp) :
 	_owner( userSocket ),
 	_invitation( false ),
 	_maxUser( FD_SETSIZE ),
-	_topic( false ){
+	_topic( false ),
+	_privilege( false ){
 	std::cout << "Channel [" << this->_name << "] created Owner socket: " << userSocket << std::endl;
 
 	this->_ircOps.push_back( userSocket );
@@ -61,6 +62,10 @@ bool	const & Channel::getTopic( void ) const{
 	return this->_topic;
 }
 
+bool	const & Channel::getTopicPrivilege( void ) const{
+	return this->_privilege;
+}
+
 bool		const & Channel::getInvitation ( void ) const{
 	return ( this->_invitation );
 }
@@ -77,6 +82,9 @@ void	Channel::setInvitation( bool invitation ){
 	this->_invitation = invitation;
 }
 
+void	Channel::setTopicPrivilege( bool privilege ){
+	this->_privilege = privilege;
+}
 void	Channel::setTopicName( std::string topic ){
 	this->_topicName = topic;
 }

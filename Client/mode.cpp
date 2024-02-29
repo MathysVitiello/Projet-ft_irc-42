@@ -25,6 +25,7 @@ std::string	Client::splitBuf( void )
 	std::string name;
 	size_t		lenName;
 
+	(void)lenName;
 	this->_splitBuf.erase(this->_splitBuf.begin());
 	lenName = this->_splitBuf[0].find(" ");
 	name = this->_splitBuf[0];

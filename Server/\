@@ -427,21 +427,16 @@ void	Server::addInviteUser( int guestSocket, std::string channelName ){
 }
 
 void	Server::changeTopic( std::string topic, std::string chanName, int idClient ){
-	unsigned int j = 0; 
 	for (size_t i = 0; i < this->_channels.size(); i++){
 		if (chanName == this->_channels[i].getName()){
-			if (this->_channels[i].getTopicPrivilege() == true){
-				while ( j < this->_channels[i].getIrcOps().size() ){
-					if (  this->_channels[i].getIrcOps()[j] == idClient)
-						break ;
-					j++;
-				}
-				if ( j == this->_channels[i].getIrcOps().size() ){
-						send(this->getSocket(),ERR_CHANOPRIVSNEEDED(this->_clients[idClient].getNickname(), this->_channels[i].getName()).c_str(), 
-								ERR_CHANOPRIVSNEEDED(this->_clients[idClient].getNickname(), this->_channels[i].getName()).size(), 0);
+			if (this->_channels[i].getTopicPrivilege() == true)
+				for ( unsigned int j = 0; j < this->_channels[i].getIrcOps().size(); j++ ){
+					if (  this->_channels[i].getIrcOps()[j] == idClient){
+					send(this->getSocket(),ERR_CHANOPRIVSNEEDED(this->_clients[idClient].getNickname(), this->_channels[i].getName()).c_str(),
+							ERR_CHANOPRIVSNEEDED(this->_clients[idClient].getNickname(), this->_channels[i].getName()).size(), 0);
 						return;
 					}
-			}
+				}
 			this->_channels[i].setTopicName( topic );
 			this->_channels[i].setTopic( true );
 		}
