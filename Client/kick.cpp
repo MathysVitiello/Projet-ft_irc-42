@@ -77,12 +77,16 @@ void    Client::kick(  Server *server ){
 	return;
 }
 
-//todo le message de rejoins du server nest pas a la bonne personne a chque fois 
-
 //! s'assurer que le owner ne peut pas etre kick (a faire)
+
+//? le message de rejoins du server nest pas a la bonne personne a chque fois 
 //? et peut pas kick soit meme
 //? new player in your channel pas bon / corriger recheck a la fin
 
 // tester avec et sans welcome hexchat //? hexchat fonctionne normalement 
-//! ne fonctionne pas si on RECONNECT
-//faire QUIT
+// ne fonctionne pas si on RECONNECT //? maintenant si
+//?faire QUIT
+
+
+//todo kike faire message new player in your channel 
+//!socket owner a ne pas kikc

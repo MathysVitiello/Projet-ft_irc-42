@@ -90,8 +90,6 @@ void	Client::capForHex( Server *server, int fdClient, std::vector<Client> *clien
 
 		if (bufTmp.find("CAP ") == 0)
 		{
-			//todopb ici quand reco avec hexchat
-			// std::cout << "ici je suisss" << std::endl;
 			bufTmp = bufTmp.substr(bufTmp.find("PASS") + 4);
 			bufTmp = trimSpace(bufTmp);
 			_splitBuf[1] = bufTmp.substr(0, server->getPassword().size());
@@ -100,7 +98,6 @@ void	Client::capForHex( Server *server, int fdClient, std::vector<Client> *clien
 		} 
 		if (bufTmp.find("NICK ") == 0){
 
-			// std::cout << "ici je NICK" << std::endl;
 			_splitBuf[0] = "NICK";
 			bufTmp = bufTmp.substr(bufTmp.find("NICK") + 4);
 			bufTmp = trimSpace(bufTmp);
@@ -111,7 +108,6 @@ void	Client::capForHex( Server *server, int fdClient, std::vector<Client> *clien
 		}
 		if (bufTmp.find("USER ") == 0){
 			
-			// std::cout << "ici je user" << std::endl;
 			_splitBuf[0] = "USER";
 			bufTmp = bufTmp.substr(bufTmp.find("USER") + 4);
 			bufTmp = trimSpace(bufTmp);
@@ -133,7 +129,6 @@ void	Client::splitCmd( std::string cmdSend ){
 	}
 	else{
 		this->_splitBuf.push_back(cmdSend);
-
 	}
 }
 

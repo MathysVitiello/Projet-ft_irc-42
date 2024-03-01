@@ -87,7 +87,7 @@ int main(int argc, char **argv)
 				{
 					sizeRead = recv(sockfd, buf, sizeof(buf), 0);
 					if ( (sizeof(buf) >= 4 && buf[0] == 'Q' && buf[1] == 'U' && buf[2] == 'I' && buf[3] == 'T')
-						|| sizeRead <= 0 ) //todo heheeh
+						|| sizeRead <= 0 )
 					{
 						/* connection closed by client side */
 						if ( sizeRead == 0 )

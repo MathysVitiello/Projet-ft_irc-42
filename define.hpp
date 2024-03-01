@@ -78,4 +78,8 @@
 
 # define ERR_UNKNOWNCOMMAND(nick)			 (": 421 "+nick+" :Unknown command\r\n")
 
+
+//createChannel
+# define NEWTOCHANNEL(nick, channel)			 (": "+nick+" has joined channel : "+channel+"\r\n")
+
 #endif
