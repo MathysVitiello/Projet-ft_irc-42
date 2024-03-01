@@ -57,6 +57,8 @@ class Server
 
 		void		modeInvit( Client *user, int i );
 		void		modeTopic( Client *user, int nChannel );
+		void		modePrivilege( Client *user, int i );
+		void		modePswd( Client *user, int i );
 
 		// --------------------------------------------------------- //
 	 private:

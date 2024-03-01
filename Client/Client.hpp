@@ -24,31 +24,31 @@ class Client
 		std::vector<std::string>	const & getCmdBuf(void) const;
 		std::string					getBufTmp( void );
 
-		void				setSocket( int socket );
-		void				setName( std::vector<Client> *clients, Server *server, int fdClient );
-		void 				setNick( std::vector<Client> *clients, Server *server, int fdClient );
-		void 				setAddr( sockaddr_in addr );
-		void				splitCmd( std::string cmdSend );
-		void				setBufTmp( std::string buf, int flag );
+		void	setSocket( int socket );
+		void	setName( std::vector<Client> *clients, Server *server, int fdClient );
+		void 	setNick( std::vector<Client> *clients, Server *server, int fdClient );
+		void 	setAddr( sockaddr_in addr );
+		void	splitCmd( std::string cmdSend );
+		void	setBufTmp( std::string buf, int flag );
 
 		// -------------------- Functions ---------------------- //
-		void				quit(); 
-		void				join( Server *server );
+		void	quit(); 
+		void	join( Server *server );
 		//TODO en construction kick capForHex
-		void				kick( Server *server );
-		void    			capForHex( Server *server, int fdClient, std::vector<Client> *clients);
+		void	kick( Server *server );
+		void    capForHex( Server *server, int fdClient, std::vector<Client> *clients);
 
-		void				enterPwd(std::vector<Client> *clients, Server *server, int fdClient); 
-		void    			privateMessage( std::vector<Client> *clients, Server *server, int fdClient);
-		void				checkRight( void );
-		void				invitation( Server *server );
+		void	enterPwd(std::vector<Client> *clients, Server *server, int fdClient); 
+		void	privateMessage( std::vector<Client> *clients, Server *server, int fdClient);
+		void	checkRight( void );
+		void	invitation( Server *server );
 	
-		void 				mode( Server *server );
-		std::string 		splitBuf( void );
+		void 	mode( Server *server );
+		void 	splitBuf( void );
 
-		void				removeCmdBuf( void );
-		void				parsHexchat( void );
-		void				topic( Server *server );
+		void	removeCmdBuf( void );
+		void	parsHexchat( void );
+		void	topic( Server *server );
 
 		// --------------------------------------------------------- //
 	private:

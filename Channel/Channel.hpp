@@ -34,8 +34,10 @@ class Channel{
 		void			setUserInvite ( int socketInvite, int flag );
 		
 		// -------------------- Functions ---------------------- //
+		bool	removeIrcOps( int clientSocket );
 		void	removeClientChannel( int index );
 		bool	addClientChannel( int clientSocket );
+		bool	addIrcOps( int clientSocket );
 
 
 	// --------------------------------------------------------- //

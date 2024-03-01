@@ -98,22 +98,57 @@ bool	Channel::addClientChannel( int clientSocket ){
 	return( false );
 }
 
-void	Channel::removeClientChannel( int userSocket ){
-	//Supprime l'ircOps du canal:
+// Ajoute l'ircOps au canal:
+bool	Channel::addIrcOps( int clientSocket ){
+	std::vector<int>::iterator it = this->_ircOps.begin();
+
 	if( !this->_ircOps.empty() )
 	{
-		for(std::vector<int>::iterator it = this->_ircOps.begin(); it != this->_ircOps.end(); it++)
+		for( ; it != this->_ircOps.end(); it++ )
+			if( *it == clientSocket )
+				return( false );
+	}
+	this->_ircOps.push_back( clientSocket );
+	return( true );
+}
+
+//Supprime l'ircOps du canal:
+bool	Channel::removeIrcOps( int clientSocket ){
+	std::vector<int>::iterator it = this->_ircOps.begin();
+
+	if( !this->_ircOps.empty() )
+	{
+		for( ; it != this->_ircOps.end(); it++ )
 		{
-			if( *it == userSocket )
+			if( *it == clientSocket )
 			{
 				this->_ircOps.erase( it );
 				--it;
-				std::cout << "IrcOps socket [" << userSocket << "] erased" << std::endl;
+				std::cout << "IrcOps socket [" << clientSocket << "] erased" << std::endl;
+				return( true );
 			}
 		}
 	}
+	return( false );
+}
 
-	// Supprime le user du canal:
+// Supprime le user du canal:
+void	Channel::removeClientChannel( int userSocket ){
+	this->removeIrcOps( userSocket );
+
+	// if( !this->_ircOps.empty() )
+	// {
+		// for(std::vector<int>::iterator it = this->_ircOps.begin(); it != this->_ircOps.end(); it++)
+		// {
+			// if( *it == userSocket )
+			// {
+				// this->_ircOps.erase( it );
+				// --it;
+				// std::cout << "IrcOps socket [" << userSocket << "] erased" << std::endl;
+			// }
+		// }
+	// }
+
 	if( !this->_user.empty() )
 	{
 		for(std::vector<int>::iterator it = this->_user.begin(); it != this->_user.end(); it++)
