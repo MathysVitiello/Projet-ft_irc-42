@@ -317,8 +317,17 @@ void	Server::createChannel( int clientSocket, std::string name, std::string pass
 	}
 	else	
 	{
-		send(clientSocket, CHANNELMADE(name).c_str(), CHANNELMADE(name).size(), 0);
-		std::cout << "Ajout du channel [" << name << "]" << std::endl;
+		std::string	nick = "alex";
+		std::string allclient = "@alex";
+		std::string cmd = "JOIN";
+
+		send(clientSocket, RPL_CHAN( nick, cmd, name ).c_str(),
+			RPL_CHAN(nick, cmd, name).size(), 0);
+		send(clientSocket, RPL_NAMREPLY(name, nick , allclient).c_str(),
+			RPL_NAMREPLY(name, nick, allclient).size(), 0);
+		send(clientSocket, RPL_ENDOFNAMES(nick , name).c_str(),
+			RPL_ENDOFNAMES(nick, name).size(), 0);
+
 		Channel channel( clientSocket, name, passwd );
 		this->_channels.push_back( channel );
 	}

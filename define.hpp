@@ -28,9 +28,11 @@
 # define ERR_BADCHANMASK(channel)				    (": 476 : "+channel+" :Bad Channel Mask\r\n" )
 
 
-# define RPL_TOPIC(nick, channel, topic)	(": 332 : "+nick+" "+channel+" :"+topic+"\r\n")
-# define RPL_NAMREPLY(nick, channel)			(": 353 : "+nick+" <symbol> "+channel+" :[prefix]<nick>{ [prefix]<nick>}\r\n")
-# define RPL_ENDOFNAMES(nick, channel)			(": 366 : "+nick+" "+channel+" :End of /NAMES list\r\n")
+# define RPL_TOPIC(nick, channel, topic)		(": 332 : "+nick+" "+channel+" :"+topic+"\r\n")
+# define RPL_CHAN(client, cmd, channel) 		(":"+client+" "+cmd+" :"+channel +"\r\n")
+# define RPL_NAMREPLY(channel, client, allClient) 	(": 353 " +client+" = "+channel+" :"+allClient +"\r\n")
+# define RPL_ENDOFNAMES(nick, channel)		(": 366 "+nick+" "+channel+" :End of NAMES list\r\n")
+# define RPL_INVITATION(nick , channel, cmd)		(": "+nick+" MODE "+channel+" "+cmd+"\r\n" )    
                                       
 /*	TOPIC message	*/                
  
@@ -59,16 +61,17 @@
 # define RPL_CHANNELMODEIS(nick, channel, mode)				(": 324 : "+nick+" "+channel+" +"+mode+"\r\n")
 # define ERR_NOPRIVS(nick)					(": 723 : "+nick+" <priv> :Insufficient oper privileges.\r\n")
 
-/*	MODES		*/     
+/*	MODES		*/  
+   
 # define ERR_UMODUUNKNOWNFLAG(server, nick)			(": 501 : "+server+" "+nick+" :Unknown MODE flag\r\n" )
 # define ERR_MODE(server, channel, nick)	(": 502 : "+server+" "+nick+": "+channel+" :Cannot change mode \r\n" )
-                         
+               
 /*	KILL message	*/                
                                      
                                       
 /*	NUMERICS	*/                    
                                       
-# define RPL_WELCOME(nick, user)					(": 001 : "+nick+" :Welcome to the IRC Network, "+nick+" !"+user+"@<host>]\r\n")
+# define RPL_WELCOME(nick, user)					(": 001 "+nick+" :Welcome to the IRC Network, "+nick+" !"+user+"@<host>]\r\n")
 
 # define ERR_UNKNOWNCOMMAND(nick)			 (": 421 "+nick+" :Unknown command\r\n")
 

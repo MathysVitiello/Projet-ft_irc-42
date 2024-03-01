@@ -92,7 +92,8 @@ void	Channel::setPassword( std::string password ){
 
 /* ************************************************************************** */
 // FUNCTIONS:
-bool	Channel::addClientChannel( int clientSocket ){
+bool	Channel::addClientChannel( int clientSocket )
+{
 	if( static_cast<unsigned>(this->_maxUser) >= this->_user.size() )
 	{
 		this->_user.push_back( clientSocket );
@@ -104,9 +105,14 @@ bool	Channel::addClientChannel( int clientSocket ){
 }
 
 // Ajoute l'ircOps au canal:
-bool	Channel::addIrcOps( int clientSocket ){
-	std::vector<int>::iterator it = this->_ircOps.begin();
+bool	Channel::addIrcOps( int clientSocket )
+{
+	std::vector<int>::iterator itUser;
+	itUser = find( this->_user.begin(), this->_user.end(), clientSocket);
+	if( itUser == this->_user.end() )
+		return( false );
 
+	std::vector<int>::iterator it = this->_ircOps.begin();
 	if( !this->_ircOps.empty() )
 	{
 		for( ; it != this->_ircOps.end(); it++ )
@@ -118,40 +124,25 @@ bool	Channel::addIrcOps( int clientSocket ){
 }
 
 //Supprime l'ircOps du canal:
-bool	Channel::removeIrcOps( int clientSocket ){
-	std::vector<int>::iterator it = this->_ircOps.begin();
-
+bool	Channel::removeIrcOps( int clientSocket )
+{
 	if( !this->_ircOps.empty() )
 	{
-		for( ; it != this->_ircOps.end(); it++ )
+		std::vector<int>::iterator it;
+		it = find( this->_ircOps.begin(), this->_ircOps.end(), clientSocket);
+		if( it != this->_ircOps.end() )
 		{
-			if( *it == clientSocket )
-			{
-				this->_ircOps.erase( it );
-				--it;
-				return( true );
-			}
+			this->_ircOps.erase( it );
+			return( true );
 		}
 	}
 	return( false );
 }
 
 // Supprime le user du canal:
-void	Channel::removeClientChannel( int userSocket ){
+void	Channel::removeClientChannel( int userSocket )
+{
 	this->removeIrcOps( userSocket );
-
-	// if( !this->_ircOps.empty() )
-	// {
-		// for(std::vector<int>::iterator it = this->_ircOps.begin(); it != this->_ircOps.end(); it++)
-		// {
-			// if( *it == userSocket )
-			// {
-				// this->_ircOps.erase( it );
-				// --it;
-				// std::cout << "IrcOps socket [" << userSocket << "] erased" << std::endl;
-			// }
-		// }
-	// }
 
 	if( !this->_user.empty() )
 	{
@@ -167,7 +158,8 @@ void	Channel::removeClientChannel( int userSocket ){
 	}
 }
 
-void		Channel::setUserInvite ( int socketInvite, int flag ){
+void		Channel::setUserInvite ( int socketInvite, int flag )
+{
 	if(flag == PUSH)
 		this->_userInvitation.push_back(socketInvite);
 	else{

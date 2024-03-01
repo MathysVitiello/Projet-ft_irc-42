@@ -18,7 +18,12 @@ void	Server::modeInvit( Client *user, int i )
 	if( user->getCmdBuf()[1] == "+i" )	
 	{
 		if( this->_channels[i].getInvitation() == false )
+		{
+			std::string cmd = "+i";
 			this->_channels[i].setInvitation( true );
+			send(user->getSocket(), RPL_INVITATION(nick , channel, cmd).c_str(),
+				RPL_INVITATION(nick , channel, cmd).size(), 0);
+		}
 		else
 			send(user->getSocket(), ERR_MODE( server, channel, nick).c_str(), 
 					ERR_MODE(server, channel, nick).size(), 0);
@@ -58,7 +63,7 @@ void	Server::modePrivilege( Client *user, int i )
 	std::vector<Client>::const_iterator it = this->getClients().begin();
 	for (; it != this->getClients().end(); it++, index++)
 	{
-		if( it->getName() == user->getCmdBuf()[2] )
+		if( it->getNickname() == user->getCmdBuf()[2] )
 		{
 			flag = 1;
 			break;
