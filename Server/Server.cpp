@@ -161,9 +161,6 @@ void	Server::kickUser( int socketToKick, std::string channelName, std::string me
 		}
 }
 
-
-
-
 void	Server::command(int fdClient){
 
 	std::string	cmd[] = {"CAP", "PASS", "NICK", "USER", "PRIVMSG", "JOIN", "KICK", "INVITE", "TOPIC", "MODE"};
@@ -300,11 +297,7 @@ void	Server::createChannel( int clientSocket, std::string name, std::string pass
 				// if client is not in channel
 				if( this->_channels[i].addClientChannel(clientSocket) == true )
 				{
-					send(clientSocket, "Client added in Channel\r\n", 
-						strlen("Client added in Channel\r\n"), 0);
-
-
-					//! send pour les autres du channel sauf lui
+					send(clientSocket, "Client added in Channel\r\n", strlen("Client added in Channel\r\n"), 0);
 					int nbChannel = 0;
 					// check si le channel existe
 					for( size_t i = 0; i < this->getChannels().size(); i++ ){

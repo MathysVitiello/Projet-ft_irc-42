@@ -73,7 +73,8 @@
                                       
 /*	NUMERICS	*/                    
                                       
-# define RPL_WELCOME(nick, user)					(": 001 : "+nick+" :Welcome to the IRC Network, "+nick+" !"+user+"@<host>]\r\n")
+# define RPL_WELCOME(nick, user)					(": 001 "+nick+" :Welcome to the IRC Network, "+nick+" !"+user+""+nick+"\r\n")
+// :irc.server.com 001 yourNickname :Welcome to the IRC Network yourNickname!username@hostname
 
 # define ERR_UNKNOWNCOMMAND(nick)			 (": 421 "+nick+" :Unknown command\r\n")
 
