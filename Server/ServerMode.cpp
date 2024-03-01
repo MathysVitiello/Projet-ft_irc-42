@@ -1,6 +1,6 @@
 #include "Server.hpp"
 
-// Rend le channel sur invitation uniquement:
+// Makes the channel by invitation only:
 void	Server::modeInvit( Client *user, int i )
 {
 	std::string nick = user->getNickname();
@@ -39,7 +39,7 @@ void	Server::modeTopic( Client *user, int nChannel )
 	(void)nChannel;
 }
 
-// donne/retire les privilèges d'opérateur de canal:
+// Gives/removes channel operator privileges:
 void	Server::modePrivilege( Client *user, int i )
 {
 	std::string server = "irc";
@@ -92,12 +92,20 @@ void	Server::modePrivilege( Client *user, int i )
 			send(user->getSocket(), ERR_MODE( server, channel, nick).c_str(), 
 				ERR_MODE(server, channel, nick).size(), 0);
 	}
-
 }
 
-void	Server::modePswd( Client *user, int i )
+// Add or remove channel password:
+void	Server::modePwd( Client *user, int i )
 {
-	(void)user;
-	(void)i;
-}
+	std::string server = "irc";
+	std::string nick = user->getNickname();
+	std::string channel= this->_channels[i].getName();
 
+	if( user->getCmdBuf()[1] == "+k" && user->getCmdBuf().size() == 3 )	
+		this->_channels[i].setPassword( user->getCmdBuf()[2] );
+	else if( user->getCmdBuf()[1] == "-k" && user->getCmdBuf().size() == 2 )	
+		this->_channels[i].setPassword( "" );
+	else
+		send(user->getSocket(), ERR_NEEDMOREPARAMS(nick, "MODE").c_str(),
+			ERR_NEEDMOREPARAMS(nick, "MODE").size(), 0);
+}

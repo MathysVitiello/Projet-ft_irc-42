@@ -85,6 +85,11 @@ void	Channel::setTopic( bool topic ){
 	this->_topic = topic;
 }
 
+void	Channel::setPassword( std::string password ){
+	this->_password = password;
+}
+
+
 /* ************************************************************************** */
 // FUNCTIONS:
 bool	Channel::addClientChannel( int clientSocket ){
@@ -124,7 +129,6 @@ bool	Channel::removeIrcOps( int clientSocket ){
 			{
 				this->_ircOps.erase( it );
 				--it;
-				std::cout << "IrcOps socket [" << clientSocket << "] erased" << std::endl;
 				return( true );
 			}
 		}

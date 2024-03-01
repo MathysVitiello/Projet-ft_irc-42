@@ -32,6 +32,7 @@ class Channel{
 		void			setTopic( bool topic );
 		void			setInvitation( bool invitation );
 		void			setUserInvite ( int socketInvite, int flag );
+		void			setPassword( std::string password );
 		
 		// -------------------- Functions ---------------------- //
 		bool	removeIrcOps( int clientSocket );
