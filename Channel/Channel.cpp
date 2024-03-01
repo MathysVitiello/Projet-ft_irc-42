@@ -107,6 +107,7 @@ bool	Channel::addClientChannel( int clientSocket ){
 }
 
 void	Channel::removeClientChannel( int userSocket ){
+
 	//Supprime l'ircOps du canal:
 	if( !this->_ircOps.empty() )
 	{

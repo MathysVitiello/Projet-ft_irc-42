@@ -2,6 +2,7 @@
 # define SERVER_HPP
 
 # include "../library.hpp"
+#include <string>
 
 enum cmdUser {
 	CAP,
@@ -14,6 +15,7 @@ enum cmdUser {
 	INVITE,
 	TOPIC,
 	MODE,
+	PART,
 };
 
 class Channel;
@@ -57,6 +59,7 @@ class Server
 
 		void		modeInvit( Client *user, int i );
 		void		modeTopic( Client *user, int nChannel );
+		void		part( int socketClient, std::string chan, std::string nick, std::string message);
 
 		// --------------------------------------------------------- //
 	 private:

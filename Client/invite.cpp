@@ -31,7 +31,7 @@ void	Client::invitation( Server *server ){
 		if ( itChan->getName() == _splitBuf[2] )
 			break;
 	if ( itChan == server->getChannels().end() ){
-		send(this->_socket, ERR_NOSUCHNICK(this->_nickname, _splitBuf[2]).c_str(), ERR_NOSUCHNICK(this->_nickname, _splitBuf[2]).size(), 0);
+		send(this->_socket, ERR_NOSUCHCHANNEL(this->_nickname, _splitBuf[2]).c_str(), ERR_NOSUCHCHANNEL(this->_nickname, _splitBuf[2]).size(), 0);
 		return ;
 	}
 	
