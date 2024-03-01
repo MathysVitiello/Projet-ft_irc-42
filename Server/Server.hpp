@@ -14,6 +14,7 @@ enum cmdUser {
 	INVITE,
 	TOPIC,
 	MODE,
+	QUIT,
 };
 
 class Channel;
@@ -37,11 +38,7 @@ class Server
 		std::vector<Client>		const & getClients( void  ) const;
 		std::vector<Channel>	const & getChannels( void  ) const;
 		bool							getInCanal( Server * server, int fdClient );
-
 		void							setClients( std::string buf, int index );
-
-
-			
 
 		// -------------------- Functions ---------------------- //
 		void		addClient( int const & id, sockaddr_in from );
@@ -56,16 +53,12 @@ class Server
 		void		addInviteUser( int guestSocket, std::string channelName );
 		void		changeTopic( std::string topic, std::string chanName );
 		std::string	bufTmp( std::string buf, int flag, int index );
-
 		void		modeInvit( Client *user, int i );
 		void		modeTopic( Client *user, int nChannel );
-
-		//todo fucntion mathys pour kick
 		void		kickUser( int socketToKick, std::string channelName, std::string message );
 		// --------------------------------------------------------- //
 	 private:
 		Server( void );
-
 		unsigned int 	const &		_port;	
 		std::string		const &		_password;
 		int							_socket;

@@ -22,6 +22,7 @@ SRC =	main.cpp \
 		Client/pass.cpp \
 		Client/kick.cpp \
 		Client/join.cpp \
+		Client/quit.cpp \
 		Client/prvmsg.cpp \
 		Client/mode.cpp \
 		Server/Server.cpp \

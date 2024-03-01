@@ -121,16 +121,25 @@ void	Server::eraseOwnerChannel( int socket )
 // Deletes clients from all channels
 void	Server::removeClient( int const & index )
 {
+    std::cout << "le index :" << index << std::endl;
+    std::cout << "1" << std::endl;
+
 	int socketClient = this->_clients[index].getSocket();
 	std::string nick = this->_clients[index].getNickname();
 
 	std::vector<Channel>::iterator it;
 	if (  !this->_channels.empty() )
 	{
+    std::cout << "loop" << std::endl;
+
 		for(it = this->_channels.begin(); it != this->_channels.end(); it++)
 		{
+		    std::cout << "2" << std::endl;
+
 			if( socketClient == it->getOwner() )
 			{
+			    std::cout << "3" << std::endl;
+
 				this->eraseOwnerChannel( socketClient );
 				it--;
 			}
@@ -141,8 +150,14 @@ void	Server::removeClient( int const & index )
 			}
 		}
 	}
+    std::cout << "4" << std::endl;
+
 	close( socketClient );
+
+    std::cout << "5" << std::endl;
 	this->_clients.erase( this->_clients.begin() + index );
+    std::cout << "6" << std::endl;
+
 }
 
 void	Server::kickUser( int socketToKick, std::string channelName, std::string message){
@@ -162,11 +177,11 @@ void	Server::kickUser( int socketToKick, std::string channelName, std::string me
 }
 
 void	Server::command(int fdClient){
-
-	std::string	cmd[] = {"CAP", "PASS", "NICK", "USER", "PRIVMSG", "JOIN", "KICK", "INVITE", "TOPIC", "MODE"};
+//! je fais QUIT
+	std::string	cmd[] = {"CAP", "PASS", "NICK", "USER", "PRIVMSG", "JOIN", "KICK", "INVITE", "TOPIC", "MODE", "QUIT"};
 	int i;
 
-	for (i = 0; i < 11; i++){
+	for (i = 0; i < 12; i++){
 		size_t j = this->_clients[fdClient].getCmdBuf()[0].find('\r');
 
 		if(this->_clients[fdClient].getCmdBuf().empty()){
@@ -178,7 +193,7 @@ void	Server::command(int fdClient){
 		if(j != std::string::npos)
 			this->_clients[fdClient].capForHex(this, fdClient, &this->_clients);	
 	}
-
+int testMathys = 0;
 	switch (i) {
 	case CAP:
 		std::cout << "CAP jarrive " << std::endl;
@@ -210,7 +225,6 @@ void	Server::command(int fdClient){
 		}
         break;
 	case KICK:
-		//pour l'operateur uniquement
 		std::cout << "KICK a faire   dans switch case " << std::endl;
         if (this->_clients[fdClient].getConnectServer() == true)
 			this->_clients[fdClient].kick(this);
@@ -230,11 +244,18 @@ void	Server::command(int fdClient){
         if (this->_clients[fdClient].getConnectServer() == true)
 			this->_clients[fdClient].mode(this);
 		break;
+	case QUIT:
+		std::cout << "QUIT jarrive " << std::endl;
+		this->_clients[fdClient].quit(this, fdClient, &this->_clients);
+		testMathys = 1;
+		break;
 	default:
 		send(this->_clients[fdClient].getSocket(), ERR_UNKNOWNCOMMAND(this->_clients[fdClient].getNickname()).c_str(), ERR_UNKNOWNCOMMAND(this->_clients[fdClient].getNickname()).size(), 0);
 		break;
 	}
-	this->_clients[fdClient].removeCmdBuf();
+	if (testMathys == 0)
+		this->_clients[fdClient].removeCmdBuf();
+	testMathys = 0;
 }
 
 // Verify if channel exists
