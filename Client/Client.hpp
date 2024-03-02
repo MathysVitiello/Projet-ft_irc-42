@@ -47,7 +47,6 @@ class Client
 		std::string 		splitBuf( void );
 
 		void				removeCmdBuf( void );
-		void				parsHexchat( void );
 		void				topic( Server *server );
 
 		// --------------------------------------------------------- //

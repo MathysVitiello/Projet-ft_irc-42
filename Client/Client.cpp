@@ -88,14 +88,29 @@ void	Client::setBufTmp( std::string buf, int flag ){
 //parsing depending on hexchat
 void	Client::capForHex( Server *server, int fdClient, std::vector<Client> *clients){
 
+		//? FONCTIONNE
 		if (bufTmp.find("CAP ") == 0)
 		{
+			size_t j = bufTmp.find("PASS");
+			if (j == std::string::npos)
+				return;
 			bufTmp = bufTmp.substr(bufTmp.find("PASS") + 4);
 			bufTmp = trimSpace(bufTmp);
+			_splitBuf[0] = "PASS";
 			_splitBuf[1] = bufTmp.substr(0, server->getPassword().size());
-			bufTmp = bufTmp.substr(bufTmp.find("NICK"));
 			this->enterPwd(clients, server, fdClient);
+			size_t k = bufTmp.find("NICK");
+			if (k != std::string::npos)
+				bufTmp = bufTmp.substr(bufTmp.find("NICK"));
 		} 
+		if (bufTmp.find("PASS ") == 0){
+
+			bufTmp = bufTmp.substr(bufTmp.find("PASS") + 4);
+			bufTmp = trimSpace(bufTmp);
+			_splitBuf[0] = "PASS";
+			_splitBuf[1] = bufTmp.substr(0, server->getPassword().size());
+			this->enterPwd(clients, server, fdClient);
+		}
 		if (bufTmp.find("NICK ") == 0){
 
 			_splitBuf[0] = "NICK";
@@ -103,7 +118,9 @@ void	Client::capForHex( Server *server, int fdClient, std::vector<Client> *clien
 			bufTmp = trimSpace(bufTmp);
 			std::cout  << bufTmp << std::endl;
 			_splitBuf[1] = bufTmp.substr(0, bufTmp.find("\r"));
-			bufTmp = bufTmp.substr(bufTmp.find("USER"));
+			size_t j = bufTmp.find("USER");
+			if (j != std::string::npos)
+				bufTmp = bufTmp.substr(bufTmp.find("USER"));
 			this->setNick(clients, server, fdClient);
 		}
 		if (bufTmp.find("USER ") == 0){
@@ -117,9 +134,6 @@ void	Client::capForHex( Server *server, int fdClient, std::vector<Client> *clien
 }
 
 void	Client::splitCmd( std::string cmdSend ){
-	if (cmdSend.find("CAP") != std::string::npos ){
-		cmdSend.erase(0, 12);
-	}
 	size_t j = cmdSend.find(" ");
 	if (j != std::string::npos){
 		this->_splitBuf.push_back(cmdSend.substr(0, j));
@@ -136,16 +150,3 @@ void	Client::removeCmdBuf(){
  	this->_splitBuf.erase(this->_splitBuf.begin(), this->_splitBuf.end());
 	_splitBuf.clear();
 }
-
-void	Client::parsHexchat( void ){
-
-	size_t delem = _splitBuf[1].find("\r"); 
-	if ( delem != std::string::npos){
-
-		std::string tmp = _splitBuf[1];
-		_splitBuf[1].erase();
-		_splitBuf.push_back(tmp.substr(0, delem));
-		_splitBuf.push_back(tmp.substr(delem + 1));
-	}
-}
-

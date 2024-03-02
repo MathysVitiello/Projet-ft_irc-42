@@ -55,9 +55,11 @@ void    Client::kick(  Server *server ){
 					for (unsigned int i = 0 ; i < itChan->getUser().size(); i++){
 						//once found, kick
 						if (socketMan == itChan->getUser()[i]){
-							//! ne pas pouvoir kick le owner, quand mode +o sera possible (a faire) 		
 							if (this->_socket == socketMan){
 								send(this->_socket, "You cannot kick yourself\n", 25, 0);
+							} else if (itChan->getOwner() == this->_socket){
+								send(this->_socket, "You cannot kick the owner\n", 26, 0);
+								//! a test quand il y aura plusieurs ops
 							} else
 								server->kickUser( socketMan, itChan->getName(), _splitBuf[2]);
 						}
@@ -76,17 +78,3 @@ void    Client::kick(  Server *server ){
 	send(this->_socket, ERR_BADCHANMASK(_splitBuf[1]).c_str(), ERR_BADCHANMASK(_splitBuf[1]).size(), 0);
 	return;
 }
-
-//! s'assurer que le owner ne peut pas etre kick (a faire)
-
-//? le message de rejoins du server nest pas a la bonne personne a chque fois 
-//? et peut pas kick soit meme
-//? new player in your channel pas bon / corriger recheck a la fin
-
-// tester avec et sans welcome hexchat //? hexchat fonctionne normalement 
-// ne fonctionne pas si on RECONNECT //? maintenant si
-//?faire QUIT
-
-
-//todo kike faire message new player in your channel 
-//!socket owner a ne pas kikc

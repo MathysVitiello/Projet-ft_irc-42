@@ -166,35 +166,29 @@ void	Server::command(int fdClient){
 	int i;
 
 	for (i = 0; i < 11; i++){
-		size_t j = this->_clients[fdClient].getCmdBuf()[0].find('\r');
-
 		if(this->_clients[fdClient].getCmdBuf().empty()){
 			i = -1; 
 			break;
 		}
 		if(this->_clients[fdClient].getCmdBuf()[0] == cmd[i])
 			break;
-		if(j != std::string::npos)
-			this->_clients[fdClient].capForHex(this, fdClient, &this->_clients);	
 	}
 	switch (i) {
 	case CAP:
 		std::cout << "CAP jarrive " << std::endl;
 		this->_clients[fdClient].capForHex(this, fdClient, &this->_clients);
-		//this->_clients[fdClient].enterPwd(&this->_clients, this, fdClient);
 		break;
 	case PASS:
 		std::cout << "PASS  dans switch case " << std::endl;
-		this->_clients[fdClient].enterPwd(&this->_clients, this, fdClient);
-		// ajout ici de remove, jai enlever dans la fiinction pour une raison
+		this->_clients[fdClient].capForHex(this, fdClient, &this->_clients);
 		break;
 	case NICK:
 		std::cout << "NICK  dans switch case " << this->_clients[fdClient].getCmdBuf()[1] << std::endl;
-		this->_clients[fdClient].setNick(&this->_clients, this, fdClient);
+		this->_clients[fdClient].capForHex(this, fdClient, &this->_clients);
 		break;
 	case USER:
 		std::cout << "USER   dans switch case " << std::endl;
-		this->_clients[fdClient].setName(&this->_clients, this, fdClient);
+		this->_clients[fdClient].capForHex(this, fdClient, &this->_clients);
 		break;
 	case PRIVMSG:
         std::cout << "PRIVMSG   dans switch case " << std::endl;
@@ -307,22 +301,17 @@ void	Server::createChannel( int clientSocket, std::string name, std::string pass
 							std::cout << this->getChannels()[i].getName() << " est le channel" << std::endl;
 						}
 					}
-
 					if (this->getChannels()[nbChannel].getUser().size() > 1)
 					{
 						for( size_t i = 0; i < this->getChannels()[nbChannel].getUser().size(); i++ )
-							if (clientSocket == this->getChannels()[nbChannel].getUser()[i])
+							if (clientSocket == this->_clients[i].getSocket())
 								socketNewUser = i;
 
-
-
 						for( size_t i = 0; i < this->getChannels()[nbChannel].getUser().size(); i++ ){
-
+							//send to all people from channel message that someone new joined
 							if (clientSocket != this->getChannels()[nbChannel].getUser()[i])
 							{
-								//! sisi toruver le nom du player 
-								//! pas bon ici, si le deuxiene connecte cree le chanel, demain
-								send(this->getClients()[i].getSocket(), NEWTOCHANNEL(this->_clients[socketNewUser].getNickname(), this->getChannels()[nbChannel].getName()).c_str(),
+								send(this->getChannels()[nbChannel].getUser()[i], NEWTOCHANNEL(this->_clients[socketNewUser].getNickname(), this->getChannels()[nbChannel].getName()).c_str(),
 									NEWTOCHANNEL(this->_clients[socketNewUser].getNickname(), this->getChannels()[nbChannel].getName()).size(), 0);
 							}
 						}
