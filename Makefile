@@ -6,7 +6,7 @@
 #    By: mvitiell <marvin@42.fr>                    +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2024/01/04 11:45:22 by mvitiell          #+#    #+#              #
-#    Updated: 2024/02/28 14:16:38 by alamizan         ###   ########.fr        #
+#    Updated: 2024/02/29 10:23:38 by kali             ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -24,6 +24,7 @@ SRC =	main.cpp \
 		Client/join.cpp \
 		Client/prvmsg.cpp \
 		Client/mode.cpp \
+		Client/part.cpp \
 		Server/Server.cpp \
 		Server/ServerMode.cpp \
 		Channel/Channel.cpp 

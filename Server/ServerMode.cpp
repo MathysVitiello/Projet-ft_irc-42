@@ -34,6 +34,19 @@ void	Server::modeInvit( Client *user, int i )
 
 void	Server::modeTopic( Client *user, int nChannel )
 {
-	(void)user;
-	(void)nChannel;
+	std::string nick = user->getNickname();
+	std::string channel= this->_channels[nChannel].getName();
+
+	if( user->getCmdBuf().size() > 2 )
+	{
+		std::string mode = "MODE";
+		send(user->getSocket(), ERR_NEEDMOREPARAMS(nick, mode).c_str(),
+				ERR_NEEDMOREPARAMS(nick, mode).size(), 0);
+		return;
+	}
+	
+	if( user->getCmdBuf()[1] == "+t" )	
+		this->_channels[nChannel].setTopicPrivilege( true );
+	else if( user->getCmdBuf()[1] == "-t" )	
+		this->_channels[nChannel].setTopicPrivilege( false );
 }
