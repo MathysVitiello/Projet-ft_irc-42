@@ -1,45 +1,20 @@
 #include "../library.hpp"
 
-/* 
-MODE #Finnish +im ; Rend le canal #Finnish modéré et 'uniquement sur invitation'.
-MODE #Finnish +o Kilroy ; Donne le privilège de 'chanop' à Kilroy sur le canal #Finnish.
-MODE #Finnish +v Wiz ; Autorise WiZ à parler sur #Finnish.
-
-ERR_NEEDMOREPARAMS              
-ERR_CHANOPRIVSNEEDED //
-RPL_CHANNELMODEIS
-ERR_NOSUCHNICK
-ERR_NOTONCHANNEL                
-ERR_KEYSET
-RPL_BANLIST                     
-RPL_ENDOFBANLIST
-ERR_UNKNOWNMODE                 
-ERR_NOSUCHCHANNEL //
-ERR_USERSDONTMATCH              
-RPL_UMODEIS
-ERR_UMODEUNKNOWNFLAG
-
-*/
-std::string	Client::splitBuf( void )
+void	Client::splitBuf( void )
 {
-	std::string name;
-	size_t		lenName;
-
-	(void)lenName;
+	if( this->_splitBuf.size() < 2 )
+		return;
 	this->_splitBuf.erase(this->_splitBuf.begin());
-	lenName = this->_splitBuf[0].find(" ");
-	name = this->_splitBuf[0];
-
 	std::string tmp = _splitBuf[0];
 	this->_splitBuf.pop_back();
 	size_t delem = tmp.find(" "); 
-	while (delem != std::string::npos){
-		_splitBuf.push_back(tmp.substr(0, delem)); // nick = _splitBuf[1]
+	while (delem != std::string::npos)
+	{
+		_splitBuf.push_back(tmp.substr(0, delem));
 		tmp.erase( 0, delem + 1);
 		delem = tmp.find(" "); 
 	}
 	_splitBuf.push_back(tmp.substr(0, tmp.size()));
-	return (name);
 }
 
 // Verifie le nombre de parametre: ERR_NEEDMOREPARAMS              
@@ -96,10 +71,10 @@ static void	checkMode( Server *server, Client *user, int i )
 		server->modeInvit( user, i );
 	else if ( user->getCmdBuf()[1] == "+t" || user->getCmdBuf()[1] == "-t" )
 		server->modeTopic( user ,i );
-	// if ( user->getCmdBuf()[1] == "+o" || user->getCmdBuf()[1] == "-o" )
-		// modePrivilege();
-	// if ( user->getCmdBuf()[1] == "+k" || user->getCmdBuf()[1] == "-k" )
-		// modePswd();
+	else if ( user->getCmdBuf()[1] == "+o" || user->getCmdBuf()[1] == "-o" )
+		server->modePrivilege( user, i );
+	else if ( user->getCmdBuf()[1] == "+k" || user->getCmdBuf()[1] == "-k" )
+		server->modePwd( user, i );
 	else
 	{
 		std::string nick = user->getNickname();
@@ -111,27 +86,21 @@ static void	checkMode( Server *server, Client *user, int i )
 
 void Client::mode( Server *server )
 {
-	//1- Verifier si le nombre de parametre:
+	this->splitBuf();
 	if ( numberParam( this ) == false )
 		return ;
 
-	this->splitBuf();
-	
-	//2- Verifier si le channel existe:
 	if( checkChannelExist( server, this->getCmdBuf()[0], this ) == false )
 		return;
 
-	//3- Verifier si le client est ircops du channel:
 	if( checkIrcOps( server, this->getCmdBuf()[0], this ) == false )
 		return;
 
-	// recupere l index du canal dans le tableau:
 	int i = 0;
 	std::vector<Channel>::const_iterator itChan = server->getChannels().begin();
 	for (; itChan != server->getChannels().end(); itChan++, i++)
 		if( itChan->getName() == this->getCmdBuf()[0] )
 			break;
 
-	// Verifie les prefixes:
 	checkMode( server, this, i );
 }

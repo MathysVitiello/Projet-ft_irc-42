@@ -34,10 +34,13 @@ class Channel{
 		void			setInvitation( bool invitation );
 		void			setTopicPrivilege( bool privilege );
 		void			setUserInvite ( int socketInvite, int flag );
+		void			setPassword( std::string password );
 		
 		// -------------------- Functions ---------------------- //
+		bool	removeIrcOps( int clientSocket );
 		void	removeClientChannel( int index );
 		bool	addClientChannel( int clientSocket );
+		bool	addIrcOps( int clientSocket );
 
 
 	// --------------------------------------------------------- //

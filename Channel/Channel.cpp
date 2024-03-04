@@ -93,9 +93,15 @@ void	Channel::setTopic( bool topic ){
 	this->_topic = topic;
 }
 
+void	Channel::setPassword( std::string password ){
+	this->_password = password;
+}
+
+
 /* ************************************************************************** */
 // FUNCTIONS:
-bool	Channel::addClientChannel( int clientSocket ){
+bool	Channel::addClientChannel( int clientSocket )
+{
 	if( static_cast<unsigned>(this->_maxUser) >= this->_user.size() )
 	{
 		this->_user.push_back( clientSocket );
@@ -106,23 +112,46 @@ bool	Channel::addClientChannel( int clientSocket ){
 	return( false );
 }
 
-void	Channel::removeClientChannel( int userSocket ){
+// Ajoute l'ircOps au canal:
+bool	Channel::addIrcOps( int clientSocket )
+{
+	std::vector<int>::iterator itUser;
+	itUser = find( this->_user.begin(), this->_user.end(), clientSocket);
+	if( itUser == this->_user.end() )
+		return( false );
 
-	//Supprime l'ircOps du canal:
+	std::vector<int>::iterator it = this->_ircOps.begin();
 	if( !this->_ircOps.empty() )
 	{
-		for(std::vector<int>::iterator it = this->_ircOps.begin(); it != this->_ircOps.end(); it++)
+		for( ; it != this->_ircOps.end(); it++ )
+			if( *it == clientSocket )
+				return( false );
+	}
+	this->_ircOps.push_back( clientSocket );
+	return( true );
+}
+
+//Supprime l'ircOps du canal:
+bool	Channel::removeIrcOps( int clientSocket )
+{
+	if( !this->_ircOps.empty() )
+	{
+		std::vector<int>::iterator it;
+		it = find( this->_ircOps.begin(), this->_ircOps.end(), clientSocket);
+		if( it != this->_ircOps.end() )
 		{
-			if( *it == userSocket )
-			{
-				this->_ircOps.erase( it );
-				--it;
-				std::cout << "IrcOps socket [" << userSocket << "] erased" << std::endl;
-			}
+			this->_ircOps.erase( it );
+			return( true );
 		}
 	}
+	return( false );
+}
 
-	// Supprime le user du canal:
+// Supprime le user du canal:
+void	Channel::removeClientChannel( int userSocket )
+{
+	this->removeIrcOps( userSocket );
+
 	if( !this->_user.empty() )
 	{
 		for(std::vector<int>::iterator it = this->_user.begin(); it != this->_user.end(); it++)
@@ -137,7 +166,8 @@ void	Channel::removeClientChannel( int userSocket ){
 	}
 }
 
-void		Channel::setUserInvite ( int socketInvite, int flag ){
+void		Channel::setUserInvite ( int socketInvite, int flag )
+{
 	if(flag == PUSH)
 		this->_userInvitation.push_back(socketInvite);
 	else{

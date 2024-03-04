@@ -274,107 +274,133 @@ void	Server::command(int fdClient){
 		}	
 	}
 
-	void	Server::createChannel( int clientSocket, std::string name, std::string passwd )
+void	Server::createChannel( int clientSocket, std::string name, std::string passwd )
+{
+	if( this->checkChannel( name ) == true )
 	{
-		if( this->checkChannel( name ) == true )
+		for(unsigned int i = 0; i  < this->_channels.size(); i++ )
 		{
-			for(unsigned int i = 0; i  < this->_channels.size(); i++ )
+			if( this->getChannels()[i].getName() == name )
 			{
-				if( this->getChannels()[i].getName() == name )
+				if( !this->userInChannel( i, clientSocket ) )
+					return;
+
+				// if client is not in channel
+				if( this->_channels[i].addClientChannel(clientSocket) == true )
 				{
-					if( !this->userInChannel( i, clientSocket ) )
-						return;
-
-					// if client is not in channel
-					if( this->_channels[i].addClientChannel(clientSocket) == true )
-					{
-						send(clientSocket, "Client added in Channel\r\n", 
-							strlen("Client added in Channel\r\n"), 0);
+					send(clientSocket, "Client added in Channel\r\n", 
+						strlen("Client added in Channel\r\n"), 0);
 
 
-						//! send pour les autres du channel sauf lui
-						int nbChannel = 0;
-						// check si le channel existe
-						for( size_t i = 0; i < this->getChannels().size(); i++ ){
+					//! send pour les autres du channel sauf lui
+					int nbChannel = 0;
+					// check si le channel existe
+					for( size_t i = 0; i < this->getChannels().size(); i++ ){
 
-							if (this->getChannels()[i].getName() == name)
-							{
-								nbChannel = i;
-								//!ERROR CODE
-								std::cout << this->getChannels()[i].getName() << " est le channel" << std::endl;
-							}
-						}
-
-						if (this->getChannels()[nbChannel].getUser().size() > 1)
+						if (this->getChannels()[i].getName() == name)
 						{
-							for( size_t i = 0; i < this->getChannels()[nbChannel].getUser().size(); i++ ){
+							nbChannel = i;
+							//!ERROR CODE
+							std::cout << this->getChannels()[i].getName() << " est le channel" << std::endl;
+						}
+					}
 
-								if (clientSocket != this->getChannels()[nbChannel].getUser()[i])
-								{
-									send(this->getClients()[i].getSocket(), "new player in your channel", 26, 0);
-									send(this->getClients()[i].getSocket(), "\n", 1, 0);
-								}
+					if (this->getChannels()[nbChannel].getUser().size() > 1)
+					{
+						for( size_t i = 0; i < this->getChannels()[nbChannel].getUser().size(); i++ ){
+
+							if (clientSocket != this->getChannels()[nbChannel].getUser()[i])
+							{
+								send(this->getClients()[i].getSocket(), "new player in your channel", 26, 0);
+								send(this->getClients()[i].getSocket(), "\n", 1, 0);
 							}
 						}
 					}
-					else
-						this->channelFull( clientSocket );
 				}
+				else
+					this->channelFull( clientSocket );
 			}
 		}
-		else	
+	}
+	
+	else	
+	{
+		// std::string	nick = "alex";
+		// std::string allclient = "@alex";
+		// std::string cmd = "JOIN";
+// 
+		// send(clientSocket, RPL_CHAN( nick, cmd, name ).c_str(),
+			// RPL_CHAN(nick, cmd, name).size(), 0);
+		// send(clientSocket, RPL_NAMREPLY(name, nick , allclient).c_str(),
+			// RPL_NAMREPLY(name, nick, allclient).size(), 0);
+		// send(clientSocket, RPL_ENDOFNAMES(nick , name).c_str(),
+			// RPL_ENDOFNAMES(nick, name).size(), 0);
+
+		Channel channel( clientSocket, name, passwd );
+		this->_channels.push_back( channel );
+	}
+}
+
+//!EN TRAVAUX
+// void    Server::sendMessageChanel( std::string nickOrChannel, int clientPlace, std::string cmdSend, int socket)
+// {
+// 	int nbChannel = 0;
+// 	// check si le channel existe
+//     for( size_t i = 0; i < this->getChannels().size(); i++ ){
+
+// 		if (this->getChannels()[i].getName() == nickOrChannel)
+// 		{
+// 			send(clientSocket, CHANNELMADE(name).c_str(), CHANNELMADE(name).size(), 0);
+// 			std::cout << "Ajout du channel [" << name << "]" << std::endl;
+// 			Channel channel( clientSocket, name, passwd );
+// 			this->_channels.push_back( channel );
+// 		}
+// 	}
+//}
+	//!EN TRAVAUX
+void    Server::sendMessageChanel( std::string nickOrChannel, int clientPlace, std::string cmdSend, int socket)
+{
+	int nbChannel = 0;
+	// check si le channel existe
+	for( size_t i = 0; i < this->getChannels().size(); i++ ){
+
+		if (this->getChannels()[i].getName() == nickOrChannel)
 		{
-			send(clientSocket, CHANNELMADE(name).c_str(), CHANNELMADE(name).size(), 0);
-			std::cout << "Ajout du channel [" << name << "]" << std::endl;
-			Channel channel( clientSocket, name, passwd );
-			this->_channels.push_back( channel );
+			nbChannel = i;
+			//!ERROR CODE
+			std::cout << this->getChannels()[i].getName() << " est le channel" << std::endl;
 		}
 	}
 
-	//!EN TRAVAUX
-	void    Server::sendMessageChanel( std::string nickOrChannel, int clientPlace, std::string cmdSend, int socket)
+	// check si le client est dans le channel 
+	bool clientInChannel = false;
+	for( size_t i = 0; i < this->getChannels()[nbChannel].getUser().size(); i++ ){
+		if (socket == this->getChannels()[nbChannel].getUser()[i])
+			clientInChannel = true;
+	}
+	if (clientInChannel == false){
+			//!ERROR CODE
+		std::cout << "le client nest pas dans le channel dans lequel il veut PRIVMSG" << std::endl;
+		return;
+	}
+
+	if (this->getChannels()[nbChannel].getUser().size() > 1)
 	{
-		int nbChannel = 0;
-		// check si le channel existe
-		for( size_t i = 0; i < this->getChannels().size(); i++ ){
-
-			if (this->getChannels()[i].getName() == nickOrChannel)
-			{
-				nbChannel = i;
-				//!ERROR CODE
-				std::cout << this->getChannels()[i].getName() << " est le channel" << std::endl;
-			}
-		}
-
-		// check si le client est dans le channel 
-		bool clientInChannel = false;
 		for( size_t i = 0; i < this->getChannels()[nbChannel].getUser().size(); i++ ){
-			if (socket == this->getChannels()[nbChannel].getUser()[i])
-				clientInChannel = true;
-		}
-		if (clientInChannel == false){
-				//!ERROR CODE
-			std::cout << "le client nest pas dans le channel dans lequel il veut PRIVMSG" << std::endl;
-			return;
-		}
 
-		if (this->getChannels()[nbChannel].getUser().size() > 1)
-		{
-			for( size_t i = 0; i < this->getChannels()[nbChannel].getUser().size(); i++ ){
-
-				std::cout << "les users du channel " << this->getChannels()[nbChannel].getUser()[i] << std::endl;
-				std::cout << "socket " << socket << std::endl;
-				std::cout << "this client socket " << this->getClients()[clientPlace].getSocket() << std::endl;
-				if (socket != this->getChannels()[nbChannel].getUser()[i])
-				{
-					send(this->getClients()[i].getSocket(), RPL_TOPIC(this->getClients()[clientPlace].getNickname(), nickOrChannel, cmdSend).c_str(),
-						RPL_TOPIC(this->getClients()[clientPlace].getNickname(), nickOrChannel, cmdSend).size(), 0);
-					send(this->getClients()[i].getSocket(), "\n", 1, 0);
-				}
+			std::cout << "les users du channel " << this->getChannels()[nbChannel].getUser()[i] << std::endl;
+			std::cout << "socket " << socket << std::endl;
+			std::cout << "this client socket " << this->getClients()[clientPlace].getSocket() << std::endl;
+			if (socket != this->getChannels()[nbChannel].getUser()[i])
+			{
+				send(this->getClients()[i].getSocket(), RPL_TOPIC(this->getClients()[clientPlace].getNickname(), nickOrChannel, cmdSend).c_str(),
+					RPL_TOPIC(this->getClients()[clientPlace].getNickname(), nickOrChannel, cmdSend).size(), 0);
+				send(this->getClients()[i].getSocket(), "\n", 1, 0);
 			}
 		}
-		return ;
-	} 
+	}
+	return ;
+} 
 
 	// Permet l affichage de toutes les donnees inclut dans le serveur:
 	// - std::cout << server << std::endl;
