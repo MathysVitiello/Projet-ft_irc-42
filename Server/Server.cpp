@@ -315,7 +315,7 @@ void	Server::createChannel( Client client, std::string name, std::string passwd 
 						if (this->getChannels()[i].getName() == name)
 						{
 							nbChannel = i;
-							//!ERROR CODE
+							// !ERROR CODE
 							std::cout << this->getChannels()[i].getName() << " est le channel" << std::endl;
 						}
 					}
@@ -330,8 +330,8 @@ void	Server::createChannel( Client client, std::string name, std::string passwd 
 							//send to all people from channel message that someone new joined
 							if (clientSocket != this->getChannels()[nbChannel].getUser()[i])
 							{
-								send(this->getChannels()[nbChannel].getUser()[i], NEWTOCHANNEL(this->_clients[socketNewUser].getNickname(), this->getChannels()[nbChannel].getName()).c_str(),
-									NEWTOCHANNEL(this->_clients[socketNewUser].getNickname(), this->getChannels()[nbChannel].getName()).size(), 0);
+								send(this->getChannels()[nbChannel].getUser()[i], RPL_CHAN(this->_clients[socketNewUser].getNickname(), "JOIN", this->getChannels()[nbChannel].getName()).c_str(),
+									RPL_CHAN(this->_clients[socketNewUser].getNickname(), "JOIN", this->getChannels()[nbChannel].getName()).size(), 0);
 							}
 						}
 					}
