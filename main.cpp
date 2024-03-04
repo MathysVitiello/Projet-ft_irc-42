@@ -6,7 +6,7 @@
 /*   By: mvitiell <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/01/04 11:44:21 by mvitiell          #+#    #+#             */
-/*   Updated: 2024/02/27 18:51:01 by nminotte         ###   ########.fr       */
+/*   Updated: 2024/03/04 17:28:59 by alamizan         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 #include "library.hpp"
@@ -100,6 +100,8 @@ int main(int argc, char **argv)
 					}
 					else{
 						if (buf[sizeRead - 1] == '\n'){
+							if (buf[sizeRead - 2] == '\r')
+								buf[sizeRead - 2] = '\0';
 							buf[sizeRead - 1] = '\0';
 							std::string buffer = server.bufTmp(buf, PUSH, i);
 							server.setClients( buffer, i ); //. SplitCmd( buf );

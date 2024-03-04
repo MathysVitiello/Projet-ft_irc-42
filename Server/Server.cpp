@@ -286,8 +286,9 @@ void	Server::command(int fdClient){
 		}	
 	}
 
-void	Server::createChannel( int clientSocket, std::string name, std::string passwd )
+void	Server::createChannel( Client client, std::string name, std::string passwd )
 {
+	int clientSocket = client.getSocket();
 	int socketNewUser = -1;
 	if( this->checkChannel( name ) == true )
 	{
@@ -301,9 +302,10 @@ void	Server::createChannel( int clientSocket, std::string name, std::string pass
 				// if client is not in channel
 				if( this->_channels[i].addClientChannel(clientSocket) == true )
 				{
-					send(clientSocket, "Client added in Channel\r\n", 
-						strlen("Client added in Channel\r\n"), 0);
+					// send(clientSocket, "Client added in Channel\r\n", 
+						// strlen("Client added in Channel\r\n"), 0);
 
+					this->allClient(&this->_channels[i], client);
 
 					//! send pour les autres du channel sauf lui
 					int nbChannel = 0;
@@ -352,9 +354,10 @@ void	Server::createChannel( int clientSocket, std::string name, std::string pass
 			// RPL_NAMREPLY(name, nick, allclient).size(), 0);
 		// send(clientSocket, RPL_ENDOFNAMES(nick , name).c_str(),
 			// RPL_ENDOFNAMES(nick, name).size(), 0);
-
+// 
 		Channel channel( clientSocket, name, passwd );
 		this->_channels.push_back( channel );
+		this->allClient(&channel, client);
 	}
 }
 

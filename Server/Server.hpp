@@ -47,7 +47,7 @@ class Server
 		void		addClient( int const & id, sockaddr_in from );
 		void		command( int fdClient );
 		void		removeClient( int const & index );
-		void		createChannel( int clientSocket, std::string name, std::string passwd );
+		void		createChannel( Client client, std::string name, std::string passwd );
 		bool		userInChannel( int i, int clientSocket );
 		void		channelFull( int clientSocket );
 		bool		checkChannel( std::string name );
@@ -62,6 +62,7 @@ class Server
 		void		modePrivilege( Client *user, int i );
 		void		modePwd( Client *user, int i );
 		void		kickUser( int socketToKick, std::string channelName, std::string message );
+		void		allClient( Channel *chan, Client client );
 
 		// --------------------------------------------------------- //
 	 private:
