@@ -3,6 +3,8 @@
 
 void Client::setNick( std::vector<Client> *clients, Server *server, int fdClient ) {
 
+(void)clients;
+(void)fdClient;
 	size_t j = _splitBuf[1].find(" ");
 	if (j != std::string::npos)
 	{
@@ -26,7 +28,6 @@ void Client::setNick( std::vector<Client> *clients, Server *server, int fdClient
 			if (!isalpha(_splitBuf[1][0])){
 				send(this->getSocket(),	ERR_ERRONEUSNICKNAME(_splitBuf[1]).c_str(), 
 						ERR_ERRONEUSNICKNAME(_splitBuf[1]).size(), 0);
-				// removeCmdBuf();
 				return;
 			}
 			if (!isalnum(_splitBuf[1][i]) && 
@@ -48,15 +49,16 @@ void Client::setNick( std::vector<Client> *clients, Server *server, int fdClient
 			server->command(this->_socket);
 		}
 	}
-
-	size_t k = _splitBuf[0].find("\r"); // condition hexchat
-	if (k != std::string::npos)
-	{
-		_splitBuf[1] = _splitBuf[0].substr(_splitBuf[0].find("\r"));
-		_splitBuf[1] = _splitBuf[1].substr(_splitBuf[1].find("\r"));
-		_splitBuf[0] = "USER";
-		this->setName(clients, server, fdClient); 
-	}
+//! SI IL Y A UN PROBLEME, CEST PEUT ETRE CA JAI COMMENTER POUR VOIR SI CA SERVAIS A QQCH
+// 	size_t k = _splitBuf[0].find("\r"); // condition hexchat
+// 	if (k != std::string::npos)
+// 	{
+// 		std::cout << "JE RENTRE ICIIIII ?????????????????" << std::endl;
+// 		_splitBuf[1] = _splitBuf[0].substr(_splitBuf[0].find("\r"));
+// 		_splitBuf[1] = _splitBuf[1].substr(_splitBuf[1].find("\r"));
+// 		_splitBuf[0] = "USER";
+// 		this->setName(clients, server, fdClient); 
+// 	}
 	if (this->_checkRight == false)
 		this->checkRight();
 }

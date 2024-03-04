@@ -147,23 +147,35 @@ void	Server::removeClient( int const & index )
 	this->_clients.erase( this->_clients.begin() + index );
 }
 
+void	Server::kickUser( int socketToKick, std::string channelName, std::string message){
+
+		std::vector<Channel>::iterator itChan;
+		for(itChan = this->_channels.begin(); itChan != this->_channels.end(); itChan++)
+		{
+			if ( itChan->getName() == channelName )
+			{
+				itChan->removeClientChannel( socketToKick );
+				if (message.size() != 0)
+					send(socketToKick, KICK_MESSAGE(channelName, message).c_str(), KICK_MESSAGE(channelName, message).size(), 0);
+				else
+					send(socketToKick, KICK_NOMESSAGE(channelName).c_str(), KICK_NOMESSAGE(channelName).size(), 0);
+			}
+		}
+}
+
 void	Server::command(int fdClient){
 
 	std::string	cmd[] = {"CAP", "PASS", "NICK", "USER", "PRIVMSG", "JOIN", "KICK", "INVITE", "TOPIC", "MODE", "PART"};
 	int i;
 
 	for (i = 0; i < 11; i++){
-		size_t j = this->_clients[fdClient].getCmdBuf()[0].find('\r');
-
 		if(this->_clients[fdClient].getCmdBuf().empty()){
 			i = -1; 
 			break;
 		}
 			if(this->_clients[fdClient].getCmdBuf()[0] == cmd[i])
 				break;
-			if(j != std::string::npos)
-				this->_clients[fdClient].capForHex(this, fdClient, &this->_clients);	
-		}
+	}
 
 		switch (i) {
 		case CAP:
@@ -173,16 +185,16 @@ void	Server::command(int fdClient){
 			break;
 		case PASS:
 			std::cout << "PASS  dans switch case " << std::endl;
-			this->_clients[fdClient].enterPwd(&this->_clients, this, fdClient);
+			this->_clients[fdClient].capForHex(this, fdClient, &this->_clients);
 			// ajout ici de remove, jai enlever dans la fiinction pour une raison
 			break;
 		case NICK:
 			std::cout << "NICK  dans switch case " << this->_clients[fdClient].getCmdBuf()[1] << std::endl;
-			this->_clients[fdClient].setNick(&this->_clients, this, fdClient);
+			this->_clients[fdClient].capForHex(this, fdClient, &this->_clients);
 			break;
 		case USER:
 			std::cout << "USER   dans switch case " << std::endl;
-			this->_clients[fdClient].setName(&this->_clients, this, fdClient);
+			this->_clients[fdClient].capForHex(this, fdClient, &this->_clients);
 			break;
 		case PRIVMSG:
 			std::cout << "PRIVMSG   dans switch case " << std::endl;
@@ -276,6 +288,7 @@ void	Server::command(int fdClient){
 
 void	Server::createChannel( int clientSocket, std::string name, std::string passwd )
 {
+	int socketNewUser = -1;
 	if( this->checkChannel( name ) == true )
 	{
 		for(unsigned int i = 0; i  < this->_channels.size(); i++ )
@@ -307,12 +320,16 @@ void	Server::createChannel( int clientSocket, std::string name, std::string pass
 
 					if (this->getChannels()[nbChannel].getUser().size() > 1)
 					{
-						for( size_t i = 0; i < this->getChannels()[nbChannel].getUser().size(); i++ ){
+						for( size_t i = 0; i < this->getChannels()[nbChannel].getUser().size(); i++ )
+							if (clientSocket == this->_clients[i].getSocket())
+								socketNewUser = i;
 
+						for( size_t i = 0; i < this->getChannels()[nbChannel].getUser().size(); i++ ){
+							//send to all people from channel message that someone new joined
 							if (clientSocket != this->getChannels()[nbChannel].getUser()[i])
 							{
-								send(this->getClients()[i].getSocket(), "new player in your channel", 26, 0);
-								send(this->getClients()[i].getSocket(), "\n", 1, 0);
+								send(this->getChannels()[nbChannel].getUser()[i], NEWTOCHANNEL(this->_clients[socketNewUser].getNickname(), this->getChannels()[nbChannel].getName()).c_str(),
+									NEWTOCHANNEL(this->_clients[socketNewUser].getNickname(), this->getChannels()[nbChannel].getName()).size(), 0);
 							}
 						}
 					}

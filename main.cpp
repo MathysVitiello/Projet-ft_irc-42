@@ -6,7 +6,7 @@
 /*   By: mvitiell <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/01/04 11:44:21 by mvitiell          #+#    #+#             */
-/*   Updated: 2024/03/01 08:39:29 by alamizan         ###   ########.fr       */
+/*   Updated: 2024/02/27 18:51:01 by nminotte         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 #include "library.hpp"
@@ -86,7 +86,8 @@ int main(int argc, char **argv)
 				if( FD_ISSET(sockfd, &copy) )
 				{
 					sizeRead = recv(sockfd, buf, sizeof(buf), 0);
-					if ( sizeRead <= 0 )
+					if ( (sizeof(buf) >= 4 && buf[0] == 'Q' && buf[1] == 'U' && buf[2] == 'I' && buf[3] == 'T')
+						|| sizeRead <= 0 )
 					{
 						/* connection closed by client side */
 						if ( sizeRead == 0 )
@@ -126,7 +127,7 @@ int main(int argc, char **argv)
 		if( exitFlag == SIGINT )
 			std::cerr << BPURPLE << "Fermeture du serveur et deconnexion des clients !! " << NC << std::endl;
 
-		// std::cerr << BRED << "Code erreur = " << exitFlag << std::endl;
+		std::cerr << BRED << "Code erreur = " << exitFlag << std::endl;
 		std::cerr << "Renvoi valgrind: ( valgrind --track-origins=yes --leak-check=full --track-fds=yes ./ircserv arg1 arg2 )"  << std::endl;
 		std::cerr << BGREEN;
 		return( exitFlag );
