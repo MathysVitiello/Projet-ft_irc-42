@@ -1,20 +1,10 @@
 #include "Client.hpp"
 #include <iostream>
 
-void Client::setNick( std::vector<Client> *clients, Server *server, int fdClient ) {
-
-(void)clients;
-(void)fdClient;
-	size_t j = _splitBuf[1].find(" ");
-	if (j != std::string::npos)
-	{
-			_splitBuf[0] = _splitBuf[1];
-			_splitBuf[1] = trimSpace(_splitBuf[1].substr(j + 5));
-			_splitBuf[1] = _splitBuf[1].substr(0, _splitBuf[1].find("\r"));
-	}
+void Client::setNick(Server *server) {
 
 	if (this->_connected ){
-		if (this->_splitBuf.size() == 1){
+		if (this->_splitBuf.size() == 1 || this->_splitBuf[1].size() == 0){
 			send(this->getSocket(), ERR_NEEDMOREPARAMS(this->_nickname, "NICK").c_str(),
 					ERR_NEEDMOREPARAMS(this->_nickname, "NICK").size(), 0);
 			return;
@@ -49,16 +39,7 @@ void Client::setNick( std::vector<Client> *clients, Server *server, int fdClient
 			server->command(this->_socket);
 		}
 	}
-//! SI IL Y A UN PROBLEME, CEST PEUT ETRE CA JAI COMMENTER POUR VOIR SI CA SERVAIS A QQCH
-// 	size_t k = _splitBuf[0].find("\r"); // condition hexchat
-// 	if (k != std::string::npos)
-// 	{
-// 		std::cout << "JE RENTRE ICIIIII ?????????????????" << std::endl;
-// 		_splitBuf[1] = _splitBuf[0].substr(_splitBuf[0].find("\r"));
-// 		_splitBuf[1] = _splitBuf[1].substr(_splitBuf[1].find("\r"));
-// 		_splitBuf[0] = "USER";
-// 		this->setName(clients, server, fdClient); 
-// 	}
+
 	if (this->_checkRight == false)
 		this->checkRight();
 }
