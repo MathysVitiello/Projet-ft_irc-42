@@ -45,7 +45,7 @@
 # define RPL_INVITING(nick, guest, channel)			(": 341 "+nick+" invited "+guest+" to the channel "+channel+"\r\n")
 # define RPL_INVITED(guest, channel, nick)			(": 345 "+guest+" is invited on "+channel+" by "+nick+"\r\n")
 # define ERR_CHANOPRIVSNEEDED(nick, channel)			(": 482 "+nick+" "+channel+" :You're not channel operator\r\n")
-# define ERR_USERONCHANNEL(nick, guest, channel)		(": 443 "+nick+" "+guest+" :is already on channel :"+channel+"\r\n")
+# define ERR_USERONCHANNEL(server, nick, channel)		(": 443 "+server+" "+nick+" is already on channel :"+channel+"\r\n")
 # define ERR_INVALIDTOPIC(nick, channel)			(": 442 "+nick+" "+channel+" :Invalid characters in topic\r\n")
                                       
 /*	PRIVMSG message	*/                
