@@ -5,7 +5,6 @@ void    Client::privateMessage( std::vector<Client> *clients, Server *server, in
 	if (_splitBuf[1].find(" ") < _splitBuf[1].find("\n"))
 	{
 		std::string nickOrChannel = _splitBuf[1].substr(0, _splitBuf[1].find(" "));
-		std::cout << "nickOrChannel :" << nickOrChannel << "." << std::endl; 
 		//find nickname dans tout les users
 		std::vector<Client>::iterator it = clients->begin(); 
 		for ( ;it < clients->end(); it++ )
@@ -14,9 +13,10 @@ void    Client::privateMessage( std::vector<Client> *clients, Server *server, in
 				// send message to the client
 				if (_splitBuf[1].substr(_splitBuf[1].find(" ")).size() == 0)
 					send(this->getSocket(), ERR_NOTEXTTOSEND(this->getNickname()).c_str(), ERR_NOTEXTTOSEND(this->getNickname()).size(), 0);
-				else 
-					send(it->getSocket(), RPL_AWAY(nickOrChannel , _splitBuf[1].substr(_splitBuf[1].find(" "))).c_str(),
-						RPL_AWAY(nickOrChannel, _splitBuf[1].substr(_splitBuf[1].find(" "))).size(), 0);
+				else {
+					send(it->getSocket(), RPL_AWAY(this->getNickname() , _splitBuf[1].substr(_splitBuf[1].find(" "))).c_str(),
+						RPL_AWAY(this->getNickname(), _splitBuf[1].substr(_splitBuf[1].find(" "))).size(), 0);
+				}
 				return ;
 			}
 		}

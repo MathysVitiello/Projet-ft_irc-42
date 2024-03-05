@@ -29,7 +29,6 @@ void    Client::kick(  Server *server ){
 				if (itChan->getIrcOps()[i] == this->getSocket())
 				{
 					if (_splitBuf[2].find(" ") != std::string::npos){
-						std::cout << "il y a un message" << std::endl;
 						//le nom du boug_splitBuf[1], message dans 2  
 						_splitBuf[1] = _splitBuf[2].substr(0, _splitBuf[2].find(" "));
 						_splitBuf[2] = _splitBuf[2].substr(_splitBuf[2].find(" "));
@@ -57,15 +56,16 @@ void    Client::kick(  Server *server ){
 						if (socketMan == itChan->getUser()[i]){
 							if (this->_socket == socketMan){
 								send(this->_socket, "You cannot kick yourself\n", 25, 0);
-							} else if (itChan->getOwner() == this->_socket){
+							} else if (itChan->getOwner() == socketMan){
 								send(this->_socket, "You cannot kick the owner\n", 26, 0);
-								//! a test quand il y aura plusieurs ops
-							} else
+							} else{
 								server->kickUser( socketMan, itChan->getName(), _splitBuf[2]);
+								return;
+							}
 						}
 					}
 				}
-				else {
+				else if (i == itChan->getIrcOps().size() - 1) {
 					// is not an ops
 					send(this->_socket, ERR_CHANOPRIVSNEEDED(this->getNickname(), _splitBuf[1]).c_str(),
 						ERR_CHANOPRIVSNEEDED(this->getNickname(), _splitBuf[1]).size(), 0);
@@ -74,7 +74,7 @@ void    Client::kick(  Server *server ){
 			return;
 		}
 	}
-	send(this->_socket, ERR_NOSUCHCHANNEL(this->getNickname(), _splitBuf[1]).c_str(), ERR_NOSUCHCHANNEL(this->getNickname(), _splitBuf[1]).size(), 0);
-	send(this->_socket, ERR_BADCHANMASK(_splitBuf[1]).c_str(), ERR_BADCHANMASK(_splitBuf[1]).size(), 0);
+	// send(this->_socket, ERR_NOSUCHCHANNEL(this->getNickname(), _splitBuf[1]).c_str(), ERR_NOSUCHCHANNEL(this->getNickname(), _splitBuf[1]).size(), 0);
+	// send(this->_socket, ERR_BADCHANMASK(_splitBuf[1]).c_str(), ERR_BADCHANMASK(_splitBuf[1]).size(), 0);
 	return;
 }
