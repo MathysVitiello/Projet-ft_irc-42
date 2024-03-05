@@ -308,7 +308,21 @@ void	Server::createChannel( Client client, std::string name, std::string passwd 
 				// if client is not in channel
 				if( this->_channels[i].getPwd() == true )
 				{
+					if( passwd != this->_channels[i].getPasswd() )
+					{
+						send(client.getSocket(), ERR_BADCHANNELKEY(client.getNickname(), this->_channels[i].getName()).c_str(),
+							ERR_BADCHANNELKEY(client.getNickname(), this->_channels[i].getName()).size(), 0);
+						return;
+					}
+					send(client.getSocket(), RPL_CHANNELMODEIS2(client.getNickname(), this->_channels[i].getName(), "+k", passwd).c_str(), 
+						RPL_CHANNELMODEIS2(client.getNickname(), this->_channels[i].getName(), "+k", passwd).size(), 0);
 
+				}
+				if( this->_channels[i].getInvitation() == true )
+				{
+					send(client.getSocket(), ERR_INVITEONLYCHAN(client.getName(), this->_channels[i].getName()).c_str(),
+						ERR_INVITEONLYCHAN(client.getName(), this->_channels[i].getName()).size(), 0);
+					return;
 				}
 				if( this->_channels[i].addClientChannel(clientSocket) == true )
 				{
@@ -352,22 +366,6 @@ void	Server::createChannel( Client client, std::string name, std::string passwd 
 	}
 }
 
-//!EN TRAVAUX
-// void    Server::sendMessageChanel( std::string nickOrChannel, int clientPlace, std::string cmdSend, int socket)
-// {
-// 	int nbChannel = 0;
-// 	// check si le channel existe
-//     for( size_t i = 0; i < this->getChannels().size(); i++ ){
-
-// 		if (this->getChannels()[i].getName() == nickOrChannel)
-// 		{
-// 			send(clientSocket, CHANNELMADE(name).c_str(), CHANNELMADE(name).size(), 0);
-// 			std::cout << "Ajout du channel [" << name << "]" << std::endl;
-// 			Channel channel( clientSocket, name, passwd );
-// 			this->_channels.push_back( channel );
-// 		}
-// 	}
-//}
 	//!EN TRAVAUX
 void    Server::sendMessageChanel( std::string nickOrChannel, int clientPlace, std::string cmdSend, int socket)
 {

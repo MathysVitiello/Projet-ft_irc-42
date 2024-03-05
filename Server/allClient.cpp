@@ -15,7 +15,7 @@ void	Server::allClient(Channel *chan, Client client){
 				allUser += _clients[j].getNickname();
 		allUser += " ";
 	}
-	send(client.getSocket(), RPL_CHAN(client.getNickname(), client.getCmdBuf()[0], chan->getName()).c_str(), RPL_CHAN(client.getNickname(), client.getCmdBuf()[0], chan->getName()).size(), 0 );
+	send(client.getSocket(), RPL_CHAN(client.getNickname(), "JOIN", chan->getName()).c_str(), RPL_CHAN(client.getNickname(), "JOIN", chan->getName()).size(), 0 );
 		send(client.getSocket(), RPL_NAMREPLY( chan->getName(), client.getNickname(), allUser).c_str(), RPL_NAMREPLY( chan->getName(), client.getNickname(), allUser).size(), 0);
 	send(client.getSocket(), RPL_ENDOFNAMES(client.getNickname(), chan->getName()).c_str(), RPL_ENDOFNAMES(client.getNickname(), chan->getName()).size(), 0);
 }
