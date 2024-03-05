@@ -4,7 +4,6 @@ void	Server::allClient(Channel *chan, Client client){
 	std::string allUser;
 	std::vector<int>::const_iterator itUser;
 	
-
 	for ( unsigned int i = 0; i < chan->getUser().size(); i++ ){
 		// for ( unsigned int j = 0; j < chan->getIrcOps().size(); j++ ){
 		itUser = find( chan->getIrcOps().begin(), chan->getIrcOps().end(), chan->getUser()[i] );	

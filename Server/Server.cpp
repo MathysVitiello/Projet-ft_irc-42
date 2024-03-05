@@ -468,20 +468,24 @@ void    Server::sendMessageChanel( std::string nickOrChannel, int clientPlace, s
 	}
 }
 
-void	Server::changeTopic( std::string topic, std::string chanName, int idClient ){
+void	Server::changeTopic( std::string topic, std::string chanName, int idClient, std::string nick ){
 	unsigned int j = 0; 
+		std::cout << "Ca arrive ici" << std::endl;
+
 	for (size_t i = 0; i < this->_channels.size(); i++){
 		if (chanName == this->_channels[i].getName()){
 			if (this->_channels[i].getTopicPrivilege() == true){
+				std::cout << " SLAet" << std::endl;
 				while ( j < this->_channels[i].getIrcOps().size() ){
 					if (  this->_channels[i].getIrcOps()[j] == idClient)
 						break ;
 					j++;
 				}
 				if ( j == this->_channels[i].getIrcOps().size() ){
-						send(this->getSocket(),ERR_CHANOPRIVSNEEDED(this->_clients[idClient].getNickname(), this->_channels[i].getName()).c_str(), 
-								ERR_CHANOPRIVSNEEDED(this->_clients[idClient].getNickname(), this->_channels[i].getName()).size(), 0);
-						return;
+					std::cout << nick << "   " <<  this->_channels[i].getName() << std::endl;
+					send( idClient,ERR_CHANOPRIVSNEEDED(nick, this->_channels[i].getName()).c_str(), 
+						ERR_CHANOPRIVSNEEDED(nick, this->_channels[i].getName()).size(), 0);
+					return;
 				}
 			}
 			this->_channels[i].setTopicName( topic );
