@@ -32,7 +32,8 @@
 # define RPL_CHAN(client, cmd, channel) 		(":"+client+" "+cmd+" :"+channel +"\r\n")
 # define RPL_NAMREPLY(channel, client, allClient) 	(": 353 " +client+" = "+channel+" :"+allClient +"\r\n")
 # define RPL_ENDOFNAMES(nick, channel)		(": 366 "+nick+" "+channel+" :End of NAMES list\r\n")
-# define RPL_INVITATION(nick , channel, cmd)		(": "+nick+" MODE "+channel+" "+cmd+"\r\n" )    
+# define RPL_INVITATION(nick , channel, cmd)		(":"+nick+" MODE "+channel+" "+cmd+"\r\n" )    
+//	# define RPL_INVITATION(channel, cmd)		(": MODE "+channel+" "+cmd+"\r\n" )   
                                       
 /*	TOPIC message	*/                
  

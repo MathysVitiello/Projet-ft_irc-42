@@ -54,7 +54,7 @@ class Server
 		void   		sendMessageChanel( std::string nickOrChannel, int clientPlace, std::string cmdSend, int socket);
 		void		eraseOwnerChannel( int socket );
 		void		addInviteUser( int guestSocket, std::string channelName );
-		void		changeTopic( std::string topic, std::string chanName, int idClient );
+		void		changeTopic( std::string topic, std::string chanName, int idClient, std::string nick );
 		std::string	bufTmp( std::string buf, int flag, int index );
 		void		modeInvit( Client *user, int i );
 		void		modeTopic( Client *user, int nChannel );
@@ -62,8 +62,8 @@ class Server
 		void		modePrivilege( Client *user, int i );
 		void		modePwd( Client *user, int i );
 		void		kickUser( int socketToKick, std::string channelName, std::string message );
-		void	allClient(Channel *chan, Client client);
-		
+		void		allClient( Channel *chan, Client client );
+
 		// --------------------------------------------------------- //
 	 private:
 		Server( void );

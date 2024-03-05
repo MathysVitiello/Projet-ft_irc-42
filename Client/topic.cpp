@@ -36,22 +36,22 @@ void	Client::topic( Server *server ){
 	}
 
 	// if user is not in Channel 	
-	std::vector<int>::const_iterator it = itChan->getIrcOps().begin();
-	for (; it < itChan->getIrcOps().end(); it ++)
-		if (*it == this->_socket)
-			break;
-	if (it == itChan->getIrcOps().end()){
-		send(this->_socket, ERR_CHANOPRIVSNEEDED(_nickname, _splitBuf[1]).c_str(),
-					ERR_CHANOPRIVSNEEDED(_nickname, _splitBuf[1]).size(), 0);
-		return;
-	}
+	// std::vector<int>::const_iterator it = itChan->getIrcOps().begin();
+	// for (; it < itChan->getIrcOps().end(); it ++)
+		// if (*it == this->_socket)
+			// break;
+	// if (it == itChan->getIrcOps().end()){
+		// send(this->_socket, ERR_CHANOPRIVSNEEDED(_nickname, _splitBuf[1]).c_str(),
+					// ERR_CHANOPRIVSNEEDED(_nickname, _splitBuf[1]).size(), 0);
+		// return;
+	// }
 	for (size_t i = 0; i < _splitBuf[2].size(); i++){
 	       if (!isalnum(_splitBuf[2][i]) && _splitBuf[2][i] != '-' && _splitBuf[2][i] != '_' && _splitBuf[2][i] != '.' && _splitBuf[2][i] != '+'){
 			   send (this->_socket, ERR_INVALIDTOPIC(_nickname, _splitBuf[2]).c_str(), ERR_INVALIDTOPIC(_nickname, _splitBuf[2]).size(), 0);
 			   return ; 
 		   }
 	}
-	server->changeTopic( _splitBuf[2], _splitBuf[1], this->_socket );
+	server->changeTopic( _splitBuf[2], _splitBuf[1], this->_socket, this->_nickname );
 	send (this->_socket, RPL_TOPIC(_nickname, _splitBuf[1], _splitBuf[2]).c_str(), RPL_TOPIC(_nickname, _splitBuf[1], _splitBuf[2]).size(), 0);
 }
 

@@ -286,8 +286,9 @@ void	Server::command(int fdClient){
 		}	
 	}
 
-void	Server::createChannel( int clientSocket, std::string name, std::string passwd )
+void	Server::createChannel( Client client, std::string name, std::string passwd )
 {
+	int clientSocket = client.getSocket();
 	int socketNewUser = -1;
 	if( this->checkChannel( name ) == true )
 	{
@@ -301,9 +302,10 @@ void	Server::createChannel( int clientSocket, std::string name, std::string pass
 				// if client is not in channel
 				if( this->_channels[i].addClientChannel(clientSocket) == true )
 				{
-					send(clientSocket, "Client added in Channel\r\n", 
-						strlen("Client added in Channel\r\n"), 0);
+					// send(clientSocket, "Client added in Channel\r\n", 
+						// strlen("Client added in Channel\r\n"), 0);
 
+					this->allClient(&this->_channels[i], client);
 
 					//! send pour les autres du channel sauf lui
 					int nbChannel = 0;
@@ -313,7 +315,7 @@ void	Server::createChannel( int clientSocket, std::string name, std::string pass
 						if (this->getChannels()[i].getName() == name)
 						{
 							nbChannel = i;
-							//!ERROR CODE
+							// !ERROR CODE
 							std::cout << this->getChannels()[i].getName() << " est le channel" << std::endl;
 						}
 					}
@@ -328,8 +330,8 @@ void	Server::createChannel( int clientSocket, std::string name, std::string pass
 							//send to all people from channel message that someone new joined
 							if (clientSocket != this->getChannels()[nbChannel].getUser()[i])
 							{
-								send(this->getChannels()[nbChannel].getUser()[i], NEWTOCHANNEL(this->_clients[socketNewUser].getNickname(), this->getChannels()[nbChannel].getName()).c_str(),
-									NEWTOCHANNEL(this->_clients[socketNewUser].getNickname(), this->getChannels()[nbChannel].getName()).size(), 0);
+								send(this->getChannels()[nbChannel].getUser()[i], RPL_CHAN(this->_clients[socketNewUser].getNickname(), "JOIN", this->getChannels()[nbChannel].getName()).c_str(),
+									RPL_CHAN(this->_clients[socketNewUser].getNickname(), "JOIN", this->getChannels()[nbChannel].getName()).size(), 0);
 							}
 						}
 					}
@@ -352,9 +354,10 @@ void	Server::createChannel( int clientSocket, std::string name, std::string pass
 			// RPL_NAMREPLY(name, nick, allclient).size(), 0);
 		// send(clientSocket, RPL_ENDOFNAMES(nick , name).c_str(),
 			// RPL_ENDOFNAMES(nick, name).size(), 0);
-
+// 
 		Channel channel( clientSocket, name, passwd );
 		this->_channels.push_back( channel );
+		this->allClient(&channel, client);
 	}
 }
 
@@ -476,20 +479,24 @@ void    Server::sendMessageChanel( std::string nickOrChannel, int clientPlace, s
 	}
 }
 
-void	Server::changeTopic( std::string topic, std::string chanName, int idClient ){
+void	Server::changeTopic( std::string topic, std::string chanName, int idClient, std::string nick ){
 	unsigned int j = 0; 
+		std::cout << "Ca arrive ici" << std::endl;
+
 	for (size_t i = 0; i < this->_channels.size(); i++){
 		if (chanName == this->_channels[i].getName()){
 			if (this->_channels[i].getTopicPrivilege() == true){
+				std::cout << " SLAet" << std::endl;
 				while ( j < this->_channels[i].getIrcOps().size() ){
 					if (  this->_channels[i].getIrcOps()[j] == idClient)
 						break ;
 					j++;
 				}
 				if ( j == this->_channels[i].getIrcOps().size() ){
-						send(this->getSocket(),ERR_CHANOPRIVSNEEDED(this->_clients[idClient].getNickname(), this->_channels[i].getName()).c_str(), 
-								ERR_CHANOPRIVSNEEDED(this->_clients[idClient].getNickname(), this->_channels[i].getName()).size(), 0);
-						return;
+					std::cout << nick << "   " <<  this->_channels[i].getName() << std::endl;
+					send( idClient,ERR_CHANOPRIVSNEEDED(nick, this->_channels[i].getName()).c_str(), 
+						ERR_CHANOPRIVSNEEDED(nick, this->_channels[i].getName()).size(), 0);
+					return;
 				}
 			}
 			this->_channels[i].setTopicName( topic );

@@ -26,7 +26,7 @@ class Client
 
 		void	setSocket( int socket );
 		void	setName( std::vector<Client> *clients, Server *server, int fdClient );
-		void 	setNick( std::vector<Client> *clients, Server *server, int fdClient );
+		void 	setNick( Server *server );
 		void 	setAddr( sockaddr_in addr );
 		void	splitCmd( std::string cmdSend );
 		void	setBufTmp( std::string buf, int flag );
@@ -37,7 +37,7 @@ class Client
 		void	kick( Server *server );
 		void    capForHex( Server *server, int fdClient, std::vector<Client> *clients);
 
-		void	enterPwd(std::vector<Client> *clients, Server *server, int fdClient); 
+		void	enterPwd( Server *server ); 
 		void	privateMessage( std::vector<Client> *clients, Server *server, int fdClient);
 		void	checkRight( void );
 		void	invitation( Server *server );
