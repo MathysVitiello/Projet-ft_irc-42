@@ -8,10 +8,13 @@ Channel::Channel( int userSocket, std::string name, std::string mdp) :
 	_owner( userSocket ),
 	_invitation( false ),
 	_maxUser( FD_SETSIZE ),
-	_pwd( false ),
 	_topic( false ),
 	_privilege( false )
 {
+	if( !mdp.empty() )
+		_pwd = true;
+	else
+		_pwd = false;
 	this->_ircOps.push_back( userSocket );
 	this->_user.push_back( userSocket );
 }
