@@ -28,7 +28,7 @@ void	Client::join( Server *server )
 				std::cout << "need a password" << std::endl;
 				return;		
 			} else if (_splitBuf[1].find(" ") < _splitBuf[1].find("\n")) {
-				std::cout << "il y a trop d'args apres le mdp" << std::endl;
+				std::cout << "Too many arguments after the password" << std::endl;
 				return;
 			}
             server->createChannel(*this, chanel, _splitBuf[1]);

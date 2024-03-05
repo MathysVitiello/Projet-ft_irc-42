@@ -29,7 +29,6 @@ void    Client::kick(  Server *server ){
 				if (itChan->getIrcOps()[i] == this->getSocket())
 				{
 					if (_splitBuf[2].find(" ") != std::string::npos){
-						std::cout << "il y a un message" << std::endl;
 						//le nom du boug_splitBuf[1], message dans 2  
 						_splitBuf[1] = _splitBuf[2].substr(0, _splitBuf[2].find(" "));
 						_splitBuf[2] = _splitBuf[2].substr(_splitBuf[2].find(" "));

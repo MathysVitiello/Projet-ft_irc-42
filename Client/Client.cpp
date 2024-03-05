@@ -120,9 +120,7 @@ void	Client::capForHex( Server *server, int fdClient, std::vector<Client> *clien
 				bufTmp = bufTmp.substr(bufTmp.find("USER"));
 			this->setNick(server);
 		}
-		if (bufTmp.find("USER ") == 0){
-			std::cout << "ici4" << std::endl;
-			
+		if (bufTmp.find("USER ") == 0){			
 			_splitBuf[0] = "USER";
 			bufTmp = bufTmp.substr(bufTmp.find("USER") + 4);
 			bufTmp = trimSpace(bufTmp);

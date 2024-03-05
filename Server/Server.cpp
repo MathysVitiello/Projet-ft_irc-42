@@ -179,57 +179,56 @@ void	Server::command(int fdClient){
 
 		switch (i) {
 		case CAP:
-			std::cout << "CAP jarrive " << std::endl;
+			std::cout << "CAP in switch case " << std::endl;
 			this->_clients[fdClient].capForHex(this, fdClient, &this->_clients);
 			//this->_clients[fdClient].enterPwd(&this->_clients, this, fdClient);
 			break;
 		case PASS:
-			std::cout << "PASS  dans switch case " << std::endl;
+			std::cout << "PASS in switch case " << std::endl;
 			this->_clients[fdClient].capForHex(this, fdClient, &this->_clients);
 			// ajout ici de remove, jai enlever dans la fiinction pour une raison
 			break;
 		case NICK:
-			std::cout << "NICK  dans switch case " << this->_clients[fdClient].getCmdBuf()[1] << std::endl;
+			std::cout << "NICK in switch case " << this->_clients[fdClient].getCmdBuf()[1] << std::endl;
 			this->_clients[fdClient].capForHex(this, fdClient, &this->_clients);
 			break;
 		case USER:
-			std::cout << "USER   dans switch case " << std::endl;
+			std::cout << "USER in switch case " << std::endl;
 			this->_clients[fdClient].capForHex(this, fdClient, &this->_clients);
 			break;
 		case PRIVMSG:
-			std::cout << "PRIVMSG   dans switch case " << std::endl;
+			std::cout << "PRIVMSG in switch case " << std::endl;
 			if (this->_clients[fdClient].getConnectServer() == true)
 				this->_clients[fdClient].privateMessage(&this->_clients, this, fdClient);
 			break;
 		case JOIN:
-			std::cout << "JOIN  dans switch case  " << std::endl;
+			std::cout << "JOIN in switch case " << std::endl;
 			if (this->_clients[fdClient].getConnectServer() == true){
 				this->_clients[fdClient].join(this);
 			}
 			break;
 		case KICK:
-			//pour l'operateur uniquement
-			std::cout << "KICK a faire   dans switch case " << std::endl;
+			std::cout << "KICK in switch case " << std::endl;
 			if (this->_clients[fdClient].getConnectServer() == true)
 				this->_clients[fdClient].kick(this);
 			break;
 		case INVITE:
 			if (this->_clients[fdClient].getConnectServer() == true)
 				this->_clients[fdClient].invitation( this );
-			std::cout << "INVITE a faire  dans switch case  " << std::endl;
+			std::cout << "INVITE in switch case  " << std::endl;
 			break;
 		case TOPIC:
 			if (this->_clients[fdClient].getConnectServer() == true)
 				this->_clients[fdClient].topic( this );
-			std::cout << "TOPIC a faire   dans switch case " << std::endl;
+			std::cout << "TOPIC in switch case " << std::endl;
 			break;
 		case MODE:
-			std::cout << "MODE" << std::endl;
+			std::cout << "MODE in switch case " << std::endl;
 			if (this->_clients[fdClient].getConnectServer() == true)
 				this->_clients[fdClient].mode(this);
 			break;
 		case PART:
-			std::cout << "on part dans quit" << std::endl;
+			std::cout << "PART in switch case " << std::endl;
 			if (this->_clients[fdClient].getConnectServer() == true)
 				this->_clients[fdClient].part(this);
 			break;
@@ -247,7 +246,7 @@ void	Server::command(int fdClient){
 			if( this->getChannels()[i].getName() == name )
 			{
 				//! stdError a faire, et english 
-				std::cout << "le canal [" << name << "] existe deja" << std::endl;
+				std::cout << "Channel [" << name << "] already exists" << std::endl;
 				return( true);
 			}
 		}
@@ -262,7 +261,7 @@ void	Server::command(int fdClient){
 		{
 			if( *ite == clientSocket )
 			{
-				char buff[4096] = "client deja dans le canal\r\n";
+				char buff[4096] = "client already in channel\r\n";
 				send(clientSocket, buff, strlen(buff), 0);
 				return( false );
 			}
