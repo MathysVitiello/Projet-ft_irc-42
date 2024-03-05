@@ -51,7 +51,7 @@
                                       
 /*	PRIVMSG message	*/                
 # define ERR_NOSUCHNICK(nick, guest)					(": 401 "+nick+" "+guest+" :No such nick\r\n")
-# define ERR_CANNOTSENDTOCHAN(nick, channel)					(": 404 "+nick+" "+channel+" :Cannot send to channel\r\n")// A FAIRE QUAND CHANNEL
+# define ERR_CANNOTSENDTOCHAN(nick, channel)					(": 404 "+nick+" "+channel+" :Cannot send to channel\r\n")
 # define ERR_NORECIPIENT(nick, command)					(": 411 "+nick+" :No recipient given (" +command+")\r\n")//? DONE
 # define ERR_NOTEXTTOSEND(nick)					(": 412 "+nick+" :No text to send\r\n")//? DONE
 

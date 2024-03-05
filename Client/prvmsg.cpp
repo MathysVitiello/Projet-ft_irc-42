@@ -1,5 +1,6 @@
 #include "Client.hpp"
 
+//TODO   +++++++++++++++++++++++++++++++ EN TRAVAUX
 void    Client::privateMessage( std::vector<Client> *clients, Server *server, int clientPlace)
 {
 	if (_splitBuf[1].find(" ") < _splitBuf[1].find("\n"))
@@ -14,8 +15,11 @@ void    Client::privateMessage( std::vector<Client> *clients, Server *server, in
 				if (_splitBuf[1].substr(_splitBuf[1].find(" ")).size() == 0)
 					send(this->getSocket(), ERR_NOTEXTTOSEND(this->getNickname()).c_str(), ERR_NOTEXTTOSEND(this->getNickname()).size(), 0);
 				else {
-					send(it->getSocket(), RPL_AWAY(this->getNickname() , _splitBuf[1].substr(_splitBuf[1].find(" "))).c_str(),
-						RPL_AWAY(this->getNickname(), _splitBuf[1].substr(_splitBuf[1].find(" "))).size(), 0);
+					std::string toSend = ":" + this->getNickname() + " PRIVMSG " + _splitBuf[1].substr(_splitBuf[1].find(" ")); 
+					send(it->getSocket(), toSend.c_str(),toSend.size(), 0);
+		
+					// send(it->getSocket(), RPL_AWAY(this->getNickname() , _splitBuf[1].substr(_splitBuf[1].find(" "))).c_str(),
+						// RPL_AWAY(this->getNickname(), _splitBuf[1].substr(_splitBuf[1].find(" "))).size(), 0);
 				}
 				return ;
 			}
@@ -25,17 +29,58 @@ void    Client::privateMessage( std::vector<Client> *clients, Server *server, in
 
 		// check if is channel
 		std::vector<Channel>::const_iterator itChan = server->getChannels().begin();
-		for ( ; itChan < server->getChannels().end(); itChan++)
+		for ( ; itChan < server->getChannels().end(); itChan++){
 			if ( itChan->getName() == nickOrChannel )
 			{
 				// send message to the clients of the channel
 				server->sendMessageChanel( nickOrChannel, clientPlace, _splitBuf[1].substr(_splitBuf[1].find(" ")), this->getSocket());
 				return;
 			}
-		// send(this->getSocket(), ERR_NOSUCHSERVER(nickOrChannel).c_str(), ERR_NOSUCHSERVER(nickOrChannel).size(), 0);
+		}
+		send(server->getClients()[clientPlace].getSocket(), ERR_CANNOTSENDTOCHAN(server->getClients()[clientPlace].getNickname(), nickOrChannel).c_str(),
+			ERR_CANNOTSENDTOCHAN(server->getClients()[clientPlace].getNickname(), nickOrChannel).size(), 0);
 	} else {
 		send(this->getSocket(), ERR_NORECIPIENT(this->getNickname(), "PRIVMSG").c_str(), 
 				ERR_NORECIPIENT(this->getNickname(), "PRIVMSG").size(), 0);
 		return ;
 	}
 }
+
+//TODO   +++++++++++++++++++++++++++++++ EN TRAVAUX
+void    Server::sendMessageChanel( std::string nickOrChannel, int clientPlace, std::string cmdSend, int socket)
+{
+	int nbChannel = -1;
+	bool clientInChannel = false;
+	// find channel
+	for( size_t i = 0; i < this->getChannels().size(); i++ ){
+
+		if (this->getChannels()[i].getName() == nickOrChannel)
+			nbChannel = i;
+	}
+
+	// find if client is in Channel 
+	for( size_t i = 0; i < this->getChannels()[nbChannel].getUser().size(); i++ ){
+		if (socket == this->getChannels()[nbChannel].getUser()[i])
+			clientInChannel = true;
+	}
+	if (clientInChannel == false){
+		send(this->getClients()[clientPlace].getSocket(), ERR_CANNOTSENDTOCHAN(this->getClients()[clientPlace].getNickname(), nickOrChannel).c_str(),
+			ERR_CANNOTSENDTOCHAN(this->getClients()[clientPlace].getNickname(), nickOrChannel).size(), 0);
+		return;
+	}
+
+	if (this->getChannels()[nbChannel].getUser().size() > 1)
+	{
+		for( size_t i = 0; i < this->getChannels()[nbChannel].getUser().size(); i++ ){
+
+			if (socket != this->getChannels()[nbChannel].getUser()[i])
+			{
+				//!demander a alex le message que cest par sa cloche ici maintentn0
+				//todo iciii
+				std::string toSend = ":" + this->getClients()[clientPlace].getNickname() + " PRIVMSG " + cmdSend; 
+				send(this->getClients()[i].getSocket(), toSend.c_str(),toSend.size(), 0);
+			}
+		}
+	}
+	return ;
+} 
