@@ -1,10 +1,13 @@
 #include "Client.hpp"
 
-//TODO   +++++++++++++++++++++++++++++++ EN TRAVAUX
 void    Client::privateMessage( std::vector<Client> *clients, Server *server, int clientPlace)
 {
 	if (_splitBuf[1].find(" ") < _splitBuf[1].find("\n"))
 	{
+		if (_splitBuf[1].substr(_splitBuf[1].find(" ")).size() == 0){
+			send(this->getSocket(), ERR_NOTEXTTOSEND(this->getNickname()).c_str(), ERR_NOTEXTTOSEND(this->getNickname()).size(), 0);
+			return ;
+		}
 		std::string nickOrChannel = _splitBuf[1].substr(0, _splitBuf[1].find(" "));
 		//find nickname dans tout les users
 		std::vector<Client>::iterator it = clients->begin(); 
@@ -12,15 +15,9 @@ void    Client::privateMessage( std::vector<Client> *clients, Server *server, in
 		{
 			if ( nickOrChannel == it->getNickname() ){
 				// send message to the client
-				if (_splitBuf[1].substr(_splitBuf[1].find(" ")).size() == 0)
-					send(this->getSocket(), ERR_NOTEXTTOSEND(this->getNickname()).c_str(), ERR_NOTEXTTOSEND(this->getNickname()).size(), 0);
-				else {
-					std::string toSend = ":" + this->getNickname() + " PRIVMSG " + _splitBuf[1].substr(_splitBuf[1].find(" ")); 
-					send(it->getSocket(), toSend.c_str(),toSend.size(), 0);
-		
-					// send(it->getSocket(), RPL_AWAY(this->getNickname() , _splitBuf[1].substr(_splitBuf[1].find(" "))).c_str(),
-						// RPL_AWAY(this->getNickname(), _splitBuf[1].substr(_splitBuf[1].find(" "))).size(), 0);
-				}
+				std::string toSend = ":" + this->getNickname() + " PRIVMSG "  + it->getNickname() + " " + _splitBuf[1].substr(_splitBuf[1].find(" ")); 
+				send(it->getSocket(), toSend.c_str(),toSend.size(), 0); 
+				send(it->getSocket(), "\n", 1, 0);
 				return ;
 			}
 		}
@@ -75,10 +72,12 @@ void    Server::sendMessageChanel( std::string nickOrChannel, int clientPlace, s
 
 			if (socket != this->getChannels()[nbChannel].getUser()[i])
 			{
-				//!demander a alex le message que cest par sa cloche ici maintentn0
 				//todo iciii
-				std::string toSend = ":" + this->getClients()[clientPlace].getNickname() + " PRIVMSG " + cmdSend; 
+				std::string toSend = ":" + nickOrChannel + " PRIVMSG " + this->getClients()[i].getNickname() + " " + cmdSend;
+				std::cout << "envoie a :" << this->getClients()[i].getSocket() << std::endl;
+				std::cout << "channel :" << nickOrChannel << std::endl;
 				send(this->getClients()[i].getSocket(), toSend.c_str(),toSend.size(), 0);
+				send(this->getClients()[i].getSocket(), "\n", 1, 0);
 			}
 		}
 	}
