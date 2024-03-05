@@ -21,6 +21,7 @@ class Channel{
 		int						const & getOwner( void ) const;
 		std::vector<int>		const & getIrcOps ( void ) const;
 		std::vector<int>		const & getUser ( void ) const;
+		bool					const & getPwd ( void ) const;
 		bool					const & getTopic ( void ) const;
 		std::string				const & getTopicName( void ) const;
 		bool					const & getTopicPrivilege( void ) const;
@@ -35,6 +36,7 @@ class Channel{
 		void			setTopicPrivilege( bool privilege );
 		void			setUserInvite ( int socketInvite, int flag );
 		void			setPassword( std::string password );
+		void			setPwd( bool pwd );
 		
 		// -------------------- Functions ---------------------- //
 		bool	removeIrcOps( int clientSocket );
@@ -56,7 +58,7 @@ class Channel{
 		int					_maxUser;
 	
 				/* MODE  Active/Unactive */
-		// bool						_pwd;
+		bool						_pwd;
 		bool						_topic;
 		bool						_privilege;
 };

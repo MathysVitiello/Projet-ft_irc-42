@@ -9,9 +9,12 @@ Channel::Channel( int userSocket, std::string name, std::string mdp) :
 	_invitation( false ),
 	_maxUser( FD_SETSIZE ),
 	_topic( false ),
-	_privilege( false ){
-	std::cout << "Channel [" << this->_name << "] created Owner socket: " << userSocket << std::endl;
-
+	_privilege( false )
+{
+	if( !mdp.empty() )
+		_pwd = true;
+	else
+		_pwd = false;
 	this->_ircOps.push_back( userSocket );
 	this->_user.push_back( userSocket );
 }
@@ -62,6 +65,10 @@ bool	const & Channel::getTopic( void ) const{
 	return this->_topic;
 }
 
+bool	const & Channel::getPwd( void ) const{
+	return this->_pwd;
+}
+
 bool	const & Channel::getTopicPrivilege( void ) const{
 	return this->_privilege;
 }
@@ -80,6 +87,10 @@ int	const & Channel::getMaxUser( void ) const{
 
 void	Channel::setInvitation( bool invitation ){
 	this->_invitation = invitation;
+}
+
+void	Channel::setPwd( bool pwd ){
+	this->_pwd = pwd;
 }
 
 void	Channel::setTopicPrivilege( bool privilege ){
@@ -160,7 +171,6 @@ void	Channel::removeClientChannel( int userSocket )
 			{
 				this->_user.erase( it );
 				--it;
-				std::cout << "User socket [" << userSocket << "] erased" << std::endl;
 			}
 		}
 	}
