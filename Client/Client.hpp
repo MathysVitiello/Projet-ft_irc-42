@@ -32,9 +32,8 @@ class Client
 		void	setBufTmp( std::string buf, int flag );
 
 		// -------------------- Functions ---------------------- //
-		void	quit(); 
+		void    quit( Server *server, int fdClient, std::vector<Client> *clients);
 		void	join( Server *server );
-		//TODO en construction kick capForHex
 		void	kick( Server *server );
 		void    capForHex( Server *server, int fdClient, std::vector<Client> *clients);
 
@@ -47,7 +46,6 @@ class Client
 		void 	splitBuf( void );
 
 		void				removeCmdBuf( void );
-		void				parsHexchat( void );
 		void				topic( Server *server );
 		void				part( Server *server );
 

@@ -27,6 +27,7 @@ SRC =	main.cpp \
 		Client/part.cpp \
 		Server/Server.cpp \
 		Server/ServerMode.cpp \
+		Server/allClient.cpp\
 		Channel/Channel.cpp 
 
 CFLAGS = -Wall -Wextra -Werror -g -std=c++98
