@@ -77,7 +77,7 @@
 
 # define ERR_UNKNOWNCOMMAND(nick)			 	(": 421 "+nick+" :Unknown command\r\n")
 
-# define RPL_PARTMSG( channel, nick, reason )		(": "+channel+" "+nick+" left the channel "+reason+"\n\r")
+# define RPL_PARTMSG( channel, nick, reason )		(": PART "+channel+" :"+nick+" left the channel "+reason+"\n\r")
 # define RPL_PART( channel, nick )				(": "+channel+" "+nick+" left the channel\n\r")
 
 # define NEWTOCHANNEL(nick, channel)			 (": "+nick+" has joined channel : "+channel+"\r\n")
