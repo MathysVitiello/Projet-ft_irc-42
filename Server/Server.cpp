@@ -473,30 +473,28 @@ void	Server::addInviteUser( int guestSocket, std::string channelName ){
 	}
 }
 
-void	Server::changeTopic( std::string topic, std::string chanName, int idClient, std::string nick ){
+bool	Server::changeTopic( std::string topic, std::string chanName, int idClient, std::string nick ){
 	unsigned int j = 0; 
-		std::cout << "Ca arrive ici" << std::endl;
 
 	for (size_t i = 0; i < this->_channels.size(); i++){
 		if (chanName == this->_channels[i].getName()){
 			if (this->_channels[i].getTopicPrivilege() == true){
-				std::cout << " SLAet" << std::endl;
 				while ( j < this->_channels[i].getIrcOps().size() ){
 					if (  this->_channels[i].getIrcOps()[j] == idClient)
 						break ;
 					j++;
 				}
 				if ( j == this->_channels[i].getIrcOps().size() ){
-					std::cout << nick << "   " <<  this->_channels[i].getName() << std::endl;
 					send( idClient,ERR_CHANOPRIVSNEEDED(nick, this->_channels[i].getName()).c_str(), 
 						ERR_CHANOPRIVSNEEDED(nick, this->_channels[i].getName()).size(), 0);
-					return;
+					return false;
 				}
 			}
 			this->_channels[i].setTopicName( topic );
 			this->_channels[i].setTopic( true );
 		}
 	}
+	return true;
 }
 
 std::string	Server::bufTmp( std::string buf, int flag, int index ){
@@ -514,17 +512,8 @@ void	Server::part( int socketClient, std::string chanName, std::string nick, std
 			}
 			std::cout << message << std::endl;
 			this->_channels[i].removeClientChannel( socketClient );
-			for (unsigned int j = 0; j < this->_channels[i].getUser().size(); j++){
-				if ( message.empty() ){
-					std::cout << " test " << std::endl;
-					send( this->_channels[i].getUser()[j] , RPL_PART(chanName, nick).c_str(), RPL_PART(chanName, nick).size(), 0);
-
-				}
-				else{
-					send( this->_channels[i].getUser()[j] , RPL_PARTMSG(chanName, nick, message).c_str(), RPL_PARTMSG(chanName, nick, message).size(), 0);
-					std::cout << " test kfd " << std::endl;
-				}
-			}
+			for (unsigned int j = 0; j < this->_channels[i].getUser().size(); j++)
+				send( this->_channels[i].getUser()[j] , RPL_PART(nick, chanName, message).c_str(), RPL_PART(nick, chanName, message).size(), 0);
 		}
 	}
 }

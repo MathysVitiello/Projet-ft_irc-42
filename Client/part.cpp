@@ -25,7 +25,7 @@ void	Client::part( Server *server ){
 	for ( unsigned int i = 0; i < itChan->getUser().size(); i++ ){
 		if ( itChan->getUser()[i] == this->_socket ){
 			if ( _splitBuf.size() == 2 )
-				server->part( this->_socket, itChan->getName(), this->_nickname, "" );
+				server->part( this->_socket, itChan->getName(), this->_nickname, ":Leaving" );
 			else
 				server->part( this->_socket, itChan->getName(), _nickname, _splitBuf[2] );
 			return;

@@ -27,8 +27,8 @@
 # define ERR_BADCHANMASK(channel)				(": 476 "+channel+" :Bad Channel Mask\r\n" )
 
 
-# define RPL_TOPIC(nick, channel, topic)		(": 332 "+nick+" "+channel+" :"+topic+"\r\n")
-# define RPL_CHAN(client, cmd, channel) 		(":"+client+" "+cmd+" "+channel+"\r\n")
+# define RPL_TOPIC(nick, channel, topic)		(": 332 "+nick+" "+channel+" "+topic+"\r\n")
+# define RPL_CHAN(client, cmd, channel) 		(":"+client+" "+cmd+" "+channel +"\r\n")
 # define RPL_NAMREPLY(channel, client, allClient) 	(": 353 " +client+" = "+channel+" :"+allClient +"\r\n")
 # define RPL_ENDOFNAMES(nick, channel)		(": 366 "+nick+" "+channel+" :End of NAMES list\r\n")
 # define RPL_INVITATION(nick , channel, cmd)		(":"+nick+" MODE "+channel+" "+cmd+"\r\n" )    
@@ -77,8 +77,7 @@
 
 # define ERR_UNKNOWNCOMMAND(nick)			 	(": 421 "+nick+" :Unknown command\r\n")
 
-# define RPL_PARTMSG( channel, nick, reason )		(": PART "+channel+" :"+nick+" left the channel "+reason+"\n\r")
-# define RPL_PART( channel, nick )				(": "+channel+" "+nick+" left the channel\n\r")
+# define RPL_PART( nick, channel, reason )		(":"+nick+" PART "+channel+" the channel "+reason+"\n\r")
 
 # define NEWTOCHANNEL(nick, channel)			 (": "+nick+" has joined channel : "+channel+"\r\n")
 #endif

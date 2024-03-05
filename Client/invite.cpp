@@ -42,7 +42,14 @@ void	Client::invitation( Server *server ){
 			send(this->_socket, ERR_USERONCHANNEL(this->_nickname, _splitBuf[1], _splitBuf[2]).c_str(), ERR_USERONCHANNEL(this->_nickname, _splitBuf[1], _splitBuf[2]).size(), 0);
 			return ;
 		}
+		if ( this->_socket == *itUser )
+			break;
 	}
+	if ( itUser == itChan->getUser().end() ){
+			send(this->_socket, ERR_NOTONCHANNEL(this->_nickname, _splitBuf[2]).c_str(), ERR_NOTONCHANNEL(this->_nickname, _splitBuf[2]).size(), 0);
+			return ;			
+	}
+
 
 	send(it->getSocket(), RPL_INVITING(this->_nickname, _splitBuf[1], _splitBuf[2]).c_str(), RPL_INVITING(this->_nickname, _splitBuf[1], _splitBuf[2]).size(), 0); 
 	send(this->_socket, RPL_INVITED(_splitBuf[1], _splitBuf[2], this->_nickname).c_str(), RPL_INVITED(_splitBuf[1], _splitBuf[2], this->_nickname).size(), 0); 
