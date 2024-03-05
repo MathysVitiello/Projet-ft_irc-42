@@ -15,7 +15,7 @@ void	Client::join( Server *server )
             //no password
             if (_splitBuf[1][0] != '#')
                 return;
-            server->createChannel(this->getSocket(), _splitBuf[1], "");
+            server->createChannel(*this, _splitBuf[1], "");
         }  else {
             //find password
             std::string chanel = _splitBuf[1].substr(0, _splitBuf[1].find(' '));           
@@ -31,7 +31,7 @@ void	Client::join( Server *server )
 				std::cout << "il y a trop d'args apres le mdp" << std::endl;
 				return;
 			}
-            server->createChannel(this->getSocket(), chanel, _splitBuf[1]);
+            server->createChannel(*this, chanel, _splitBuf[1]);
         }
     }
 }
