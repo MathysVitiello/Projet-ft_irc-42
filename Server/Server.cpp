@@ -346,6 +346,7 @@ void	Server::createChannel( Client client, std::string name, std::string passwd 
 							//send to all people from channel message that someone new joined
 							if (clientSocket != this->getChannels()[nbChannel].getUser()[i])
 							{
+								std::cout << "index channel: " << nbChannel << std::endl;
 								std::cout << this->getChannels()[nbChannel].getUser()[i] << std::endl;
 									// << " " << this->_clients[socketNewUser].getNickname() << "  " << this->getChannels()[nbChannel].getName() << std::endl;
 								send(this->getChannels()[nbChannel].getUser()[i], RPL_CHAN(this->_clients[socketNewUser].getNickname(), "JOIN", this->getChannels()[nbChannel].getName()).c_str(),
