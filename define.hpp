@@ -13,6 +13,7 @@
 # define ERR_ERRONEUSNICKNAME(nick)				(": 432 "+nick+" :Erroneus nickname\r\n")
 # define ERR_NICKNAMEINUSE(nick)				(": 433 "+nick+" :Nickname is already in use\r\n")
 # define ERR_NICKCOLLISION(nick)				(": 436 "+nick+" :Nickname collision KILL from <user>@<host>\r\n")
+# define RPL_NICKCHANGE(oldnick, newnick)		(":"+ oldnick+" NICK :"+newnic+"\r\n")
                                       
 /*	CHANNEL message */                   
                                       
