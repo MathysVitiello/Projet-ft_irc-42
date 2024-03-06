@@ -1,6 +1,6 @@
 #include "Client.hpp"
 
-void    Client::kick(  Server *server ){
+void    Client::kick( Server *server ){
 	
 
 	if ( this->_splitBuf.size() == 1 ){
@@ -23,13 +23,14 @@ void    Client::kick(  Server *server ){
 	std::vector<Channel>::const_iterator itChan = server->getChannels().begin();
 	for ( ; itChan < server->getChannels().end(); itChan++)
 	{
-		if ( itChan->getName() == _splitBuf[1].substr(0 , _splitBuf[1].find(" ")) )
+		if ( itChan->getName() == _splitBuf[1].substr(0 , _splitBuf[1].find(" ")) ||  itChan->getName() == _splitBuf[1])
 		{
 			for (unsigned int i = 0 ; i < itChan->getIrcOps().size(); i++){
+
 				if (itChan->getIrcOps()[i] == this->getSocket())
 				{
 					if (_splitBuf[2].find(" ") != std::string::npos){
-						//le nom du boug_splitBuf[1], message dans 2  
+						//le name guy in _splitBuf[1], message in 2  
 						_splitBuf[1] = _splitBuf[2].substr(0, _splitBuf[2].find(" "));
 						_splitBuf[2] = _splitBuf[2].substr(_splitBuf[2].find(" "));
 						_splitBuf[2] = trimSpace(_splitBuf[2]);
@@ -41,7 +42,7 @@ void    Client::kick(  Server *server ){
 					int socketMan = -1; 
 					//find socket of kick man
 					for (unsigned int i = 0 ; i < server->getClients().size(); i++){
-						if (server->getClients()[i].getName() == _splitBuf[1]){
+						if (server->getClients()[i].getNickname() == _splitBuf[1]){
 							socketMan = server->getClients()[i].getSocket();
 						}
 					}
@@ -59,7 +60,8 @@ void    Client::kick(  Server *server ){
 							} else if (itChan->getOwner() == socketMan){
 								send(this->_socket, "You cannot kick the owner\n", 26, 0);
 							} else{
-								server->kickUser( socketMan, itChan->getName(), _splitBuf[2]);
+								Client client = *this;
+								server->kickUser(socketMan, itChan->getName(), _splitBuf[2], client, _splitBuf[1]);
 								return;
 							}
 						}
@@ -74,7 +76,6 @@ void    Client::kick(  Server *server ){
 			return;
 		}
 	}
-	// send(this->_socket, ERR_NOSUCHCHANNEL(this->getNickname(), _splitBuf[1]).c_str(), ERR_NOSUCHCHANNEL(this->getNickname(), _splitBuf[1]).size(), 0);
-	// send(this->_socket, ERR_BADCHANMASK(_splitBuf[1]).c_str(), ERR_BADCHANMASK(_splitBuf[1]).size(), 0);
 	return;
 }
+

@@ -56,7 +56,7 @@ class Server
 		bool		changeTopic( std::string topic, std::string chanName, int idClient, std::string nick );
 		std::string	bufTmp( std::string buf, int flag, int index );
 		void		part( int socketClient, std::string chan, std::string nick, std::string message);
-		void		kickUser( int socketToKick, std::string channelName, std::string message );
+		void		kickUser( int socketToKick, std::string channelName, std::string message, Client client, std::string kickNameGuy );
 		void		allClient( Channel *chan, Client client );
 
 		void		modeInvit( Client *user, int i );

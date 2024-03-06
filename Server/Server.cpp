@@ -145,18 +145,21 @@ void	Server::removeClient( int const & index )
 	this->_clients.erase( this->_clients.begin() + index );
 }
 
-void	Server::kickUser( int socketToKick, std::string channelName, std::string message){
+void	Server::kickUser( int socketToKick, std::string channelName, std::string message, Client client, std::string kickNameGuy){
 
+	int channelInt = 0;
 	std::vector<Channel>::iterator itChan;
-	for(itChan = this->_channels.begin(); itChan != this->_channels.end(); itChan++)
+	for(itChan = this->_channels.begin(); itChan != this->_channels.end(); itChan++, channelInt++)
 	{
 		if ( itChan->getName() == channelName )
 		{
+			std::string toSend = ":" + client.getNickname() + " KICK " + channelName + " " + kickNameGuy + " " + message +  "\r\n";
+			for(size_t j = 0; j < itChan->getUser().size(); j++ ){
+				send(itChan->getUser()[j], toSend.c_str(), toSend.size(), 0); 
+				this->allClient(&this->_channels[channelInt], client);
+			}
 			itChan->removeClientChannel( socketToKick );
-			if (message.size() != 0)
-				send(socketToKick, KICK_MESSAGE(channelName, message).c_str(), KICK_MESSAGE(channelName, message).size(), 0);
-			else
-				send(socketToKick, KICK_NOMESSAGE(channelName).c_str(), KICK_NOMESSAGE(channelName).size(), 0);
+		
 		}
 	}
 }
@@ -176,60 +179,62 @@ void	Server::command(int fdClient){
 	}
 
 	switch (i) {
-		case CAP:
-			std::cout << "CAP in switch case " << std::endl;
-			this->_clients[fdClient].capForHex(this, fdClient, &this->_clients);
-			//this->_clients[fdClient].enterPwd(&this->_clients, this, fdClient);
-			break;
-		case PASS:
-			std::cout << "PASS in switch case " << std::endl;
-			this->_clients[fdClient].capForHex(this, fdClient, &this->_clients);
-			// ajout ici de remove, jai enlever dans la fiinction pour une raison
-			break;
-		case NICK:
-			std::cout << "NICK in switch case " << this->_clients[fdClient].getCmdBuf()[1] << std::endl;
-			this->_clients[fdClient].capForHex(this, fdClient, &this->_clients);
-			break;
-		case USER:
-			std::cout << "USER in switch case " << std::endl;
-			this->_clients[fdClient].capForHex(this, fdClient, &this->_clients);
-			break;
-		case PRIVMSG:
-			std::cout << "PRIVMSG in switch case " << std::endl;
-			if (this->_clients[fdClient].getConnectServer() == true)
-				this->_clients[fdClient].privateMessage(&this->_clients, this, fdClient);
-			break;
-		case JOIN:
-			if (this->_clients[fdClient].getConnectServer() == true)
-				this->_clients[fdClient].join(this);
-			break;
-		case KICK:
-			std::cout << "KICK in switch case " << std::endl;
-			if (this->_clients[fdClient].getConnectServer() == true)
-				this->_clients[fdClient].kick(this);
-			break;
-		case INVITE:
-			if (this->_clients[fdClient].getConnectServer() == true)
-				this->_clients[fdClient].invitation( this );
-			std::cout << "INVITE in switch case  " << std::endl;
-			break;
-		case TOPIC:
-			if (this->_clients[fdClient].getConnectServer() == true)
-				this->_clients[fdClient].topic( this );
-			std::cout << "TOPIC in switch case " << std::endl;
-			break;
-		case MODE:
-			if (this->_clients[fdClient].getConnectServer() == true)
-				this->_clients[fdClient].mode(this);
-			break;
-		case PART:
-			std::cout << "PART in switch case " << std::endl;
-			if (this->_clients[fdClient].getConnectServer() == true)
-				this->_clients[fdClient].part(this);
-			break;
-		default:
-			send(this->_clients[fdClient].getSocket(), ERR_UNKNOWNCOMMAND(this->_clients[fdClient].getNickname()).c_str(), ERR_UNKNOWNCOMMAND(this->_clients[fdClient].getNickname()).size(), 0);
-			break;
+	case CAP:
+		std::cout << "CAP in switch case " << std::endl;
+		this->_clients[fdClient].capForHex(this, fdClient, &this->_clients);
+		//this->_clients[fdClient].enterPwd(&this->_clients, this, fdClient);
+		break;
+	case PASS:
+		std::cout << "PASS in switch case " << std::endl;
+		this->_clients[fdClient].capForHex(this, fdClient, &this->_clients);
+		// ajout ici de remove, jai enlever dans la fiinction pour une raison
+		break;
+	case NICK:
+		std::cout << "NICK in switch case " << this->_clients[fdClient].getCmdBuf()[1] << std::endl;
+		this->_clients[fdClient].capForHex(this, fdClient, &this->_clients);
+		break;
+	case USER:
+		std::cout << "USER in switch case " << std::endl;
+		this->_clients[fdClient].capForHex(this, fdClient, &this->_clients);
+		break;
+	case PRIVMSG:
+		std::cout << "PRIVMSG in switch case " << std::endl;
+		if (this->_clients[fdClient].getConnectServer() == true)
+			this->_clients[fdClient].privateMessage(&this->_clients, this, fdClient);
+		break;
+	case JOIN:
+		std::cout << "JOIN in switch case  " << std::endl;
+		if (this->_clients[fdClient].getConnectServer() == true)
+			this->_clients[fdClient].join(this);
+		break;
+	case KICK:
+		std::cout << "KICK in switch case " << std::endl;
+		if (this->_clients[fdClient].getConnectServer() == true)
+			this->_clients[fdClient].kick(this);
+		break;
+	case INVITE:
+		std::cout << "INVITE in switch case  " << std::endl;
+		if (this->_clients[fdClient].getConnectServer() == true)
+			this->_clients[fdClient].invitation( this );
+		break;
+	case TOPIC:
+		if (this->_clients[fdClient].getConnectServer() == true)
+			this->_clients[fdClient].topic( this );
+		std::cout << "TOPIC in switch case " << std::endl;
+		break;
+	case MODE:
+		std::cout << "MODE in switch case  " << std::endl;
+		if (this->_clients[fdClient].getConnectServer() == true)
+			this->_clients[fdClient].mode(this);
+		break;
+	case PART:
+		std::cout << "PART in switch case " << std::endl;
+		if (this->_clients[fdClient].getConnectServer() == true)
+			this->_clients[fdClient].part(this);
+		break;
+	default:
+		send(this->_clients[fdClient].getSocket(), ERR_UNKNOWNCOMMAND(this->_clients[fdClient].getNickname()).c_str(), ERR_UNKNOWNCOMMAND(this->_clients[fdClient].getNickname()).size(), 0);
+		break;
 	}
 	this->_clients[fdClient].removeCmdBuf();
 }
