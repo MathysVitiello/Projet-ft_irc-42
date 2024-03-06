@@ -20,3 +20,38 @@ void	checkArgs(int argc, char **argv)
 	if (std::string(argv[2]).length() == 0)
         throw std::runtime_error("write password, pls.");
 }
+
+// ServerMode.cpp for modePrivilege (o):
+int checkNickname(std::vector<Client> clients, Client *user, std::string channel)
+{
+	int flag 			= 0;
+	int index 			= 0;
+	std::string nick 	= user->getNickname();
+
+	if( user->getCmdBuf().size() != 3 )
+	{
+		send(user->getSocket(), ERR_NEEDMOREPARAMS(nick, "MODE").c_str(),
+				ERR_NEEDMOREPARAMS(nick, "MODE").size(), 0);
+		return( -1 );
+	}
+
+	std::vector<Client>::const_iterator it = clients.begin();
+	for (; it != clients.end(); it++, index++)
+	{
+		if( it->getNickname() == nick )
+		{
+			flag = 1;
+			break;
+		}
+	}
+	if( flag == 0 )
+	{
+		send(user->getSocket(), ERR_NOSUCHNICK(nick, channel).c_str(), 
+			ERR_NOSUCHNICK(nick, channel).size(), 0);
+		return( -1 );
+	}
+	int socketClient = clients[index].getSocket();
+	return( socketClient );
+}
+
+
