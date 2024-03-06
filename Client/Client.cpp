@@ -135,9 +135,8 @@ void	Client::splitCmd( std::string cmdSend ){
 		cmdSend = trimSpace(cmdSend);
 		this->_splitBuf.push_back(cmdSend);
 	}
-	else{
+	else
 		this->_splitBuf.push_back(cmdSend);
-	}
 }
 
 void	Client::removeCmdBuf(){
