@@ -12,7 +12,6 @@ void	Client::enterPwd( Server *server ){
 		return;
 	}
 
-	std::cout  << "|" << _splitBuf[1] << "| et |" <<  server->getPassword() << "|" << std::endl; //! ICIIII JE SUIS 
 	size_t j = _splitBuf[1].find(" ");
 	if (j != std::string::npos)
 			_splitBuf[1] = trimSpace(_splitBuf[1].substr(j));
