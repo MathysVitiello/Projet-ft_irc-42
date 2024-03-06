@@ -1,6 +1,5 @@
 #include "Server.hpp"
-#include <string>
-#include <vector>
+
 /* ************************************************************************** */
 // CONSTRUCTOR / DESTRUCTOR:
 Server::Server( unsigned int const & port, std::string const & password  ): _port(port),
@@ -10,11 +9,11 @@ Server::Server( unsigned int const & port, std::string const & password  ): _por
 	if( this->_socket == -1 )
 		throw std::runtime_error( "Don't opening socket." );
 
-	this->_address.sin_addr.s_addr = INADDR_ANY;// accepeted sources
+	this->_address.sin_addr.s_addr = INADDR_ANY;// accepted sources
 	this->_address.sin_port = htons( port );	// traduit le port en reseau.
 	this->_address.sin_family = AF_INET;		// socket TCP IPv4.
 										
-	// le configurer et le mettre en attente:
+	// configures the server and puts it on standby:
 	if (bind(_socket, (struct sockaddr *)&_address, sizeof(_address)) < 0)
 	{
 		close(this->_socket);
@@ -202,10 +201,8 @@ void	Server::command(int fdClient){
 			this->_clients[fdClient].privateMessage(&this->_clients, this, fdClient);
 		break;
 	case JOIN:
-		std::cout << "JOIN in switch case " << std::endl;
-		if (this->_clients[fdClient].getConnectServer() == true){
+		if (this->_clients[fdClient].getConnectServer() == true)
 			this->_clients[fdClient].join(this);
-		}
 		break;
 	case KICK:
 		std::cout << "KICK in switch case " << std::endl;
@@ -223,7 +220,6 @@ void	Server::command(int fdClient){
 		std::cout << "TOPIC in switch case " << std::endl;
 		break;
 	case MODE:
-		std::cout << "MODE in switch case " << std::endl;
 		if (this->_clients[fdClient].getConnectServer() == true)
 			this->_clients[fdClient].mode(this);
 		break;
@@ -302,6 +298,13 @@ void	Server::createChannel( Client client, std::string name, std::string passwd 
 		{
 			if( this->getChannels()[i].getName() == name )
 			{
+				if( static_cast<unsigned>(this->_channels[i].getMaxUser()) <= this->_channels[i].getUser().size() )
+				{
+					send(client.getSocket(), ERR_CHANNELISFULL(client.getNickname(), this->_channels[i].getName()).c_str(),
+						ERR_CHANNELISFULL(client.getNickname(), this->_channels[i].getName()).size(), 0);
+					return;
+				}
+
 				if( !this->userInChannel( i, clientSocket ) )
 					return;
 
@@ -338,7 +341,7 @@ void	Server::createChannel( Client client, std::string name, std::string passwd 
 
 					if (this->getChannels()[nbChannel].getUser().size() > 1)
 					{
-						for( size_t i = 0; i < this->getChannels()[nbChannel].getUser().size(); i++ )
+						for( size_t i = 0; i < this->_clients.size(); i++ )
 							if (clientSocket == this->_clients[i].getSocket())
 								socketNewUser = i;
 
@@ -360,7 +363,6 @@ void	Server::createChannel( Client client, std::string name, std::string passwd 
 			}
 		}
 	}
-	
 	else	
 	{
 		Channel channel( clientSocket, name, passwd );

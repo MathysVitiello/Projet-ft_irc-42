@@ -6,7 +6,7 @@
 /*   By: mvitiell <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/01/04 11:44:21 by mvitiell          #+#    #+#             */
-/*   Updated: 2024/03/06 09:49:10 by alamizan         ###   ########.fr       */
+/*   Updated: 2024/03/06 13:56:39 by alamizan         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 #include "library.hpp"
@@ -91,9 +91,9 @@ int main(int argc, char **argv)
 					{
 						/* connection closed by client side */
 						if ( sizeRead == 0 )
-							std::cerr << "Connection socket's client " << server.getClients()[i].getSocket() << " closed by server" << std::endl;
+							std::cout << "Connection socket's client " << server.getClients()[i].getSocket() << " closed by server" << std::endl;
 						else
-							perror("recv");
+							std::cout << "close" << std::endl;
 						close(sockfd);
 						FD_CLR(sockfd, &master);
 						server.removeClient( i );

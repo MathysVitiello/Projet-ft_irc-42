@@ -56,13 +56,16 @@ class Server
 		void		addInviteUser( int guestSocket, std::string channelName );
 		bool		changeTopic( std::string topic, std::string chanName, int idClient, std::string nick );
 		std::string	bufTmp( std::string buf, int flag, int index );
-		void		modeInvit( Client *user, int i );
-		void		modeTopic( Client *user, int nChannel );
 		void		part( int socketClient, std::string chan, std::string nick, std::string message);
-		void		modePrivilege( Client *user, int i );
-		void		modePwd( Client *user, int i );
 		void		kickUser( int socketToKick, std::string channelName, std::string message );
 		void		allClient( Channel *chan, Client client );
+
+		void		modeInvit( Client *user, int i );
+		void		modeTopic( Client *user, int nChannel );
+		void		modePrivilege( Client *user, int i );
+		void		modePwd( Client *user, int i );
+		void		modeLimitUser( Client *user, int i );
+
 
 		// --------------------------------------------------------- //
 	 private:

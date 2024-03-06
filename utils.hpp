@@ -6,5 +6,4 @@
 std::string	trimSpace(std::string str);
 void	    checkArgs(int argc, char **argv);
 int         indexFirstArg( std::string str );
-
 #endif

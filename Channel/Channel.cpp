@@ -81,7 +81,7 @@ std::vector<int>		const & Channel::getUserInvite ( void ) const{
 	return ( this->_userInvitation );
 }
 
-int	const & Channel::getMaxUser( void ) const{
+long int	const & Channel::getMaxUser( void ) const{
 	return( this->_maxUser );
 }
 
@@ -103,6 +103,11 @@ void	Channel::setTopicName( std::string topic ){
 void	Channel::setTopic( bool topic ){
 	this->_topic = topic;
 }
+
+void	Channel::setMaxUser( long int limit ){
+	this->_maxUser = limit;
+}
+
 
 void	Channel::setPassword( std::string password ){
 	this->_password = password;
