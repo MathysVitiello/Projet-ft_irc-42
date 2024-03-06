@@ -250,9 +250,17 @@ void	Server::createChannel( Client client, std::string name, std::string passwd 
 				}
 				if( this->_channels[i].getInvitation() == true )
 				{
-					send(client.getSocket(), ERR_INVITEONLYCHAN(client.getName(), this->_channels[i].getName()).c_str(),
+					std::vector<int>::iterator it;
+					std::vector<int> userInvit = this->_channels[i].getUserInvite();
+					it = find(userInvit.begin(), userInvit.end(), clientSocket);
+					if( it == userInvit.end() )
+					{
+						send(client.getSocket(), ERR_INVITEONLYCHAN(client.getName(), this->_channels[i].getName()).c_str(),
 							ERR_INVITEONLYCHAN(client.getName(), this->_channels[i].getName()).size(), 0);
-					return;
+						return;
+					}
+					this->_channels[i].addClientChannel(clientSocket);
+					this->allClient(&this->_channels[i], client);
 				}
 				if( this->_channels[i].addClientChannel(clientSocket) == true )
 				{
