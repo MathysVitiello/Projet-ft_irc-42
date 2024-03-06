@@ -6,7 +6,7 @@
 /*   By: mvitiell <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/01/04 11:44:21 by mvitiell          #+#    #+#             */
-/*   Updated: 2024/03/04 17:28:59 by alamizan         ###   ########.fr       */
+/*   Updated: 2024/03/06 09:49:10 by alamizan         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 #include "library.hpp"
@@ -129,7 +129,6 @@ int main(int argc, char **argv)
 		if( exitFlag == SIGINT )
 			std::cerr << BPURPLE << "Fermeture du serveur et deconnexion des clients !! " << NC << std::endl;
 
-		std::cerr << BRED << "Code erreur = " << exitFlag << std::endl;
 		std::cerr << "Renvoi valgrind: ( valgrind --track-origins=yes --leak-check=full --track-fds=yes ./ircserv arg1 arg2 )"  << std::endl;
 		std::cerr << BGREEN;
 		return( exitFlag );
