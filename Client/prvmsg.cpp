@@ -76,4 +76,4 @@ void    Server::sendMessageChanel( std::string nickOrChannel, int clientPlace, s
 		}
 	}
 	return ;
-} 
+}

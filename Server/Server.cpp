@@ -155,10 +155,9 @@ void	Server::kickUser( int socketToKick, std::string channelName, std::string me
 			std::string toSend = ":" + client.getNickname() + " KICK " + channelName + " " + kickNameGuy + " " + message +  "\r\n";
 			for(size_t j = 0; j < itChan->getUser().size(); j++ ){
 				send(itChan->getUser()[j], toSend.c_str(), toSend.size(), 0); 
-				this->allClient(&this->_channels[channelInt], client);
 			}
 			itChan->removeClientChannel( socketToKick );
-		
+			this->allClient(&this->_channels[channelInt], client);
 		}
 	}
 }
