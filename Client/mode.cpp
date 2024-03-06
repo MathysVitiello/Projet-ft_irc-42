@@ -77,6 +77,8 @@ static void	checkMode( Server *server, Client *user, int i )
 		server->modePrivilege( user, i );
 	else if ( user->getCmdBuf()[1] == "+k" || user->getCmdBuf()[1] == "-k" )
 		server->modePwd( user, i );
+	// else if ( user->getCmdBuf()[1] == "+l" || user->getCmdBuf()[1] == "-l" )
+		// server->modeLimitUser( user, i );
 	else
 	{
 		std::string nick = user->getNickname();
