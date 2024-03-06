@@ -57,4 +57,3 @@ void	Client::topic( Server *server ){
 	for (unsigned int i = 0; i < itChan->getUser().size(); i++ )
 		send (itChan->getUser()[i] , RPL_TOPIC(_nickname, _splitBuf[1], _splitBuf[2]).c_str(), RPL_TOPIC(_nickname, _splitBuf[1], _splitBuf[2]).size(), 0);
 }
-

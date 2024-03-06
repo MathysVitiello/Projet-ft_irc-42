@@ -2,7 +2,6 @@
 
 void    Client::kick( Server *server ){
 	
-
 	if ( this->_splitBuf.size() == 1 ){
 		send( this->_socket, ERR_NEEDMOREPARAMS(this->_nickname, _splitBuf[0]).c_str(), ERR_NEEDMOREPARAMS(this->_nickname, _splitBuf[0]).size(), 0);
 		return;
@@ -29,8 +28,8 @@ void    Client::kick( Server *server ){
 
 				if (itChan->getIrcOps()[i] == this->getSocket())
 				{
+					//guy name in _splitBuf[1], message in 2
 					if (_splitBuf[2].find(" ") != std::string::npos){
-						//le name guy in _splitBuf[1], message in 2  
 						_splitBuf[1] = _splitBuf[2].substr(0, _splitBuf[2].find(" "));
 						_splitBuf[2] = _splitBuf[2].substr(_splitBuf[2].find(" "));
 						_splitBuf[2] = trimSpace(_splitBuf[2]);
@@ -78,4 +77,3 @@ void    Client::kick( Server *server ){
 	}
 	return;
 }
-

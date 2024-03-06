@@ -12,8 +12,6 @@ class Client
 		Client( int const & id, sockaddr_in from );
 		~Client( void );
 
-		// ----------------- Operator overload ----------------- //
-
 		// ------------------- Accessors ----------------------- //
 		int							const & getSocket( void ) const;
 		sockaddr_in 				const & getAddr( void ) const;
@@ -25,7 +23,7 @@ class Client
 		std::string					getBufTmp( void );
 
 		void	setSocket( int socket );
-		void	setName( std::vector<Client> *clients, Server *server, int fdClient );
+		void	setName( void );
 		void 	setNick( Server *server );
 		void 	setAddr( sockaddr_in addr );
 		void	splitCmd( std::string cmdSend );
@@ -35,16 +33,13 @@ class Client
 		void    quit( Server *server, int fdClient, std::vector<Client> *clients);
 		void	join( Server *server );
 		void	kick( Server *server );
-		void    capForHex( Server *server, int fdClient, std::vector<Client> *clients);
-
+		void    capForHex( Server *server );
 		void	enterPwd( Server *server ); 
 		void	privateMessage( std::vector<Client> *clients, Server *server, int fdClient);
 		void	checkRight( void );
 		void	invitation( Server *server );
-	
 		void 	mode( Server *server );
 		void 	splitBuf( void );
-
 		void	removeCmdBuf( void );
 		void	topic( Server *server );
 		void	part( Server *server );
@@ -58,9 +53,7 @@ class Client
 		bool		_connected;
 		bool		_checkRight;
 		std::string					_cmdTmp;
-		std::vector<std::string>	_splitBuf;  // 0: CMD 1:ARG 2:ARG ...
+		std::vector<std::string>	_splitBuf;
 		std::string					bufTmp;
 };
-
-
 # endif

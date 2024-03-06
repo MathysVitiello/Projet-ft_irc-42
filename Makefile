@@ -26,6 +26,8 @@ SRC =	main.cpp \
 		Client/mode.cpp \
 		Client/part.cpp \
 		Server/Server.cpp \
+		Server/ServerSwitch.cpp \
+		Server/ServerDebug.cpp \
 		Server/ServerMode.cpp \
 		Server/allClient.cpp \
 		Channel/Channel.cpp 

@@ -1,10 +1,6 @@
 #include "Client.hpp"
 
-void Client::setName( std::vector<Client> *clients, Server *server, int fdClient ) {
-
-	(void)clients;
-	(void)server;
-	(void)fdClient;
+void Client::setName( void ) {
 
 	size_t j = _splitBuf[1].find("USER");
 	if (j != std::string::npos)

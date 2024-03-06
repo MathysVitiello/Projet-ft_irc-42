@@ -38,29 +38,26 @@ class Channel{
 		void			setPwd( bool pwd );
 		void			setMaxUser( long int limit );
 		
-		// -------------------- Functions ---------------------- //
+	// -------------------- Functions ---------------------- //
 		bool	removeIrcOps( int clientSocket );
 		void	removeClientChannel( int index );
 		bool	addClientChannel( int clientSocket );
 		bool	addIrcOps( int clientSocket );
 
-
 	// --------------------------------------------------------- //
 	 private:
 		std::string			_name;
 		std::string			_password;
-		int 				_owner;  //Admin
-		std::vector<int>	_ircOps; //Operator
+		int 				_owner;
+		std::vector<int>	_ircOps;
 		std::vector<int>	_user;								
 		std::string			_topicName;
 		bool				_invitation;
 		std::vector<int>	_userInvitation;
 		long int			_maxUser;
-	
-				/* MODE  Active/Unactive */
-		bool						_pwd;
-		bool						_topic;
-		bool						_privilege;
+		bool				_pwd;
+		bool				_topic;
+		bool				_privilege;
 };
 
 #endif

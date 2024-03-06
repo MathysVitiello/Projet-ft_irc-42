@@ -1,5 +1,4 @@
 #include "Server.hpp"
-#include <string>
 
 /* ************************************************************************** */
 // CONSTRUCTOR / DESTRUCTOR:
@@ -11,7 +10,7 @@ Server::Server( unsigned int const & port, std::string const & password  ): _por
 		throw std::runtime_error( "Don't opening socket." );
 
 	this->_address.sin_addr.s_addr = INADDR_ANY;// accepted sources
-	this->_address.sin_port = htons( port );	// traduit le port en reseau.
+	this->_address.sin_port = htons( port );	// turns port into reseau.
 	this->_address.sin_family = AF_INET;		// socket TCP IPv4.
 
 	// configures the server and puts it on standby:
@@ -98,7 +97,7 @@ void	Server::setClients( std::string buf, int index ){
 
 /* ************************************************************************** */
 // FUNCTIONS:
-// Rajoute un client dans le tableau de clients du serveur:
+// Add client in array of clients
 void	Server::addClient( int const & id, sockaddr_in addr)
 {
 	// max client 1024-> Fd_SETSIZE:
@@ -106,7 +105,7 @@ void	Server::addClient( int const & id, sockaddr_in addr)
 	this->_clients.push_back( client );
 }
 
-// Supprime le channel si le client est Owner:
+// Deletes channel if client if owner
 void	Server::eraseOwnerChannel( int socket )
 {
 	int i = 0;
@@ -162,81 +161,6 @@ void	Server::kickUser( int socketToKick, std::string channelName, std::string me
 		
 		}
 	}
-}
-
-void	Server::command(int fdClient){
-
-	std::string	cmd[] = {"CAP", "PASS", "NICK", "USER", "PRIVMSG", "JOIN", "KICK", "INVITE", "TOPIC", "MODE", "PART"};
-	int i;
-
-	for (i = 0; i < 11; i++){
-		if(this->_clients[fdClient].getCmdBuf().empty()){
-			i = -1; 
-			break;
-		}
-		if(this->_clients[fdClient].getCmdBuf()[0] == cmd[i])
-			break;
-	}
-
-	switch (i) {
-	case CAP:
-		std::cout << "CAP in switch case " << std::endl;
-		this->_clients[fdClient].capForHex(this, fdClient, &this->_clients);
-		//this->_clients[fdClient].enterPwd(&this->_clients, this, fdClient);
-		break;
-	case PASS:
-		std::cout << "PASS in switch case " << std::endl;
-		this->_clients[fdClient].capForHex(this, fdClient, &this->_clients);
-		// ajout ici de remove, jai enlever dans la fiinction pour une raison
-		break;
-	case NICK:
-		std::cout << "NICK in switch case " << this->_clients[fdClient].getCmdBuf()[1] << std::endl;
-		this->_clients[fdClient].capForHex(this, fdClient, &this->_clients);
-		break;
-	case USER:
-		std::cout << "USER in switch case " << std::endl;
-		this->_clients[fdClient].capForHex(this, fdClient, &this->_clients);
-		break;
-	case PRIVMSG:
-		std::cout << "PRIVMSG in switch case " << std::endl;
-		if (this->_clients[fdClient].getConnectServer() == true)
-			this->_clients[fdClient].privateMessage(&this->_clients, this, fdClient);
-		break;
-	case JOIN:
-		std::cout << "JOIN in switch case  " << std::endl;
-		if (this->_clients[fdClient].getConnectServer() == true)
-			this->_clients[fdClient].join(this);
-		break;
-	case KICK:
-		std::cout << "KICK in switch case " << std::endl;
-		if (this->_clients[fdClient].getConnectServer() == true)
-			this->_clients[fdClient].kick(this);
-		break;
-	case INVITE:
-		std::cout << "INVITE in switch case  " << std::endl;
-		if (this->_clients[fdClient].getConnectServer() == true)
-			this->_clients[fdClient].invitation( this );
-		break;
-	case TOPIC:
-		if (this->_clients[fdClient].getConnectServer() == true)
-			this->_clients[fdClient].topic( this );
-		std::cout << "TOPIC in switch case " << std::endl;
-		break;
-	case MODE:
-		std::cout << "MODE in switch case  " << std::endl;
-		if (this->_clients[fdClient].getConnectServer() == true)
-			this->_clients[fdClient].mode(this);
-		break;
-	case PART:
-		std::cout << "PART in switch case " << std::endl;
-		if (this->_clients[fdClient].getConnectServer() == true)
-			this->_clients[fdClient].part(this);
-		break;
-	default:
-		send(this->_clients[fdClient].getSocket(), ERR_UNKNOWNCOMMAND(this->_clients[fdClient].getNickname()).c_str(), ERR_UNKNOWNCOMMAND(this->_clients[fdClient].getNickname()).size(), 0);
-		break;
-	}
-	this->_clients[fdClient].removeCmdBuf();
 }
 
 // Verify if channel exists
@@ -335,7 +259,7 @@ void	Server::createChannel( Client client, std::string name, std::string passwd 
 					this->allClient(&this->_channels[i], client);
 
 					int nbChannel = 0;
-					// check si le channel existe
+					// check si le channel exists
 					for( size_t i = 0; i < this->getChannels().size(); i++ )
 						if (this->getChannels()[i].getName() == name)
 							nbChannel = i;
@@ -435,52 +359,4 @@ void	Server::nickChange( std::string oldNick, std::string newNick, int socket){
 			}
 		}
 	}
-}
-
-// Displays all data included in the server:
-// - std::cout << server << std::endl;
-std::ostream & operator<<( std::ostream & o, Server const & src )
-{
-	std::vector<Client>::const_iterator it;
-
-	std::cout << BPURPLE << std::endl;
-	std::cout << "-------------------------------------------" << std::endl;
-	o << "Server port: " << src.getPort() << std::endl;
-	o << "Server reseau: " << src.getAddr().sin_port<< std::endl;
-	o << "Server password: " << src.getPassword() << std::endl;
-	o << "      ------------" << std::endl;
-
-	// Displays all server clients and their information:
-	for(it = src.getClients().begin(); it != src.getClients().end(); it++)
-	{
-		o << "		- socket client: " << it->getSocket() << std::endl;
-		o << "		- addresse client: " << it->getAddr().sin_port << std::endl;
-		o << "		- name client: " << it->getName() << std::endl;
-		o << "		- nickname client: " << it->getNickname() << std::endl;
-		o << "		- password: " << it->getConnect() << std::endl;
-		o << "	  	  ------------" << std::endl << std::endl;
-	}
-
-	// Displays all customers on all channels:
-	std::vector<Channel>::const_iterator itChannel;
-	for(itChannel = src.getChannels().begin() ; itChannel != src.getChannels().end(); itChannel++)
-	{
-		std::cout << "- Channel: " << itChannel->getName() << std::endl;
-		std::cout << "- password: " << itChannel->getPasswd() << std::endl;
-		std::cout << "- pwd: " << itChannel->getPwd() << std::endl;
-		std::cout << "- socket owner: " << itChannel->getOwner() << std::endl;
-		std::cout << "- topic name: " << itChannel->getTopicName() << std::endl;
-		std::cout << "- topic restricted privilege: " << itChannel->getTopicPrivilege() << std::endl;
-		std::cout << "- invation: " << itChannel->getInvitation() << std::endl;
-		std::cout << "- max user:" << itChannel->getMaxUser() << std::endl;
-		for( unsigned i = 0; i < itChannel->getIrcOps().size(); i++ )
-			o << "- socket ircOps: " << itChannel->getIrcOps()[i] << std::endl;
-		for( unsigned i = 0; i < itChannel->getUser().size(); i++ )
-			o << "- socket user: " << itChannel->getUser()[i] << std::endl;
-		for( unsigned i = 0; i < itChannel->getUserInvite().size(); i++ )
-			o << "- user invitated: " << itChannel->getUserInvite()[i] << std::endl;
-		o << "------------" << std::endl << std::endl;
-	}
-	std::cout << "-------------------------------------------"<< NC << std::endl;
-	return( o );
 }

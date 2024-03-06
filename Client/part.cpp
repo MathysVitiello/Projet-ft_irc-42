@@ -32,5 +32,4 @@ void	Client::part( Server *server ){
 		}
 	}
 	send(this->_socket, ERR_NOTONCHANNEL(this->_nickname, _splitBuf[1]).c_str(), ERR_NOTONCHANNEL(this->_nickname, _splitBuf[1]).size(), 0);
-	
 }

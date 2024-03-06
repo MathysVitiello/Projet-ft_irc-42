@@ -9,12 +9,12 @@ void    Client::privateMessage( std::vector<Client> *clients, Server *server, in
 			return ;
 		}
 		std::string nickOrChannel = _splitBuf[1].substr(0, _splitBuf[1].find(" "));
-		//find nickname dans tout les users
+		//find nickname in all users
 		std::vector<Client>::iterator it = clients->begin(); 
 		for ( ;it < clients->end(); it++ )
 		{
+			// send message to the client
 			if ( nickOrChannel == it->getNickname() ){
-				// send message to the client
 				std::string toSend = ":" + this->getNickname() + " PRIVMSG "  + it->getNickname() + " " + _splitBuf[1].substr(_splitBuf[1].find(" ")); 
 				send(it->getSocket(), toSend.c_str(),toSend.size(), 0); 
 				send(it->getSocket(), "\n", 1, 0);
@@ -27,9 +27,9 @@ void    Client::privateMessage( std::vector<Client> *clients, Server *server, in
 		// check if is channel
 		std::vector<Channel>::const_iterator itChan = server->getChannels().begin();
 		for ( ; itChan < server->getChannels().end(); itChan++){
+			// send message to the clients of the channel
 			if ( itChan->getName() == nickOrChannel )
 			{
-				// send message to the clients of the channel
 				server->sendMessageChanel( nickOrChannel, clientPlace, _splitBuf[1].substr(_splitBuf[1].find(" ")), this->getSocket());
 				return;
 			}

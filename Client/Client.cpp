@@ -18,9 +18,6 @@ Client::~Client( void ) {
 	std::cout << "Client Destructor called" << std::endl;
 	return ;
 }
-/* ************************************************************************** */
-// OPERATOR OVERLOAD:
-
 
 /* ************************************************************************** */
 // ACCESSORS:
@@ -84,7 +81,7 @@ void	Client::setBufTmp( std::string buf, int flag ){
 // FONCTIONS:
 
 //parsing depending on hexchat
-void	Client::capForHex( Server *server, int fdClient, std::vector<Client> *clients){
+void	Client::capForHex( Server *server ){
 
 		if (bufTmp.find("CAP ") == 0)
 		{
@@ -107,8 +104,6 @@ void	Client::capForHex( Server *server, int fdClient, std::vector<Client> *clien
 			this->enterPwd(server);
 		}
 		if (bufTmp.find("NICK ") == 0){
-
-
 			_splitBuf[0] = "NICK";
 			bufTmp = bufTmp.substr(bufTmp.find("NICK") + 4);
 			bufTmp = trimSpace(bufTmp);
@@ -123,7 +118,7 @@ void	Client::capForHex( Server *server, int fdClient, std::vector<Client> *clien
 			bufTmp = bufTmp.substr(bufTmp.find("USER") + 4);
 			bufTmp = trimSpace(bufTmp);
 			_splitBuf[1] = bufTmp.substr(0, bufTmp.find(" "));
-			this->setName(clients, server, fdClient);
+			this->setName();
 		}
 }
 

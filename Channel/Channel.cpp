@@ -108,7 +108,6 @@ void	Channel::setMaxUser( long int limit ){
 	this->_maxUser = limit;
 }
 
-
 void	Channel::setPassword( std::string password ){
 	this->_password = password;
 }

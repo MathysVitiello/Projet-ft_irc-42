@@ -19,8 +19,8 @@ void	Client::enterPwd( Server *server ){
 	else if ( server->getPassword() == _splitBuf[1].substr(0, server->getPassword().size()) && _splitBuf[1][server->getPassword().size() + 1] == '\n' ){
 		this->_connected = true;
 		//if there is NICK after, for hexchat
-		if (_splitBuf[1].size() != server->getPassword().size() + 1)
-			this->setNick(server);
+		if (_splitBuf[1].size() != server->getPassword().size() + 1) //! 
+			this->setNick(server); //!
 	}
 	else{
 		send(this->getSocket(), ERR_PASSWDMISMATCH(this->_nickname).c_str(),
