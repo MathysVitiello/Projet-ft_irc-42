@@ -368,52 +368,6 @@ void	Server::createChannel( Client client, std::string name, std::string passwd 
 		this->allClient(&channel, client);
 	}
 }
-
-	//!EN TRAVAUX
-void    Server::sendMessageChanel( std::string nickOrChannel, int clientPlace, std::string cmdSend, int socket)
-{
-	int nbChannel = 0;
-	// check si le channel existe
-	for( size_t i = 0; i < this->getChannels().size(); i++ ){
-
-		if (this->getChannels()[i].getName() == nickOrChannel)
-		{
-			nbChannel = i;
-			//!ERROR CODE
-			std::cout << this->getChannels()[i].getName() << " est le channel" << std::endl;
-		}
-	}
-
-	// check si le client est dans le channel 
-	bool clientInChannel = false;
-	for( size_t i = 0; i < this->getChannels()[nbChannel].getUser().size(); i++ ){
-		if (socket == this->getChannels()[nbChannel].getUser()[i])
-			clientInChannel = true;
-	}
-	if (clientInChannel == false){
-			//!ERROR CODE
-		std::cout << "le client nest pas dans le channel dans lequel il veut PRIVMSG" << std::endl;
-		return;
-	}
-
-	if (this->getChannels()[nbChannel].getUser().size() > 1)
-	{
-		for( size_t i = 0; i < this->getChannels()[nbChannel].getUser().size(); i++ ){
-
-			std::cout << "les users du channel " << this->getChannels()[nbChannel].getUser()[i] << std::endl;
-			std::cout << "socket " << socket << std::endl;
-			std::cout << "this client socket " << this->getClients()[clientPlace].getSocket() << std::endl;
-			if (socket != this->getChannels()[nbChannel].getUser()[i])
-			{
-				send(this->getClients()[i].getSocket(), RPL_TOPIC(this->getClients()[clientPlace].getNickname(), nickOrChannel, cmdSend).c_str(),
-					RPL_TOPIC(this->getClients()[clientPlace].getNickname(), nickOrChannel, cmdSend).size(), 0);
-				send(this->getClients()[i].getSocket(), "\n", 1, 0);
-			}
-		}
-	}
-	return ;
-} 
-
 // Permet l affichage de toutes les donnees inclut dans le serveur:
 // - std::cout << server << std::endl;
 std::ostream & operator<<( std::ostream & o, Server const & src )
@@ -461,6 +415,7 @@ std::ostream & operator<<( std::ostream & o, Server const & src )
 	std::cout << "-------------------------------------------"<< NC << std::endl;
 	return( o );
 }
+
 
 void	Server::addInviteUser( int guestSocket, std::string channelName ){
 	std::cout << "dasn Server :" << guestSocket << std::endl;	
