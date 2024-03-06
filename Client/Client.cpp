@@ -103,7 +103,8 @@ void	Client::capForHex( Server *server ){
 			_splitBuf[0] = "PASS";
 			this->enterPwd(server);
 		}
-		if (bufTmp.find("NICK ") == 0){
+		size_t oh = bufTmp.find("NICK ");
+		if (oh != std::string::npos){
 			_splitBuf[0] = "NICK";
 			bufTmp = bufTmp.substr(bufTmp.find("NICK") + 4);
 			bufTmp = trimSpace(bufTmp);
