@@ -298,7 +298,7 @@ void	Server::createChannel( Client client, std::string name, std::string passwd 
 		{
 			if( this->getChannels()[i].getName() == name )
 			{
-				if( static_cast<unsigned>(this->_channels[i].getMaxUser()) >= this->_channels[i].getUser().size() )
+				if( static_cast<unsigned>(this->_channels[i].getMaxUser()) <= this->_channels[i].getUser().size() )
 				{
 					send(client.getSocket(), ERR_CHANNELISFULL(client.getNickname(), this->_channels[i].getName()).c_str(),
 						ERR_CHANNELISFULL(client.getNickname(), this->_channels[i].getName()).size(), 0);

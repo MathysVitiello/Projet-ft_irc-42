@@ -44,8 +44,9 @@ void	Server::modeInvit( Client *user, int i )
 // change topic privilege (t) //
 void	Server::modeTopic( Client *user, int nChannel )
 {
-	std::string nick = user->getNickname();
-	std::string channel= this->_channels[nChannel].getName();
+	std::string server 	= "irc";
+	std::string nick 	= user->getNickname();
+	std::string channel	= this->_channels[nChannel].getName();
 
 	if( user->getCmdBuf().size() > 2 )
 	{
@@ -56,9 +57,29 @@ void	Server::modeTopic( Client *user, int nChannel )
 	}
 	
 	if( user->getCmdBuf()[1] == "+t" )	
-		this->_channels[nChannel].setTopicPrivilege( true );
+	{
+		if(this->_channels[nChannel].getTopicPrivilege() == true)
+			send(user->getSocket(), ERR_MODE( server, channel, nick).c_str(), 
+					ERR_MODE(server, channel, nick).size(), 0);
+		else
+		{
+			this->_channels[nChannel].setTopicPrivilege( true );
+			send(user->getSocket(), RPL_CHANNELMODEIS(nick, channel, "+t").c_str(), 
+					RPL_CHANNELMODEIS(nick, channel, "+t").size(), 0);
+		}
+	}
 	else if( user->getCmdBuf()[1] == "-t" )	
-		this->_channels[nChannel].setTopicPrivilege( false );
+	{
+		if(this->_channels[nChannel].getTopicPrivilege() == false)
+			send(user->getSocket(), ERR_MODE( server, channel, nick).c_str(), 
+					ERR_MODE(server, channel, nick).size(), 0);
+		else
+		{
+			this->_channels[nChannel].setTopicPrivilege( false );
+			send(user->getSocket(), RPL_CHANNELMODEIS(nick, channel, "-t").c_str(), 
+					RPL_CHANNELMODEIS(nick, channel, "-t").size(), 0);
+		}
+	}
 }
 
 // Gives/removes channel operator privileges (o): RPL_CHANNELMODEIS2 //
@@ -75,7 +96,6 @@ void	Server::modePrivilege( Client *user, int i )
 		return;
 	}
 
-	//Verification du nickname
 	int index = 0;
 	int flag = 0;
 	std::vector<Client>::const_iterator it = this->getClients().begin();
