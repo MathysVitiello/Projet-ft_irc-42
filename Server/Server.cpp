@@ -341,7 +341,7 @@ void	Server::createChannel( Client client, std::string name, std::string passwd 
 
 					if (this->getChannels()[nbChannel].getUser().size() > 1)
 					{
-						for( size_t i = 0; i < this->getChannels()[nbChannel].getUser().size(); i++ )
+						for( size_t i = 0; i < this->_clients.size(); i++ )
 							if (clientSocket == this->_clients[i].getSocket())
 								socketNewUser = i;
 

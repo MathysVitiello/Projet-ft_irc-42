@@ -124,8 +124,12 @@ void	Server::modePrivilege( Client *user, int i )
 			send(user->getSocket(), ERR_MODE( server, channel, nick).c_str(), 
 				ERR_MODE(server, channel, nick).size(), 0);
 		else
-			send(user->getSocket(), RPL_CHANNELMODEIS2(nick, channel, "+o", user->getCmdBuf()[2]).c_str(), 
-				RPL_CHANNELMODEIS2(nick, channel, "+o", user->getCmdBuf()[2]).size(), 0);
+		{
+			for(size_t j = 0; j < this->_channels[i].getUser().size(); j++ )
+				send(this->_channels[i].getUser()[j], RPL_CHANNELMODEIS2(nick, channel, "+o", user->getCmdBuf()[2]).c_str(), 
+					RPL_CHANNELMODEIS2(nick, channel, "+o", user->getCmdBuf()[2]).size(), 0);
+
+		}
 	}
 	else if( user->getCmdBuf()[1] == "-o" )	
 	{
@@ -133,8 +137,11 @@ void	Server::modePrivilege( Client *user, int i )
 			send(user->getSocket(), ERR_MODE( server, channel, nick).c_str(), 
 				ERR_MODE(server, channel, nick).size(), 0);
 		else
-			send(user->getSocket(), RPL_CHANNELMODEIS2(nick, channel, "-o", user->getCmdBuf()[2]).c_str(), 
-				RPL_CHANNELMODEIS2(nick, channel, "-o", user->getCmdBuf()[2]).size(), 0);
+		{
+			for(size_t j = 0; j < this->_channels[i].getUser().size(); j++ )
+				send(this->_channels[i].getUser()[j], RPL_CHANNELMODEIS2(nick, channel, "-o", user->getCmdBuf()[2]).c_str(), 
+					RPL_CHANNELMODEIS2(nick, channel, "-o", user->getCmdBuf()[2]).size(), 0);
+		}
 	}
 }
 
