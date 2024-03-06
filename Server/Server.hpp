@@ -61,7 +61,7 @@ class Server
 		void		part( int socketClient, std::string chan, std::string nick, std::string message);
 		void		modePrivilege( Client *user, int i );
 		void		modePwd( Client *user, int i );
-		void		kickUser( int socketToKick, std::string channelName, std::string message, Client *client, std::string kickNameGuy );
+		void		kickUser( int socketToKick, std::string channelName, std::string message, Client client, std::string kickNameGuy );
 		void		allClient( Channel *chan, Client client );
 
 		// --------------------------------------------------------- //

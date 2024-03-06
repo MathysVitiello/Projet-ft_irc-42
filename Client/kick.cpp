@@ -20,7 +20,6 @@ void    Client::kick( Server *server ){
 		return;
 	}
 	//check channel exists
-	int channelInt = 0;
 	std::vector<Channel>::const_iterator itChan = server->getChannels().begin();
 	for ( ; itChan < server->getChannels().end(); itChan++)
 	{
@@ -61,15 +60,8 @@ void    Client::kick( Server *server ){
 							} else if (itChan->getOwner() == socketMan){
 								send(this->_socket, "You cannot kick the owner\n", 26, 0);
 							} else{
-								//todo, chexker que ca fonctionne toujours avec netchat
-								server->kickUser(socketMan, itChan->getName(), _splitBuf[2], this, _splitBuf[1]);
-								//! a faire
-
-								//j'essaie de faire fonctinner allclient pour que KICK soit fini
-
-
-								// server->getChannels()[channelInt]
-								server->allClient(server->getChannels()[channelInt], itChan->getUser()[i]);
+								Client client = *this;
+								server->kickUser(socketMan, itChan->getName(), _splitBuf[2], client, _splitBuf[1]);
 								return;
 							}
 						}
@@ -83,9 +75,7 @@ void    Client::kick( Server *server ){
 			}
 			return;
 		}
-		channelInt++;
 	}
-	// send(this->_socket, ERR_NOSUCHCHANNEL(this->getNickname(), _splitBuf[1]).c_str(), ERR_NOSUCHCHANNEL(this->getNickname(), _splitBuf[1]).size(), 0);
-	// send(this->_socket, ERR_BADCHANMASK(_splitBuf[1]).c_str(), ERR_BADCHANMASK(_splitBuf[1]).size(), 0);
 	return;
 }
+

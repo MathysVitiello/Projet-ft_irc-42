@@ -146,18 +146,23 @@ void	Server::removeClient( int const & index )
 	this->_clients.erase( this->_clients.begin() + index );
 }
 
-void	Server::kickUser( int socketToKick, std::string channelName, std::string message, Client *client, std::string kickNameGuy){
+void	Server::kickUser( int socketToKick, std::string channelName, std::string message, Client client, std::string kickNameGuy){
 
-		std::vector<Channel>::iterator itChan;
-		for(itChan = this->_channels.begin(); itChan != this->_channels.end(); itChan++)
+	int channelInt = 0;
+	std::vector<Channel>::iterator itChan;
+	for(itChan = this->_channels.begin(); itChan != this->_channels.end(); itChan++, channelInt++)
+	{
+		if ( itChan->getName() == channelName )
 		{
-			if ( itChan->getName() == channelName )
-			{
-				std::string toSend = ":" + client->getNickname() + " KICK " + channelName + " " + kickNameGuy + "\r\n";
-				send(socketToKick, toSend.c_str(), toSend.size(), 0);
-				itChan->removeClientChannel( socketToKick );
+			std::string toSend = ":" + client.getNickname() + " KICK " + channelName + " " + kickNameGuy + " " + message +  "\r\n";
+			for(size_t j = 0; j < itChan->getUser().size(); j++ ){
+				send(itChan->getUser()[j], toSend.c_str(), toSend.size(), 0); 
+				this->allClient(&this->_channels[channelInt], client);
 			}
+			itChan->removeClientChannel( socketToKick );
+		
 		}
+	}
 }
 
 void	Server::command(int fdClient){
