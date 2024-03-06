@@ -65,6 +65,7 @@ class Server
 		void		modePrivilege( Client *user, int i );
 		void		modePwd( Client *user, int i );
 		void		modeLimitUser( Client *user, int i );
+		void		nickChange( std::string oldNick, std::string newNick, int socket );
 
 
 		// --------------------------------------------------------- //

@@ -1,9 +1,10 @@
 #include "Server.hpp"
+#include <string>
 
 /* ************************************************************************** */
 // CONSTRUCTOR / DESTRUCTOR:
 Server::Server( unsigned int const & port, std::string const & password  ): _port(port),
-																		 	_password(password)
+	_password(password)
 {
 	this->_socket= socket( AF_INET, SOCK_STREAM, IPPROTO_TCP );
 	if( this->_socket == -1 )
@@ -12,7 +13,7 @@ Server::Server( unsigned int const & port, std::string const & password  ): _por
 	this->_address.sin_addr.s_addr = INADDR_ANY;// accepted sources
 	this->_address.sin_port = htons( port );	// traduit le port en reseau.
 	this->_address.sin_family = AF_INET;		// socket TCP IPv4.
-										
+
 	// configures the server and puts it on standby:
 	if (bind(_socket, (struct sockaddr *)&_address, sizeof(_address)) < 0)
 	{
@@ -49,7 +50,7 @@ Server::~Server( void )
 // OPERATOR OVERLOAD:
 Client *Server::operator[](unsigned int index) {
 	if ( index >= this->_clients.size() )
-		 throw std::runtime_error( "Index is invalid" );
+		throw std::runtime_error( "Index is invalid" );
 	return &this->_clients[index];
 }
 
@@ -148,18 +149,18 @@ void	Server::removeClient( int const & index )
 
 void	Server::kickUser( int socketToKick, std::string channelName, std::string message){
 
-		std::vector<Channel>::iterator itChan;
-		for(itChan = this->_channels.begin(); itChan != this->_channels.end(); itChan++)
+	std::vector<Channel>::iterator itChan;
+	for(itChan = this->_channels.begin(); itChan != this->_channels.end(); itChan++)
+	{
+		if ( itChan->getName() == channelName )
 		{
-			if ( itChan->getName() == channelName )
-			{
-				itChan->removeClientChannel( socketToKick );
-				if (message.size() != 0)
-					send(socketToKick, KICK_MESSAGE(channelName, message).c_str(), KICK_MESSAGE(channelName, message).size(), 0);
-				else
-					send(socketToKick, KICK_NOMESSAGE(channelName).c_str(), KICK_NOMESSAGE(channelName).size(), 0);
-			}
+			itChan->removeClientChannel( socketToKick );
+			if (message.size() != 0)
+				send(socketToKick, KICK_MESSAGE(channelName, message).c_str(), KICK_MESSAGE(channelName, message).size(), 0);
+			else
+				send(socketToKick, KICK_NOMESSAGE(channelName).c_str(), KICK_NOMESSAGE(channelName).size(), 0);
 		}
+	}
 }
 
 void	Server::command(int fdClient){
@@ -172,65 +173,65 @@ void	Server::command(int fdClient){
 			i = -1; 
 			break;
 		}
-			if(this->_clients[fdClient].getCmdBuf()[0] == cmd[i])
-				break;
+		if(this->_clients[fdClient].getCmdBuf()[0] == cmd[i])
+			break;
 	}
 
 	switch (i) {
-	case CAP:
-		std::cout << "CAP in switch case " << std::endl;
-		this->_clients[fdClient].capForHex(this, fdClient, &this->_clients);
-		//this->_clients[fdClient].enterPwd(&this->_clients, this, fdClient);
-		break;
-	case PASS:
-		std::cout << "PASS in switch case " << std::endl;
-		this->_clients[fdClient].capForHex(this, fdClient, &this->_clients);
-		// ajout ici de remove, jai enlever dans la fiinction pour une raison
-		break;
-	case NICK:
-		std::cout << "NICK in switch case " << this->_clients[fdClient].getCmdBuf()[1] << std::endl;
-		this->_clients[fdClient].capForHex(this, fdClient, &this->_clients);
-		break;
-	case USER:
-		std::cout << "USER in switch case " << std::endl;
-		this->_clients[fdClient].capForHex(this, fdClient, &this->_clients);
-		break;
-	case PRIVMSG:
-		std::cout << "PRIVMSG in switch case " << std::endl;
-		if (this->_clients[fdClient].getConnectServer() == true)
-			this->_clients[fdClient].privateMessage(&this->_clients, this, fdClient);
-		break;
-	case JOIN:
-		if (this->_clients[fdClient].getConnectServer() == true)
-			this->_clients[fdClient].join(this);
-		break;
-	case KICK:
-		std::cout << "KICK in switch case " << std::endl;
-		if (this->_clients[fdClient].getConnectServer() == true)
-			this->_clients[fdClient].kick(this);
-		break;
-	case INVITE:
-		if (this->_clients[fdClient].getConnectServer() == true)
-			this->_clients[fdClient].invitation( this );
-		std::cout << "INVITE in switch case  " << std::endl;
-		break;
-	case TOPIC:
-		if (this->_clients[fdClient].getConnectServer() == true)
-			this->_clients[fdClient].topic( this );
-		std::cout << "TOPIC in switch case " << std::endl;
-		break;
-	case MODE:
-		if (this->_clients[fdClient].getConnectServer() == true)
-			this->_clients[fdClient].mode(this);
-		break;
-	case PART:
-		std::cout << "PART in switch case " << std::endl;
-		if (this->_clients[fdClient].getConnectServer() == true)
-			this->_clients[fdClient].part(this);
-		break;
-	default:
-		send(this->_clients[fdClient].getSocket(), ERR_UNKNOWNCOMMAND(this->_clients[fdClient].getNickname()).c_str(), ERR_UNKNOWNCOMMAND(this->_clients[fdClient].getNickname()).size(), 0);
-		break;
+		case CAP:
+			std::cout << "CAP in switch case " << std::endl;
+			this->_clients[fdClient].capForHex(this, fdClient, &this->_clients);
+			//this->_clients[fdClient].enterPwd(&this->_clients, this, fdClient);
+			break;
+		case PASS:
+			std::cout << "PASS in switch case " << std::endl;
+			this->_clients[fdClient].capForHex(this, fdClient, &this->_clients);
+			// ajout ici de remove, jai enlever dans la fiinction pour une raison
+			break;
+		case NICK:
+			std::cout << "NICK in switch case " << this->_clients[fdClient].getCmdBuf()[1] << std::endl;
+			this->_clients[fdClient].capForHex(this, fdClient, &this->_clients);
+			break;
+		case USER:
+			std::cout << "USER in switch case " << std::endl;
+			this->_clients[fdClient].capForHex(this, fdClient, &this->_clients);
+			break;
+		case PRIVMSG:
+			std::cout << "PRIVMSG in switch case " << std::endl;
+			if (this->_clients[fdClient].getConnectServer() == true)
+				this->_clients[fdClient].privateMessage(&this->_clients, this, fdClient);
+			break;
+		case JOIN:
+			if (this->_clients[fdClient].getConnectServer() == true)
+				this->_clients[fdClient].join(this);
+			break;
+		case KICK:
+			std::cout << "KICK in switch case " << std::endl;
+			if (this->_clients[fdClient].getConnectServer() == true)
+				this->_clients[fdClient].kick(this);
+			break;
+		case INVITE:
+			if (this->_clients[fdClient].getConnectServer() == true)
+				this->_clients[fdClient].invitation( this );
+			std::cout << "INVITE in switch case  " << std::endl;
+			break;
+		case TOPIC:
+			if (this->_clients[fdClient].getConnectServer() == true)
+				this->_clients[fdClient].topic( this );
+			std::cout << "TOPIC in switch case " << std::endl;
+			break;
+		case MODE:
+			if (this->_clients[fdClient].getConnectServer() == true)
+				this->_clients[fdClient].mode(this);
+			break;
+		case PART:
+			std::cout << "PART in switch case " << std::endl;
+			if (this->_clients[fdClient].getConnectServer() == true)
+				this->_clients[fdClient].part(this);
+			break;
+		default:
+			send(this->_clients[fdClient].getSocket(), ERR_UNKNOWNCOMMAND(this->_clients[fdClient].getNickname()).c_str(), ERR_UNKNOWNCOMMAND(this->_clients[fdClient].getNickname()).size(), 0);
+			break;
 	}
 	this->_clients[fdClient].removeCmdBuf();
 }
@@ -301,7 +302,7 @@ void	Server::createChannel( Client client, std::string name, std::string passwd 
 				if( static_cast<unsigned>(this->_channels[i].getMaxUser()) <= this->_channels[i].getUser().size() )
 				{
 					send(client.getSocket(), ERR_CHANNELISFULL(client.getNickname(), this->_channels[i].getName()).c_str(),
-						ERR_CHANNELISFULL(client.getNickname(), this->_channels[i].getName()).size(), 0);
+							ERR_CHANNELISFULL(client.getNickname(), this->_channels[i].getName()).size(), 0);
 					return;
 				}
 
@@ -314,17 +315,17 @@ void	Server::createChannel( Client client, std::string name, std::string passwd 
 					if( passwd != this->_channels[i].getPasswd() )
 					{
 						send(client.getSocket(), ERR_BADCHANNELKEY(client.getNickname(), this->_channels[i].getName()).c_str(),
-							ERR_BADCHANNELKEY(client.getNickname(), this->_channels[i].getName()).size(), 0);
+								ERR_BADCHANNELKEY(client.getNickname(), this->_channels[i].getName()).size(), 0);
 						return;
 					}
 					send(client.getSocket(), RPL_CHANNELMODEIS2(client.getNickname(), this->_channels[i].getName(), "+k", passwd).c_str(), 
-						RPL_CHANNELMODEIS2(client.getNickname(), this->_channels[i].getName(), "+k", passwd).size(), 0);
+							RPL_CHANNELMODEIS2(client.getNickname(), this->_channels[i].getName(), "+k", passwd).size(), 0);
 
 				}
 				if( this->_channels[i].getInvitation() == true )
 				{
 					send(client.getSocket(), ERR_INVITEONLYCHAN(client.getName(), this->_channels[i].getName()).c_str(),
-						ERR_INVITEONLYCHAN(client.getName(), this->_channels[i].getName()).size(), 0);
+							ERR_INVITEONLYCHAN(client.getName(), this->_channels[i].getName()).size(), 0);
 					return;
 				}
 				if( this->_channels[i].addClientChannel(clientSocket) == true )
@@ -351,9 +352,9 @@ void	Server::createChannel( Client client, std::string name, std::string passwd 
 							{
 								std::cout << "index channel: " << nbChannel << std::endl;
 								std::cout << this->getChannels()[nbChannel].getUser()[i] << std::endl;
-									// << " " << this->_clients[socketNewUser].getNickname() << "  " << this->getChannels()[nbChannel].getName() << std::endl;
+								// << " " << this->_clients[socketNewUser].getNickname() << "  " << this->getChannels()[nbChannel].getName() << std::endl;
 								send(this->getChannels()[nbChannel].getUser()[i], RPL_CHAN(this->_clients[socketNewUser].getNickname(), "JOIN", this->getChannels()[nbChannel].getName()).c_str(),
-									RPL_CHAN(this->_clients[socketNewUser].getNickname(), "JOIN", this->getChannels()[nbChannel].getName()).size(), 0);
+										RPL_CHAN(this->_clients[socketNewUser].getNickname(), "JOIN", this->getChannels()[nbChannel].getName()).size(), 0);
 							}
 						}
 					}
@@ -444,7 +445,7 @@ bool	Server::changeTopic( std::string topic, std::string chanName, int idClient,
 				}
 				if ( j == this->_channels[i].getIrcOps().size() ){
 					send( idClient,ERR_CHANOPRIVSNEEDED(nick, this->_channels[i].getName()).c_str(), 
-						ERR_CHANOPRIVSNEEDED(nick, this->_channels[i].getName()).size(), 0);
+							ERR_CHANOPRIVSNEEDED(nick, this->_channels[i].getName()).size(), 0);
 					return false;
 				}
 			}
@@ -472,6 +473,22 @@ void	Server::part( int socketClient, std::string chanName, std::string nick, std
 			this->_channels[i].removeClientChannel( socketClient );
 			for (unsigned int j = 0; j < this->_channels[i].getUser().size(); j++)
 				send( this->_channels[i].getUser()[j] , RPL_PART(nick, chanName, message).c_str(), RPL_PART(nick, chanName, message).size(), 0);
+		}
+	}
+}
+
+void	Server::nickChange( std::string oldNick, std::string newNick, int socket){
+	for (unsigned int i = 0; i < this->_channels.size(); i++ ){
+		for ( unsigned int j = 0; j < this->_channels[i].getUser().size(); j++ ){
+			if (this->_channels[i].getUser()[j] == socket ){
+				for (unsigned int k = 0; k < _channels[i].getUser().size(); k++){
+					if ( _channels[i].getUser()[k] != socket){
+						send(_channels[i].getUser()[k], RPL_NICKCHANGE(oldNick, newNick).c_str(),
+								RPL_NICKCHANGE(oldNick, newNick).size(),0);
+					}
+				}
+				break;
+			}
 		}
 	}
 }

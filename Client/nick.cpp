@@ -33,6 +33,8 @@ void Client::setNick(Server *server) {
 						ERR_NICKNAMEINUSE(_splitBuf[1]).size(), 0);
 				return;
 			}
+		if ( _nickname != "*" )
+			server->nickChange( _nickname, _splitBuf[1], _socket );
 		this->_nickname = _splitBuf[1];
 		if (3 == _splitBuf.size()){
 			_splitBuf.erase(_splitBuf.begin(), _splitBuf.begin() + 1);
