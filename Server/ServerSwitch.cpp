@@ -54,9 +54,9 @@ void	Server::command(int fdClient){
 			this->_clients[fdClient].invitation( this );
 		break;
 	case TOPIC:
+		std::cout << "TOPIC in switch case " << std::endl;
 		if (this->_clients[fdClient].getConnectServer() == true)
 			this->_clients[fdClient].topic( this );
-		std::cout << "TOPIC in switch case " << std::endl;
 		break;
 	case MODE:
 		std::cout << "MODE in switch case  " << std::endl;
@@ -64,7 +64,7 @@ void	Server::command(int fdClient){
 			this->_clients[fdClient].mode(this);
 		break;
 	case PART:
-		std::cout << "PART in switch case " << std::endl;
+		std::cout << " PART in switch case " << std::endl;
 		if (this->_clients[fdClient].getConnectServer() == true)
 			this->_clients[fdClient].part(this);
 		break;
