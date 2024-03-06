@@ -1,6 +1,6 @@
 #include "Server.hpp"
 
-// Makes the channel by invitation only:
+// Makes the channel by invitation only (i): RPL_CHANNELMODEIS //
 void	Server::modeInvit( Client *user, int i )
 {
 	std::string nick = user->getNickname();
@@ -23,8 +23,6 @@ void	Server::modeInvit( Client *user, int i )
 			this->_channels[i].setInvitation( true );
 			send(user->getSocket(), RPL_CHANNELMODEIS(nick, channel, "+i").c_str(), 
 				RPL_CHANNELMODEIS(nick, channel, "+i").size(), 0);
-			// send(user->getSocket(), RPL_INVITATION(nick , channel, cmd).c_str(),
-				// RPL_INVITATION(nick , channel, cmd).size(), 0);
 		}
 		else
 			send(user->getSocket(), ERR_MODE( server, channel, nick).c_str(), 
@@ -44,6 +42,7 @@ void	Server::modeInvit( Client *user, int i )
 	}
 }
 
+// change topic privilege (t) //
 void	Server::modeTopic( Client *user, int nChannel )
 {
 	std::string nick = user->getNickname();
@@ -63,7 +62,7 @@ void	Server::modeTopic( Client *user, int nChannel )
 		this->_channels[nChannel].setTopicPrivilege( false );
 }
 
-// Gives/removes channel operator privileges:
+// Gives/removes channel operator privileges (o): RPL_CHANNELMODEIS2 //
 void	Server::modePrivilege( Client *user, int i )
 {
 	std::string server = "irc";
@@ -119,7 +118,7 @@ void	Server::modePrivilege( Client *user, int i )
 	}
 }
 
-// Add or remove channel password:
+// Add or remove channel password (k): RPL_CHANNELMODEIS2 //
 void	Server::modePwd( Client *user, int i )
 {
 	std::string server = "irc";

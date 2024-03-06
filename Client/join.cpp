@@ -1,5 +1,6 @@
 #include "Client.hpp"
 
+// creating or joining a channel //
 void	Client::join( Server *server )
 {
 	this->splitBuf();
