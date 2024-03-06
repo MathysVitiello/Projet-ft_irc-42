@@ -64,38 +64,15 @@ void	Server::modeTopic( Client *user, int nChannel )
 // Gives/removes channel operator privileges (o): RPL_CHANNELMODEIS2 //
 void	Server::modePrivilege( Client *user, int i )
 {
-	std::string server = "irc";
-	std::string nick = user->getNickname();
-	std::string channel= this->_channels[i].getName();
+	std::string server 	= "irc";
+	std::string nick 	= user->getNickname();
+	std::string channel	= this->_channels[i].getName();
 
-	if( user->getCmdBuf().size() != 3 )
-	{
-		send(user->getSocket(), ERR_NEEDMOREPARAMS(nick, "MODE").c_str(),
-				ERR_NEEDMOREPARAMS(nick, "MODE").size(), 0);
+	// Nickname verification and socket recovery:
+	int socketClient = checkNickname( this->getClients(), user, channel );
+	if( socketClient == -1 )
 		return;
-	}
 
-	//Verification du nickname
-	//checkNickname(this->getClients(), user)
-	int flag = 0;
-	int index = 0;
-	std::vector<Client>::const_iterator it = this->getClients().begin();
-	for (; it != this->getClients().end(); it++, index++)
-	{
-		if( it->getNickname() == user->getCmdBuf()[2] )
-		{
-			flag = 1;
-			break;
-		}
-	}
-	if( flag == 0 )
-	{
-		send(user->getSocket(), ERR_NOSUCHNICK(user->getCmdBuf()[2], 
-			channel).c_str(), ERR_NOSUCHNICK(user->getCmdBuf()[2], channel).size(), 0);
-		return;
-	}
-
-	int socketClient = this->getClients()[index].getSocket();
 	if( socketClient == user->getSocket() && this->_channels[i].getIrcOps().size() == 1 )
 		send(user->getSocket(), ERR_MODE( server, channel, nick).c_str(), 
 			ERR_MODE(server, channel, nick).size(), 0);
