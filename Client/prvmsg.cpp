@@ -43,7 +43,6 @@ void    Client::privateMessage( std::vector<Client> *clients, Server *server, in
 	}
 }
 
-//TODO   +++++++++++++++++++++++++++++++ EN TRAVAUX
 void    Server::sendMessageChanel( std::string nickOrChannel, int clientPlace, std::string cmdSend, int socket)
 {
 	int nbChannel = -1;
@@ -66,14 +65,12 @@ void    Server::sendMessageChanel( std::string nickOrChannel, int clientPlace, s
 		return;
 	}
 
-		std::cout << "size du channel (doit etre 2) :" << this->getChannels()[nbChannel].getUser().size() << std::endl;
 	if (this->getChannels()[nbChannel].getUser().size() > 1)
 	{
-		for( size_t i = 0; i < this->getChannels()[nbChannel].getUser().size(); i++ ){//? desoif qqn recis en double 
-			if (this->getClients()[i].getNickname() != this->getClients()[clientPlace].getNickname()) //! bizarre ici
+		for( size_t i = 0; i < this->getChannels()[nbChannel].getUser().size(); i++ ){
+			if (this->getClients()[i].getNickname() != this->getClients()[clientPlace].getNickname())
 			{
 				std::cout << this->getClients()[i].getNickname() << "     " <<  this->getClients()[clientPlace].getNickname() << " PRIVMSG " << nickOrChannel << std::endl;
-				//todo iciii
 				std::string toSend = ":" + this->getClients()[clientPlace].getNickname() + " PRIVMSG " + nickOrChannel + cmdSend + 	"\r\n";
 				send(this->getClients()[i].getSocket(), toSend.c_str(),toSend.size(), 0);
 			}
@@ -81,4 +78,3 @@ void    Server::sendMessageChanel( std::string nickOrChannel, int clientPlace, s
 	}
 	return ;
 } 
-//! pb quuand ce nest pas le premier log qui cree en premier le channel
