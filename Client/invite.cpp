@@ -52,7 +52,9 @@ void	Client::invitation( Server *server ){
 
 	send(it->getSocket(), RPL_INVITING(this->_nickname, _splitBuf[1], _splitBuf[2]).c_str(), RPL_INVITING(this->_nickname, _splitBuf[1], _splitBuf[2]).size(), 0); 
 	send(this->_socket, RPL_INVITED(_splitBuf[1], _splitBuf[2], this->_nickname).c_str(), RPL_INVITED(_splitBuf[1], _splitBuf[2], this->_nickname).size(), 0); 
-	std::cout <<  it->getSocket() << std::endl;
+	for ( unsigned int i = 0; i < itChan->getUserInvite().size(); i++)
+		if ( it->getSocket() == itChan->getUserInvite()[i] )
+			return ;
 	server->addInviteUser( it->getSocket(), itChan->getName() );
 }
 
