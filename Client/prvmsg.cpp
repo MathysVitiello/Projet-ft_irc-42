@@ -70,7 +70,6 @@ void    Server::sendMessageChanel( std::string nickOrChannel, int clientPlace, s
 		for( size_t i = 0; i < this->getChannels()[nbChannel].getUser().size(); i++ ){
 			if (this->getClients()[i].getNickname() != this->getClients()[clientPlace].getNickname())
 			{
-				std::cout << this->getClients()[i].getNickname() << "     " <<  this->getClients()[clientPlace].getNickname() << " PRIVMSG " << nickOrChannel << std::endl;
 				std::string toSend = ":" + this->getClients()[clientPlace].getNickname() + " PRIVMSG " + nickOrChannel + cmdSend + 	"\r\n";
 				send(this->getClients()[i].getSocket(), toSend.c_str(),toSend.size(), 0);
 			}

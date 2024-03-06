@@ -61,10 +61,6 @@
 # define RPL_CHANNELMODEIS2(nick, channel, cmd1, cmd2)	(": 324 "+nick+" "+channel+" "+cmd1+" "+cmd2+"\r\n")
 # define ERR_NOPRIVS(nick)					(": 723 "+nick+" <priv> :Insufficient oper privileges.\r\n")
 
-/*	KICK message	*/                
-# define KICK_NOMESSAGE(channel)	    			(": 002 "+channel+" you have been kicked out the channel for no reason\r\n") //?homemade
-# define KICK_MESSAGE(channel, message)			(": 003 "+channel+" you have been kicked for a reason "+message+"\r\n") //?homemade
-
 /*	MODES		*/  
 # define ERR_UMODUUNKNOWNFLAG(server, nick)			(": 501 "+server+" "+nick+" :Unknown MODE flag\r\n" )
 # define ERR_MODE(server, channel, nick)			(": 502 "+server+" "+nick+": "+channel+" :Cannot change mode \r\n" )

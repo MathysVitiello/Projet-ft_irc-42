@@ -146,18 +146,16 @@ void	Server::removeClient( int const & index )
 	this->_clients.erase( this->_clients.begin() + index );
 }
 
-void	Server::kickUser( int socketToKick, std::string channelName, std::string message){
+void	Server::kickUser( int socketToKick, std::string channelName, std::string message, Client *client, std::string kickNameGuy){
 
 		std::vector<Channel>::iterator itChan;
 		for(itChan = this->_channels.begin(); itChan != this->_channels.end(); itChan++)
 		{
 			if ( itChan->getName() == channelName )
 			{
+				std::string toSend = ":" + client->getNickname() + " KICK " + channelName + " " + kickNameGuy + "\r\n";
+				send(socketToKick, toSend.c_str(), toSend.size(), 0);
 				itChan->removeClientChannel( socketToKick );
-				if (message.size() != 0)
-					send(socketToKick, KICK_MESSAGE(channelName, message).c_str(), KICK_MESSAGE(channelName, message).size(), 0);
-				else
-					send(socketToKick, KICK_NOMESSAGE(channelName).c_str(), KICK_NOMESSAGE(channelName).size(), 0);
 			}
 		}
 }
@@ -208,6 +206,7 @@ void	Server::command(int fdClient){
 		std::cout << "KICK in switch case " << std::endl;
 		if (this->_clients[fdClient].getConnectServer() == true)
 			this->_clients[fdClient].kick(this);
+			//allClient();
 		break;
 	case INVITE:
 		if (this->_clients[fdClient].getConnectServer() == true)
