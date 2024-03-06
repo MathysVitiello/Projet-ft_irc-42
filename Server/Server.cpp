@@ -482,10 +482,8 @@ void	Server::nickChange( std::string oldNick, std::string newNick, int socket){
 		for ( unsigned int j = 0; j < this->_channels[i].getUser().size(); j++ ){
 			if (this->_channels[i].getUser()[j] == socket ){
 				for (unsigned int k = 0; k < _channels[i].getUser().size(); k++){
-					if ( _channels[i].getUser()[k] != socket){
 						send(_channels[i].getUser()[k], RPL_NICKCHANGE(oldNick, newNick).c_str(),
 								RPL_NICKCHANGE(oldNick, newNick).size(),0);
-					}
 				}
 				break;
 			}
