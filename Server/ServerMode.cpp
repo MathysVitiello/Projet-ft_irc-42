@@ -1,6 +1,6 @@
 #include "Server.hpp"
 
-// Makes the channel by invitation only:
+// Makes the channel by invitation only (i): RPL_CHANNELMODEIS //
 void	Server::modeInvit( Client *user, int i )
 {
 	std::string nick = user->getNickname();
@@ -10,8 +10,8 @@ void	Server::modeInvit( Client *user, int i )
 	if( user->getCmdBuf().size() > 2 )
 	{
 		std::string mode = "MODE";
-		send(user->getSocket(), ERR_NEEDMOREPARAMS(nick, mode).c_str(),
-				ERR_NEEDMOREPARAMS(nick, mode).size(), 0);
+		send(user->getSocket(), ERR_NEEDMOREPARAMS(nick, "MODE").c_str(),
+				ERR_NEEDMOREPARAMS(nick, "MODE").size(), 0);
 		return;
 	}
 
@@ -19,12 +19,9 @@ void	Server::modeInvit( Client *user, int i )
 	{
 		if( this->_channels[i].getInvitation() == false )
 		{
-			std::string cmd = "+i";
 			this->_channels[i].setInvitation( true );
 			send(user->getSocket(), RPL_CHANNELMODEIS(nick, channel, "+i").c_str(), 
 				RPL_CHANNELMODEIS(nick, channel, "+i").size(), 0);
-			// send(user->getSocket(), RPL_INVITATION(nick , channel, cmd).c_str(),
-				// RPL_INVITATION(nick , channel, cmd).size(), 0);
 		}
 		else
 			send(user->getSocket(), ERR_MODE( server, channel, nick).c_str(), 
@@ -44,6 +41,7 @@ void	Server::modeInvit( Client *user, int i )
 	}
 }
 
+// change topic privilege (t) //
 void	Server::modeTopic( Client *user, int nChannel )
 {
 	std::string nick = user->getNickname();
@@ -63,7 +61,7 @@ void	Server::modeTopic( Client *user, int nChannel )
 		this->_channels[nChannel].setTopicPrivilege( false );
 }
 
-// Gives/removes channel operator privileges:
+// Gives/removes channel operator privileges (o): RPL_CHANNELMODEIS2 //
 void	Server::modePrivilege( Client *user, int i )
 {
 	std::string server = "irc";
@@ -77,6 +75,8 @@ void	Server::modePrivilege( Client *user, int i )
 		return;
 	}
 
+	//Verification du nickname
+	//checkNickname(this->getClients(), user)
 	int flag = 0;
 	int index = 0;
 	std::vector<Client>::const_iterator it = this->getClients().begin();
@@ -119,7 +119,7 @@ void	Server::modePrivilege( Client *user, int i )
 	}
 }
 
-// Add or remove channel password:
+// Add or remove channel password (k): RPL_CHANNELMODEIS2 //
 void	Server::modePwd( Client *user, int i )
 {
 	std::string server = "irc";

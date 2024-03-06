@@ -108,9 +108,9 @@ void	Channel::setPassword( std::string password ){
 	this->_password = password;
 }
 
-
 /* ************************************************************************** */
-// FUNCTIONS:
+// FUNCTIONS //
+// Add the channel user:
 bool	Channel::addClientChannel( int clientSocket )
 {
 	if( static_cast<unsigned>(this->_maxUser) >= this->_user.size() )
@@ -118,12 +118,10 @@ bool	Channel::addClientChannel( int clientSocket )
 		this->_user.push_back( clientSocket );
 		return( true );
 	}
-	else
-		std::cout << "No more user" << std::endl;
 	return( false );
 }
 
-// Ajoute l'ircOps au canal:
+// Add the channel ircOps:
 bool	Channel::addIrcOps( int clientSocket )
 {
 	std::vector<int>::iterator itUser;
@@ -142,7 +140,7 @@ bool	Channel::addIrcOps( int clientSocket )
 	return( true );
 }
 
-//Supprime l'ircOps du canal:
+// Removes the channel ircOps:
 bool	Channel::removeIrcOps( int clientSocket )
 {
 	if( !this->_ircOps.empty() )
@@ -158,21 +156,17 @@ bool	Channel::removeIrcOps( int clientSocket )
 	return( false );
 }
 
-// Supprime le user du canal:
+// Removes the channel user:
 void	Channel::removeClientChannel( int userSocket )
 {
 	this->removeIrcOps( userSocket );
 
 	if( !this->_user.empty() )
 	{
-		for(std::vector<int>::iterator it = this->_user.begin(); it != this->_user.end(); it++)
-		{
-			if( *it == userSocket )
-			{
-				this->_user.erase( it );
-				--it;
-			}
-		}
+		std::vector<int>::iterator it;
+		it = find(this->_user.begin(), this->_user.end(), userSocket);
+		if (it != this->_user.end())
+			this->_user.erase(it);
 	}
 }
 

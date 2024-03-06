@@ -1,5 +1,6 @@
 #include "../library.hpp"
 
+// Separate orders //
 void	Client::splitBuf( void )
 {
 	if( this->_splitBuf.size() < 2 )
@@ -17,7 +18,7 @@ void	Client::splitBuf( void )
 	_splitBuf.push_back(tmp.substr(0, tmp.size()));
 }
 
-// Verifie le nombre de parametre: ERR_NEEDMOREPARAMS              
+// Check the number of parameters: ERR_NEEDMOREPARAMS //
 static bool numberParam( Client *user )
 {
 	if( user->getCmdBuf().size() >= 2 )
@@ -30,7 +31,7 @@ static bool numberParam( Client *user )
 	return( false );
 }
 
-// Verifier si le channel existe: ERR_NOSUCHCHANNEL //
+// Check if the channel exists: ERR_NOSUCHCHANNEL //
 static	bool checkChannelExist( Server *server , std::string nameChan, Client *user )
 {
 	std::vector<Channel>::const_iterator itChan = server->getChannels().begin();
@@ -44,7 +45,7 @@ static	bool checkChannelExist( Server *server , std::string nameChan, Client *us
 	return( false );
 }
 
-// Verifier si le user est ircOps: ERR_CHANOPRIVSNEEDED //
+// Check if the user is ircOps: ERR_CHANOPRIVSNEEDED //
 static bool checkIrcOps( Server *server, std::string nameChan, Client *user)
 {
 	std::vector<Channel>::const_iterator itChan = server->getChannels().begin();
@@ -65,6 +66,7 @@ static bool checkIrcOps( Server *server, std::string nameChan, Client *user)
 	return( false );
 }
 
+// Apply the different modes, if not possible: ERR_UMODUUNKNOWNFLAG //
 static void	checkMode( Server *server, Client *user, int i )
 {
 	if ( user->getCmdBuf()[1] == "+i" || user->getCmdBuf()[1] == "-i" )
