@@ -45,9 +45,9 @@ class Client
 		void 	mode( Server *server );
 		void 	splitBuf( void );
 
-		void				removeCmdBuf( void );
-		void				topic( Server *server );
-		void				part( Server *server );
+		void	removeCmdBuf( void );
+		void	topic( Server *server );
+		void	part( Server *server );
 
 		// --------------------------------------------------------- //
 	private:

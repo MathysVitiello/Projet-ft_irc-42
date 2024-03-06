@@ -41,8 +41,7 @@ class Server
 		bool							getInCanal( Server * server, int fdClient );
 
 		void							setClients( std::string buf, int index );
-
-
+		
 		// -------------------- Functions ---------------------- //
 		void		addClient( int const & id, sockaddr_in from );
 		void		command( int fdClient );
@@ -84,5 +83,4 @@ class Server
 void checkArgs( int argc, char **argv );
 
 std::ostream & operator<<( std::ostream & o, Server const & src );
-
 #endif

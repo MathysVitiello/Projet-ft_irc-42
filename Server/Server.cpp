@@ -84,10 +84,8 @@ bool	Server::getInCanal( Server * server, int fdClient ){
 	for(it = this->_channels.begin(); it != this->_channels.end(); it++)
 	{
 		for(size_t i = 0; i < it->getUser().size(); i++)
-		{
 			if( server->_clients[fdClient].getSocket() == it->getUser()[i] )
 				return true;
-		}
 	}
 	return false;
 }
@@ -319,7 +317,6 @@ void	Server::createChannel( Client client, std::string name, std::string passwd 
 					}
 					send(client.getSocket(), RPL_CHANNELMODEIS2(client.getNickname(), this->_channels[i].getName(), "+k", passwd).c_str(), 
 						RPL_CHANNELMODEIS2(client.getNickname(), this->_channels[i].getName(), "+k", passwd).size(), 0);
-
 				}
 				if( this->_channels[i].getInvitation() == true )
 				{
@@ -334,27 +331,21 @@ void	Server::createChannel( Client client, std::string name, std::string passwd 
 					int nbChannel = 0;
 					// check si le channel existe
 					for( size_t i = 0; i < this->getChannels().size(); i++ )
-					{
 						if (this->getChannels()[i].getName() == name)
 							nbChannel = i;
-					}
-
 					if (this->getChannels()[nbChannel].getUser().size() > 1)
 					{
 						for( size_t i = 0; i < this->_clients.size(); i++ )
 							if (clientSocket == this->_clients[i].getSocket())
 								socketNewUser = i;
 
-						for( size_t i = 0; i < this->getChannels()[nbChannel].getUser().size(); i++ ){
+						for( size_t i = 0; i < this->getChannels()[nbChannel].getUser().size(); i++ )
+						{
 							//send to all people from channel message that someone new joined
 							if (clientSocket != this->getChannels()[nbChannel].getUser()[i])
-							{
-								std::cout << "index channel: " << nbChannel << std::endl;
-								std::cout << this->getChannels()[nbChannel].getUser()[i] << std::endl;
-									// << " " << this->_clients[socketNewUser].getNickname() << "  " << this->getChannels()[nbChannel].getName() << std::endl;
-								send(this->getChannels()[nbChannel].getUser()[i], RPL_CHAN(this->_clients[socketNewUser].getNickname(), "JOIN", this->getChannels()[nbChannel].getName()).c_str(),
-									RPL_CHAN(this->_clients[socketNewUser].getNickname(), "JOIN", this->getChannels()[nbChannel].getName()).size(), 0);
-							}
+								send(this->getChannels()[nbChannel].getUser()[i], RPL_CHAN(this->_clients[socketNewUser].getNickname(), 
+									"JOIN", this->getChannels()[nbChannel].getName()).c_str(), RPL_CHAN(this->_clients[socketNewUser].getNickname(), 
+									"JOIN", this->getChannels()[nbChannel].getName()).size(), 0);
 						}
 					}
 				}
@@ -370,57 +361,8 @@ void	Server::createChannel( Client client, std::string name, std::string passwd 
 		this->allClient(&channel, client);
 	}
 }
-// Permet l affichage de toutes les donnees inclut dans le serveur:
-// - std::cout << server << std::endl;
-std::ostream & operator<<( std::ostream & o, Server const & src )
-{
-	std::vector<Client>::const_iterator it;
-
-	std::cout << BPURPLE << std::endl;
-	std::cout << "-------------------------------------------" << std::endl;
-	o << "Server port: " << src.getPort() << std::endl;
-	o << "Server reseau: " << src.getAddr().sin_port<< std::endl;
-	o << "Server password: " << src.getPassword() << std::endl;
-	o << "      ------------" << std::endl;
-
-	// Affiche tout les clients du serveur ainsi que leur informations:
-	for(it = src.getClients().begin(); it != src.getClients().end(); it++)
-	{
-		o << "		- socket client: " << it->getSocket() << std::endl;
-		o << "		- addresse client: " << it->getAddr().sin_port << std::endl;
-		o << "		- name client: " << it->getName() << std::endl;
-		o << "		- nickname client: " << it->getNickname() << std::endl;
-		o << "		- password: " << it->getConnect() << std::endl;
-		o << "	  	  ------------" << std::endl << std::endl;
-	}
-
-	// Affiche tout les client de tous les channels:
-	std::vector<Channel>::const_iterator itChannel;
-	for(itChannel = src.getChannels().begin() ; itChannel != src.getChannels().end(); itChannel++)
-	{
-		std::cout << "- Channel: " << itChannel->getName() << std::endl;
-		std::cout << "- password: " << itChannel->getPasswd() << std::endl;
-		std::cout << "- pwd: " << itChannel->getPwd() << std::endl;
-		std::cout << "- socket owner: " << itChannel->getOwner() << std::endl;
-		std::cout << "- topic name: " << itChannel->getTopicName() << std::endl;
-		std::cout << "- topic restricted privilege: " << itChannel->getTopicPrivilege() << std::endl;
-		std::cout << "- invation: " << itChannel->getInvitation() << std::endl;
-		std::cout << "- max user:" << itChannel->getMaxUser() << std::endl;
-		for( unsigned i = 0; i < itChannel->getIrcOps().size(); i++ )
-			o << "- socket ircOps: " << itChannel->getIrcOps()[i] << std::endl;
-		for( unsigned i = 0; i < itChannel->getUser().size(); i++ )
-			o << "- socket user: " << itChannel->getUser()[i] << std::endl;
-		for( unsigned i = 0; i < itChannel->getUserInvite().size(); i++ )
-			o << "- user invitated: " << itChannel->getUserInvite()[i] << std::endl;
-		o << "------------" << std::endl << std::endl;
-	}
-	std::cout << "-------------------------------------------"<< NC << std::endl;
-	return( o );
-}
-
 
 void	Server::addInviteUser( int guestSocket, std::string channelName ){
-	std::cout << "dasn Server :" << guestSocket << std::endl;	
 	for (size_t i = 0; i < this->_channels.size(); i++)
 	{
 		if (channelName == this->_channels[i].getName())
@@ -464,14 +406,61 @@ void	Server::part( int socketClient, std::string chanName, std::string nick, std
 	for (size_t i = 0; i < this->_channels.size(); i++){
 		if (chanName == this->_channels[i].getName()){
 			if ( socketClient == this->_channels[i].getOwner() ){
-				std::cout << " test " << std::endl;
 				this->_channels.erase( this->_channels.begin() + i );
 				return;
 			}
-			std::cout << message << std::endl;
-			this->_channels[i].removeClientChannel( socketClient );
 			for (unsigned int j = 0; j < this->_channels[i].getUser().size(); j++)
-				send( this->_channels[i].getUser()[j] , RPL_PART(nick, chanName, message).c_str(), RPL_PART(nick, chanName, message).size(), 0);
+				send( this->_channels[i].getUser()[j] , RPL_PART(nick, chanName, message).c_str(),
+					RPL_PART(nick, chanName, message).size(), 0);
+			this->_channels[i].removeClientChannel( socketClient );
 		}
 	}
+}
+
+// Displays all data included in the server:
+// - std::cout << server << std::endl;
+std::ostream & operator<<( std::ostream & o, Server const & src )
+{
+	std::vector<Client>::const_iterator it;
+
+	std::cout << BPURPLE << std::endl;
+	std::cout << "-------------------------------------------" << std::endl;
+	o << "Server port: " << src.getPort() << std::endl;
+	o << "Server reseau: " << src.getAddr().sin_port<< std::endl;
+	o << "Server password: " << src.getPassword() << std::endl;
+	o << "      ------------" << std::endl;
+
+	// Displays all server clients and their information:
+	for(it = src.getClients().begin(); it != src.getClients().end(); it++)
+	{
+		o << "		- socket client: " << it->getSocket() << std::endl;
+		o << "		- addresse client: " << it->getAddr().sin_port << std::endl;
+		o << "		- name client: " << it->getName() << std::endl;
+		o << "		- nickname client: " << it->getNickname() << std::endl;
+		o << "		- password: " << it->getConnect() << std::endl;
+		o << "	  	  ------------" << std::endl << std::endl;
+	}
+
+	// Displays all customers on all channels:
+	std::vector<Channel>::const_iterator itChannel;
+	for(itChannel = src.getChannels().begin() ; itChannel != src.getChannels().end(); itChannel++)
+	{
+		std::cout << "- Channel: " << itChannel->getName() << std::endl;
+		std::cout << "- password: " << itChannel->getPasswd() << std::endl;
+		std::cout << "- pwd: " << itChannel->getPwd() << std::endl;
+		std::cout << "- socket owner: " << itChannel->getOwner() << std::endl;
+		std::cout << "- topic name: " << itChannel->getTopicName() << std::endl;
+		std::cout << "- topic restricted privilege: " << itChannel->getTopicPrivilege() << std::endl;
+		std::cout << "- invation: " << itChannel->getInvitation() << std::endl;
+		std::cout << "- max user:" << itChannel->getMaxUser() << std::endl;
+		for( unsigned i = 0; i < itChannel->getIrcOps().size(); i++ )
+			o << "- socket ircOps: " << itChannel->getIrcOps()[i] << std::endl;
+		for( unsigned i = 0; i < itChannel->getUser().size(); i++ )
+			o << "- socket user: " << itChannel->getUser()[i] << std::endl;
+		for( unsigned i = 0; i < itChannel->getUserInvite().size(); i++ )
+			o << "- user invitated: " << itChannel->getUserInvite()[i] << std::endl;
+		o << "------------" << std::endl << std::endl;
+	}
+	std::cout << "-------------------------------------------"<< NC << std::endl;
+	return( o );
 }

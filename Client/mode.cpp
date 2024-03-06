@@ -49,7 +49,6 @@ static	bool checkChannelExist( Server *server , std::string nameChan, Client *us
 static bool checkIrcOps( Server *server, std::string nameChan, Client *user)
 {
 	std::vector<Channel>::const_iterator itChan = server->getChannels().begin();
-
 	for (; itChan != server->getChannels().end(); itChan++)
 	{
 		if( itChan->getName() == nameChan )

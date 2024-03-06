@@ -9,7 +9,6 @@ void	Server::modeInvit( Client *user, int i )
 
 	if( user->getCmdBuf().size() > 2 )
 	{
-		std::string mode = "MODE";
 		send(user->getSocket(), ERR_NEEDMOREPARAMS(nick, "MODE").c_str(),
 				ERR_NEEDMOREPARAMS(nick, "MODE").size(), 0);
 		return;
@@ -183,10 +182,8 @@ void Server::modeLimitUser( Client *user, int i )
 		char	*pEnd;
 		long int limit = strtol( user->getCmdBuf()[2].c_str(), &pEnd, 10 );
 		if ( limit > 1024 || limit < 1 )
-		{
 			send(user->getSocket(), ERR_MODE( server, channel, nick).c_str(), 
 				ERR_MODE(server, channel, nick).size(), 0);
-		}
 		else
 		{
 			this->_channels[i].setMaxUser( limit );		
