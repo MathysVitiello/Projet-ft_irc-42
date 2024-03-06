@@ -258,15 +258,13 @@ void	Server::createChannel( Client client, std::string name, std::string passwd 
 							ERR_INVITEONLYCHAN(client.getName(), this->_channels[i].getName()).size(), 0);
 						return;
 					}
-					this->_channels[i].addClientChannel(clientSocket);
-					this->allClient(&this->_channels[i], client);
+					this->_channels[i].setUserInvite( clientSocket, 1 );
 				}
 				if( this->_channels[i].addClientChannel(clientSocket) == true )
 				{
 					this->allClient(&this->_channels[i], client);
 
 					int nbChannel = 0;
-					// check si le channel exists
 					for( size_t i = 0; i < this->getChannels().size(); i++ )
 						if (this->getChannels()[i].getName() == name)
 							nbChannel = i;
