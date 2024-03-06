@@ -26,7 +26,7 @@
 #include <functional>   
 #include <errno.h>
 #include <signal.h>
-
+#include <cstdlib>
 // --------------------- CLASS ---------------------- //
 #include "./Client/Client.hpp"
 #include "./Server/Server.hpp"

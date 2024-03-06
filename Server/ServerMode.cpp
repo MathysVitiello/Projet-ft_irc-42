@@ -143,3 +143,33 @@ void	Server::modePwd( Client *user, int i )
 		send(user->getSocket(), ERR_NEEDMOREPARAMS(nick, "MODE").c_str(),
 			ERR_NEEDMOREPARAMS(nick, "MODE").size(), 0);
 }
+
+// Define the user's limit in the channel (l):
+void Server::modeLimitUser( Client *user, int i )
+{
+	std::string server = "irc";
+	std::string nick = user->getNickname();
+	std::string channel= this->_channels[i].getName();
+
+	if( user->getCmdBuf()[1] == "+l" && user->getCmdBuf().size() == 3 )	
+	{
+		char	*pEnd;
+		long int limit = strtol( user->getCmdBuf()[2].c_str(), &pEnd, 10 );
+		if ( limit > 1024 || limit < 1 )
+		{
+			send(user->getSocket(), ERR_MODE( server, channel, nick).c_str(), 
+				ERR_MODE(server, channel, nick).size(), 0);
+		}
+		else
+		{
+			this->_channels[i].setMaxUser( limit );		
+			send(user->getSocket(), RPL_CHANNELMODEIS(nick, channel, "+l").c_str(), 
+				RPL_CHANNELMODEIS(nick, channel, "+l").size(), 0);
+		}
+	}
+	else if( user->getCmdBuf()[1] == "-l" && user->getCmdBuf().size() == 2 )	
+		this->_channels[i].setMaxUser( 1024 );
+	else
+		send(user->getSocket(), ERR_NEEDMOREPARAMS(nick, "MODE").c_str(),
+			ERR_NEEDMOREPARAMS(nick, "MODE").size(), 0);
+}
