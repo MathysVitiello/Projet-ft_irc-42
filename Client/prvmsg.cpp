@@ -2,6 +2,26 @@
 
 void    Client::privateMessage( std::vector<Client> *clients, Server *server, int clientPlace)
 {
+
+	//condition if it is a file 
+	size_t i = _splitBuf[1].find("DCC SEND");
+	if (i != std::string::npos){
+
+		std::string nickOrChannel = _splitBuf[1].substr(0, _splitBuf[1].find(" "));
+		//find nickname in all users
+		std::vector<Client>::iterator it = clients->begin(); 
+		for ( ;it < clients->end(); it++ )
+		{
+			// send message to the client
+			if ( nickOrChannel == it->getNickname() ){
+				std::string toSend = ":" + this->getNickname() + " PRIVMSG "  + it->getNickname() + " " + _splitBuf[1].substr(_splitBuf[1].find(":")); 
+				send(it->getSocket(), toSend.c_str(),toSend.size(), 0); 
+				send(it->getSocket(), "\n", 1, 0);
+			}
+		}
+		return ;
+	}
+
 	if (_splitBuf[1].find(" ") < _splitBuf[1].find("\n"))
 	{
 		if (_splitBuf[1].substr(_splitBuf[1].find(" ")).size() == 0){
@@ -15,12 +35,14 @@ void    Client::privateMessage( std::vector<Client> *clients, Server *server, in
 		{
 			// send message to the client
 			if ( nickOrChannel == it->getNickname() ){
+
 				std::string toSend = ":" + this->getNickname() + " PRIVMSG "  + it->getNickname() + " " + _splitBuf[1].substr(_splitBuf[1].find(" ")); 
 				send(it->getSocket(), toSend.c_str(),toSend.size(), 0); 
 				send(it->getSocket(), "\n", 1, 0);
 				return ;
 			}
 		}
+
 		if (nickOrChannel[0] != '#' && nickOrChannel[0] != '&')
 			send(this->getSocket(), ERR_NOSUCHNICK(this->_nickname, nickOrChannel).c_str(), ERR_NOSUCHNICK(this->_nickname, nickOrChannel).size(), 0);
 
