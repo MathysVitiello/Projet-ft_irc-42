@@ -2,12 +2,11 @@
 
 void    Client::privateMessage( std::vector<Client> *clients, Server *server, int clientPlace)
 {
-	if (_splitBuf[1].find(" ") < _splitBuf[1].find("\n"))
-	{
-		if (_splitBuf[1].substr(_splitBuf[1].find(" ")).size() == 0){
-			send(this->getSocket(), ERR_NOTEXTTOSEND(this->getNickname()).c_str(), ERR_NOTEXTTOSEND(this->getNickname()).size(), 0);
-			return ;
-		}
+
+	//condition if it is a file 
+	size_t i = _splitBuf[1].find("DCC SEND");
+	if (i != std::string::npos){
+
 		std::string nickOrChannel = _splitBuf[1].substr(0, _splitBuf[1].find(" "));
 		//find nickname in all users
 		std::vector<Client>::iterator it = clients->begin(); 
@@ -15,12 +14,41 @@ void    Client::privateMessage( std::vector<Client> *clients, Server *server, in
 		{
 			// send message to the client
 			if ( nickOrChannel == it->getNickname() ){
+				std::string toSend = ":" + this->getNickname() + " PRIVMSG "  + it->getNickname() + " " + _splitBuf[1].substr(_splitBuf[1].find(":")); 
+				send(it->getSocket(), toSend.c_str(),toSend.size(), 0); 
+				send(it->getSocket(), "\n", 1, 0);
+			}
+		}
+		return ;
+	}
+
+	if (_splitBuf[1].find(" ") < _splitBuf[1].find("\n"))
+	{
+		if (_splitBuf[1].substr(_splitBuf[1].find(" ")).size() == 0){
+			send(this->getSocket(), ERR_NOTEXTTOSEND(this->getNickname()).c_str(), ERR_NOTEXTTOSEND(this->getNickname()).size(), 0);
+			return ;
+		}
+		std::string nickOrChannel = _splitBuf[1].substr(0, _splitBuf[1].find(" "));
+
+		if (nickOrChannel == "~BOT"){
+			server->bot_privmsg(clientPlace, _splitBuf[1].substr(_splitBuf[1].find(" ")));
+			return;
+		}
+
+		//find nickname in all users
+		std::vector<Client>::iterator it = clients->begin(); 
+		for ( ;it < clients->end(); it++ )
+		{
+			// send message to the client
+			if ( nickOrChannel == it->getNickname() ){
+
 				std::string toSend = ":" + this->getNickname() + " PRIVMSG "  + it->getNickname() + " " + _splitBuf[1].substr(_splitBuf[1].find(" ")); 
 				send(it->getSocket(), toSend.c_str(),toSend.size(), 0); 
 				send(it->getSocket(), "\n", 1, 0);
 				return ;
 			}
 		}
+
 		if (nickOrChannel[0] != '#' && nickOrChannel[0] != '&')
 			send(this->getSocket(), ERR_NOSUCHNICK(this->_nickname, nickOrChannel).c_str(), ERR_NOSUCHNICK(this->_nickname, nickOrChannel).size(), 0);
 
@@ -47,9 +75,9 @@ void    Server::sendMessageChanel( std::string nickOrChannel, int clientPlace, s
 {
 	int nbChannel = -1;
 	bool clientInChannel = false;
+
 	// find channel
 	for( size_t i = 0; i < this->getChannels().size(); i++ ){
-
 		if (this->getChannels()[i].getName() == nickOrChannel)
 			nbChannel = i;
 	}
@@ -76,4 +104,38 @@ void    Server::sendMessageChanel( std::string nickOrChannel, int clientPlace, s
 		}
 	}
 	return ;
+}
+
+void    Server::bot_privmsg( int clientPlace, std::string cmdSend ){
+
+    srand( time( NULL ) );
+    int i = rand() % 3 + 1;
+
+	std::string POWER = "";
+    if (i == 1)
+		POWER = "PIERRE";
+	else if (i == 2)
+		POWER = "PAPIER";
+    else 
+		POWER = "CISEAUX";
+
+	std::string toSend = ":BOT PRIVMSG BOT " + POWER + " \r\n";
+	cmdSend = cmdSend.substr(2);
+	send(this->getClients()[clientPlace].getSocket(), toSend.c_str(),toSend.size(), 0);
+
+
+	if ((POWER == "PIERRE" && cmdSend == "PAPIER") || (POWER == "PAPIER" && cmdSend == "CISEAUX") || (POWER == "CISEAUX" && cmdSend == "PIERRE")){
+		std::string toSend = ":BOT PRIVMSG BOT You won, I lost \r\n";
+		send(this->getClients()[clientPlace].getSocket(), toSend.c_str(),toSend.size(), 0);
+	} else if ((POWER == "PAPIER" && cmdSend == "PIERRE") || (POWER == "CISEAUX" && cmdSend == "PAPIER") || (POWER == "PIERRE" && cmdSend == "CISEAUX")){
+		std::string toSend = ":BOT PRIVMSG BOT You lost, I won \r\n";
+		send(this->getClients()[clientPlace].getSocket(), toSend.c_str(),toSend.size(), 0);
+	} else if ((POWER == "PAPIER" && cmdSend == "PAPIER") || (POWER == "PIERRE" && cmdSend == "PIERRE") || (POWER == "CISEAUX" && cmdSend == "CISEAUX")){
+		std::string toSend = ":BOT PRIVMSG BOT It is a DRAW \r\n";
+		send(this->getClients()[clientPlace].getSocket(), toSend.c_str(),toSend.size(), 0);
+	} else {
+		std::string toSend = ":BOT PRIVMSG BOT PIERRE, PAPIER OU CISEAUX ?\r\n";
+		send(this->getClients()[clientPlace].getSocket(), toSend.c_str(),toSend.size(), 0);
+	}
+	return;
 }

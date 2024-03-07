@@ -16,6 +16,7 @@ enum cmdUser {
 	TOPIC,
 	MODE,
 	PART,
+	BOT,
 };
 
 class Channel;
@@ -65,6 +66,9 @@ class Server
 		void		modePwd( Client *user, int i );
 		void		modeLimitUser( Client *user, int i );
 		void		nickChange( std::string oldNick, std::string newNick, int socket );
+
+		void		bot( Client client );
+		void	    bot_privmsg( int clientPlace, std::string cmdSend );
 
 
 		// --------------------------------------------------------- //

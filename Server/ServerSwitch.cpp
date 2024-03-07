@@ -2,10 +2,10 @@
 
 void	Server::command(int fdClient){
 
-	std::string	cmd[] = {"CAP", "PASS", "NICK", "USER", "PRIVMSG", "JOIN", "KICK", "INVITE", "TOPIC", "MODE", "PART"};
+	std::string	cmd[] = {"CAP", "PASS", "NICK", "USER", "PRIVMSG", "JOIN", "KICK", "INVITE", "TOPIC", "MODE", "PART", "BOT"};
 	int i;
 
-	for (i = 0; i < 11; i++){
+	for (i = 0; i < 12; i++){
 		if(this->_clients[fdClient].getCmdBuf().empty()){
 			i = -1; 
 			break;
@@ -64,9 +64,14 @@ void	Server::command(int fdClient){
 			this->_clients[fdClient].mode(this);
 		break;
 	case PART:
-		std::cout << " PART in switch case " << std::endl;
+		std::cout << "PART in switch case " << std::endl;
 		if (this->_clients[fdClient].getConnectServer() == true)
 			this->_clients[fdClient].part(this);
+		break;
+	case BOT:
+		std::cout << "BOT in switch case " << std::endl;
+		if (this->_clients[fdClient].getConnectServer() == true)
+			this->bot(this->_clients[fdClient]);
 		break;
 	default:
 		send(this->_clients[fdClient].getSocket(), ERR_UNKNOWNCOMMAND(this->_clients[fdClient].getNickname()).c_str(), ERR_UNKNOWNCOMMAND(this->_clients[fdClient].getNickname()).size(), 0);

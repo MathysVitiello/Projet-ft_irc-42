@@ -11,8 +11,11 @@ void	Client::enterPwd( Server *server ){
 		send(this->getSocket(), ERR_NEEDMOREPARAMS(this->_nickname, _splitBuf[0]).c_str(), ERR_NEEDMOREPARAMS(this->_nickname, _splitBuf[0]).size(), 0);
 		return;
 	}
-
+	size_t i = _splitBuf[1].find("\r");
 	size_t j = _splitBuf[1].find(" ");
+	if (i < j)
+			_splitBuf[1] = _splitBuf[1].substr(0, i);
+	j = _splitBuf[1].find(" ");
 	if (j != std::string::npos)
 			_splitBuf[1] = trimSpace(_splitBuf[1].substr(j));
 	if (_splitBuf[1] == server->getPassword())

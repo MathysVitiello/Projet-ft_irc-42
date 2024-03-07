@@ -25,6 +25,7 @@ SRC =	main.cpp \
 		Client/prvmsg.cpp \
 		Client/mode.cpp \
 		Client/part.cpp \
+		Client/bot.cpp \
 		Server/Server.cpp \
 		Server/ServerSwitch.cpp \
 		Server/ServerDebug.cpp \
