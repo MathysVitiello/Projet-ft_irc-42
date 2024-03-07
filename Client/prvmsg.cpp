@@ -29,6 +29,12 @@ void    Client::privateMessage( std::vector<Client> *clients, Server *server, in
 			return ;
 		}
 		std::string nickOrChannel = _splitBuf[1].substr(0, _splitBuf[1].find(" "));
+
+		if (nickOrChannel == "~BOT"){
+			server->bot_privmsg(clientPlace, _splitBuf[1].substr(_splitBuf[1].find(" ")));
+			return;
+		}
+
 		//find nickname in all users
 		std::vector<Client>::iterator it = clients->begin(); 
 		for ( ;it < clients->end(); it++ )
@@ -69,9 +75,9 @@ void    Server::sendMessageChanel( std::string nickOrChannel, int clientPlace, s
 {
 	int nbChannel = -1;
 	bool clientInChannel = false;
+
 	// find channel
 	for( size_t i = 0; i < this->getChannels().size(); i++ ){
-
 		if (this->getChannels()[i].getName() == nickOrChannel)
 			nbChannel = i;
 	}
@@ -98,4 +104,38 @@ void    Server::sendMessageChanel( std::string nickOrChannel, int clientPlace, s
 		}
 	}
 	return ;
+}
+
+void    Server::bot_privmsg( int clientPlace, std::string cmdSend ){
+
+    srand( time( NULL ) );
+    int i = rand() % 3 + 1;
+
+	std::string POWER = "";
+    if (i == 1)
+		POWER = "PIERRE";
+	else if (i == 2)
+		POWER = "PAPIER";
+    else 
+		POWER = "CISEAUX";
+
+	std::string toSend = ":BOT PRIVMSG BOT " + POWER + " \r\n";
+	cmdSend = cmdSend.substr(2);
+	send(this->getClients()[clientPlace].getSocket(), toSend.c_str(),toSend.size(), 0);
+
+
+	if ((POWER == "PIERRE" && cmdSend == "PAPIER") || (POWER == "PAPIER" && cmdSend == "CISEAUX") || (POWER == "CISEAUX" && cmdSend == "PIERRE")){
+		std::string toSend = ":BOT PRIVMSG BOT You won, I lost \r\n";
+		send(this->getClients()[clientPlace].getSocket(), toSend.c_str(),toSend.size(), 0);
+	} else if ((POWER == "PAPIER" && cmdSend == "PIERRE") || (POWER == "CISEAUX" && cmdSend == "PAPIER") || (POWER == "PIERRE" && cmdSend == "CISEAUX")){
+		std::string toSend = ":BOT PRIVMSG BOT You lost, I won \r\n";
+		send(this->getClients()[clientPlace].getSocket(), toSend.c_str(),toSend.size(), 0);
+	} else if ((POWER == "PAPIER" && cmdSend == "PAPIER") || (POWER == "PIERRE" && cmdSend == "PIERRE") || (POWER == "CISEAUX" && cmdSend == "CISEAUX")){
+		std::string toSend = ":BOT PRIVMSG BOT It is a DRAW \r\n";
+		send(this->getClients()[clientPlace].getSocket(), toSend.c_str(),toSend.size(), 0);
+	} else {
+		std::string toSend = ":BOT PRIVMSG BOT PIERRE, PAPIER OU CISEAUX ?\r\n";
+		send(this->getClients()[clientPlace].getSocket(), toSend.c_str(),toSend.size(), 0);
+	}
+	return;
 }

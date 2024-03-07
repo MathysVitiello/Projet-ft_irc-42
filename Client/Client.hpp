@@ -44,6 +44,7 @@ class Client
 		void	topic( Server *server );
 		void	part( Server *server );
 
+
 		// --------------------------------------------------------- //
 	private:
 		int 		_socket;
