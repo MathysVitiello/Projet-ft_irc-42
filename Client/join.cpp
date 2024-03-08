@@ -4,6 +4,9 @@
 void	Client::join( Server *server )
 {
 	this->splitBuf();
+	if (strcmp(this->_splitBuf[0].c_str(), "~BOT") == 0)
+		server->createChannel(*this, _splitBuf[0], "");
+
 	if (this->_splitBuf[0][0] != '#' && this-> _splitBuf[0][0] != '&')
 		send(this->getSocket(), ERR_NOSUCHCHANNEL(this->getNickname(), this->_splitBuf[1]).c_str(),
             ERR_NOSUCHCHANNEL(this->getNickname(), this->_splitBuf[1]).size(), 0);

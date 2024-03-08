@@ -121,6 +121,7 @@ void    Server::bot_privmsg( int clientPlace, std::string cmdSend ){
 
 	std::string toSend = ":BOT PRIVMSG BOT " + POWER + " \r\n";
 	cmdSend = cmdSend.substr(2);
+	std::cout << "test cmd: " << cmdSend << std::endl;
 	send(this->getClients()[clientPlace].getSocket(), toSend.c_str(),toSend.size(), 0);
 
 
